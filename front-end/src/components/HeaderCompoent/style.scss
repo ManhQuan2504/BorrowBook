@@ -1,0 +1,28 @@
+/* style.scss */
+
+.headerComponent_container{
+  
+.Menu-border{
+   border-color: #2185d0 !important;
+}
+ .MenuItemImage{
+margin: 0 !important;
+padding: 0 !important;
+ }
+   .imageAvatar{
+    width: 38px !important;
+    height: 38px !important;
+    display: block !important;
+
+   }
+  
+   .DropdownName{
+    margin: 0 !important;
+padding: 0 !important;
+   &:hover{
+      
+     
+   }
+   }
+}
+  

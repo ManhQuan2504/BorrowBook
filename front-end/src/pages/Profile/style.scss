@@ -1,0 +1,23 @@
+/* style.scss */
+.profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+  
+    h2 {
+      margin-top: 10px;
+    }
+  }
+  
+  /* Add more styles as needed */
+  
+  /* You can import this style.scss in your component file */
