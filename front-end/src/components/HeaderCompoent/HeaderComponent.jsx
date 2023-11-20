@@ -1,36 +1,75 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Header, Image } from "semantic-ui-react";
 import { Menu, Segment, Dropdown } from "semantic-ui-react";
 import "./style.scss";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector  } from 'react-redux';
+import { decodeToken } from "react-jwt";
+
 
 import bookImage from "../../assets/images/ngonha.png";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import * as UserService from '../../services/UserService'
+import { detailUser } from "../../redux/orebiSlice";
 import { resetUser } from '../../redux/slides/userSlide'
 
 import { PATHS } from "../../contants/path";
 
 const HeaderComponent = () => {
   const [activeItem, setActiveItem] = useState("home");
+
 const navigate = useNavigate()
 const dispatch = useDispatch()
+const [{ data: currentUser } = {}] = useSelector((state) => state.orebiReducer.userInfo);
+
 
   const handleItemClick = (itemName) => {
     setActiveItem(itemName);
   };
+  useEffect(() => {
+    // After login, return user detail
+  const fetchDetailUser = async () => {
+    const access_token = localStorage.getItem("access_token");
+    if(access_token) {
+      const decodedToken  = decodeToken(access_token);
+      const res = await UserService.detailUserLogin(decodedToken?.id, access_token);
+      if (res.code === 200) {
+        dispatch(detailUser({
+          success: true,
+          data: res.data,
+        })) 
+      }
+    }
+    else {
+      dispatch(detailUser({
+        success: false,
+        data: [],
+      }))
+    }
+  }
+  fetchDetailUser()
+}, []);
+
   const handleLogOut = async () => {
     if(!localStorage.getItem('access_token')){
       alert('ban chua dang nhap')
     }else{
       const access_token = localStorage.getItem('access_token')
       const res = await UserService.logoutAccount(access_token)
-    
+   
       dispatch(
-        resetUser()
+        detailUser({
+          success: false,
+          data: [],
+        })
       )
+      
       if (res.code === 200) {
+     
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('access_token_at');
         navigate('/sign-in')
+       
       }
     }
     
@@ -92,7 +131,7 @@ const dispatch = useDispatch()
               <Image className="imageAvatar" src={bookImage} avatar />
             </Menu.Item>
             <Menu.Item>
-              <Dropdown text="hoangdqh">
+              <Dropdown text={currentUser?.name || 'user'}>
                 
               <Dropdown.Menu>
                 <Dropdown.Item text='Thông tin cá nhân' value={1} onClick={handleDropdownItemClick} />

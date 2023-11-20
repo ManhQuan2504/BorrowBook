@@ -15,7 +15,7 @@ const BookManagement = () => {
         setDatas(result.data.data);
         setCountPage(result.data.countPage)
       } catch (error) {
-        console.error(`ERR: `, error);
+        console.error('ERR: , error');
       }
     };
     console.log(page);
