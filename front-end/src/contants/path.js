@@ -1,7 +1,3 @@
-const BLOG_PATH = "/blog";
-const SHOP_PATH = "/shop";
-const PROFILE_PATH = "/profile";
-const CMS_PATH = "/cms";
 export const PATHS = {
   HOME: "/",
   USER: "/user",

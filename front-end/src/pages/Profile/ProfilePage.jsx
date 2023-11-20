@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, List, Input, Form, Divider, Label } from 'semantic-ui-react';
+import { Image, List, Input, Form, Divider } from 'semantic-ui-react';
 import logoUser from '../../assets/images/logo-user.jpg'; // Đảm bảo import đúng đường dẫn của hình ảnh
 import './style.scss';
 

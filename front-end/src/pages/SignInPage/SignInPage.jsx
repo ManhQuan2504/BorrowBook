@@ -1,17 +1,15 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Form,
   Grid,
   Header,
-  Image,
   Message,
   Segment,
 } from "semantic-ui-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./style.scss";
 import * as UserService from '../../services/UserService'
-import { useMutationHooks } from '../../hooks/useMutationHook'
 import { Notification } from '../../components/Notification/Notification'
 
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Icon, Label, Table, Header, Container, Menu, Checkbox, Dimmer, Loader } from 'semantic-ui-react';
+import { Icon, Table, Header, Container, Menu, Checkbox, Dimmer, Loader } from 'semantic-ui-react';
 import './style.scss';
 
 const UserManagement = () => {
