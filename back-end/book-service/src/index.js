@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-routes(app); // Gọi hàm routes và truyền app vào để đăng ký các tuyến đường
+routes(app); 
 
 async function recieveMsg() {
     try {

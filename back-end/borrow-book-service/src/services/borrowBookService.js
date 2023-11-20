@@ -3,6 +3,7 @@ import BorrowBookModel from "../models/borrowBookModel.js";
 const getBorrowBook = async ({ perPage, page }) => {
     try {
         const count = await BorrowBookModel.countDocuments();
+        const countPage = Math.floor(count / perPage) + 1;
         const data = await BorrowBookModel
             .find()
             .limit(perPage)
@@ -12,7 +13,7 @@ const getBorrowBook = async ({ perPage, page }) => {
             throw new Error("Can't get BorrowBook");
         }
 
-        const result = { count, data };
+        const result = { count, countPage, data };
         return result;
     } catch (error) {
         throw error;
@@ -26,7 +27,7 @@ function isDate(str) {
 
 const searchBorrowBook = async ({ perPage, status, page }) => {
     const statusValue = parseInt(status);
-    console.log('key ',status);
+    console.log('key ', status);
 
     if (isNaN(statusValue)) {
         return { count: 0, data: [] };

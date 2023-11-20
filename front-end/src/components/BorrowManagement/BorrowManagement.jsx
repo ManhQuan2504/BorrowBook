@@ -1,199 +1,103 @@
 import React, { useState, useEffect } from 'react';
-import { Icon, Label, Table, Header, Container, Menu, Checkbox, Dimmer, Loader } from 'semantic-ui-react';
+import { Icon, Table, Header, Container, Menu, Checkbox, } from 'semantic-ui-react';
 import './style.scss';
+import * as BorrowBook from '../../services/BorrowBookService';
+import moment from 'moment';
+
+const getStatusText = (status) => {
+  switch (status) {
+    case 1:
+      return 'Đang mượn';
+    case 2:
+      return 'Đã trả';
+    case 3:
+      return 'Mất';
+    default:
+      return 'Unknown';
+  };
+};
 
 const BorrowManagement = () => {
-  const [loading, setLoading] = useState(true);
+  const [countPage, setCountPage] = useState(0);
+  const [page, setPage] = useState(1)
+  const [datas, setDatas] = useState([]);
 
   useEffect(() => {
-    // Simulate an asynchronous operation (e.g., fetching data) to demonstrate the loading state.
-    // Replace this with your actual asynchronous operation.
     const fetchData = async () => {
-      // Simulate delay (you can remove this in a real application)
-      await new Promise(resolve => setTimeout(resolve, 0));
-
-      // After fetching data or completing any asynchronous operation, set loading to false
-      setLoading(false);
+      try {
+        const result = await BorrowBook.getBorrowBooks(page);
+        setDatas(result.data.data);
+        setCountPage(result.data.countPage)
+      } catch (error) {
+        console.error(`ERR: http://localhost:1234/api/borrowbook/get?page=${page}\n`, error);
+      }
     };
+    console.log(page);
 
     fetchData();
-  }, []); // The empty dependency array ensures that this effect runs only once, similar to componentDidMount
+  }, [page]);
+
+  
 
   return (
-    <>
-      <Container className='ContainerBorrowManagement'>
-        {loading && (
-          <Dimmer active inverted>
-            <Loader>Loading...</Loader>
-          </Dimmer>
-        )}
-        <Header as='h1' textAlign='center'>
-          Borrow Management
-        </Header>
-        <Table celled>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell> <Checkbox /></Table.HeaderCell>
-              <Table.HeaderCell>STT</Table.HeaderCell>
-              <Table.HeaderCell>Name</Table.HeaderCell>
-              <Table.HeaderCell>Email</Table.HeaderCell>
-              <Table.HeaderCell>Phone</Table.HeaderCell>
-              <Table.HeaderCell>Address</Table.HeaderCell>
-              <Table.HeaderCell>Role</Table.HeaderCell>
-              <Table.HeaderCell>Action</Table.HeaderCell>
+    <Container className='ContainerBookManagement'>
+      <Header as='h1' textAlign='center'>
+        Borrow Book Management
+      </Header>
 
-            </Table.Row>
-          </Table.Header>
+      <Table celled>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell> <Checkbox /></Table.HeaderCell>
+            <Table.HeaderCell>ID</Table.HeaderCell>
+            <Table.HeaderCell>Người mượn</Table.HeaderCell>
+            <Table.HeaderCell>Sách mượn</Table.HeaderCell>
+            <Table.HeaderCell>Ngày mượn</Table.HeaderCell>
+            <Table.HeaderCell>Ngày hẹn trả</Table.HeaderCell>
+            <Table.HeaderCell>Ngày trả</Table.HeaderCell>
+            <Table.HeaderCell>Trạng thái</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
 
-          <Table.Body>
-
-
-
-            <Table.Row>
-
+        <Table.Body>
+          {datas.map((data) => (
+            <Table.Row key={data._id}>
               <Table.Cell>
                 <Checkbox />
               </Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-
-              <Table.Cell>Cell</Table.Cell>
-
+              <Table.Cell>{data._id}</Table.Cell>
+              <Table.Cell>{data.idUser}</Table.Cell>
+              <Table.Cell>{data.idBook}</Table.Cell>
+              <Table.Cell>{moment(data.returnDate).format('DD/MM/YYYY HH:mm')}</Table.Cell>
+              <Table.Cell>{moment(data.borrowDate).format('DD/MM/YYYY')}</Table.Cell>
+              <Table.Cell>{moment(data.dueDate).format('DD/MM/YYYY HH:mm')}</Table.Cell>
+              <Table.Cell>{getStatusText(data.status)}</Table.Cell>
             </Table.Row>
-            <Table.Row>
-
-              <Table.Cell>
-                <Checkbox />
-              </Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-
-              <Table.Cell>Cell</Table.Cell>
-
-            </Table.Row>
-            <Table.Row>
-
-              <Table.Cell>
-                <Checkbox />
-              </Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-
-              <Table.Cell>Cell</Table.Cell>
-
-            </Table.Row>
-            <Table.Row>
-
-              <Table.Cell>
-                <Checkbox />
-              </Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-
-              <Table.Cell>Cell</Table.Cell>
-
-            </Table.Row>
-            <Table.Row>
-
-              <Table.Cell>
-                <Checkbox />
-              </Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-
-              <Table.Cell>Cell</Table.Cell>
-
-            </Table.Row>
-            <Table.Row>
-
-              <Table.Cell>
-                <Checkbox />
-              </Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-
-              <Table.Cell>Cell</Table.Cell>
-
-            </Table.Row>
-            <Table.Row>
-
-              <Table.Cell>
-                <Checkbox />
-              </Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-
-              <Table.Cell>Cell</Table.Cell>
-
-            </Table.Row>
-            <Table.Row>
-
-              <Table.Cell>
-                <Checkbox />
-              </Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-              <Table.Cell>Cell</Table.Cell>
-
-              <Table.Cell>Cell</Table.Cell>
-
-            </Table.Row>
+          ))}
+        </Table.Body>
 
 
-          </Table.Body>
-
-          <Table.Footer>
-            <Table.Row>
-              <Table.HeaderCell colSpan='8'>
-                <Menu floated='right' pagination>
-                  <Menu.Item as='a' icon>
-                    <Icon name='chevron left' />
+        <Table.Footer>
+          <Table.Row>
+            <Table.HeaderCell colSpan='8'>
+              <Menu floated='right' pagination>
+                <Menu.Item as='a' icon>
+                  <Icon name='chevron left' />
+                </Menu.Item>
+                {Array.from({ length: countPage }, (_, index) => (
+                  <Menu.Item key={index} as='a' onClick={() => setPage(index + 1)}>
+                    {index + 1}
                   </Menu.Item>
-                  <Menu.Item as='a'>1</Menu.Item>
-                  <Menu.Item as='a'>2</Menu.Item>
-                  <Menu.Item as='a'>3</Menu.Item>
-                  <Menu.Item as='a'>4</Menu.Item>
-                  <Menu.Item as='a' icon>
-                    <Icon name='chevron right' />
-                  </Menu.Item>
-                </Menu>
-              </Table.HeaderCell>
-            </Table.Row>
-          </Table.Footer>
-        </Table>
-      </Container>
-    </>
+                ))}
+                <Menu.Item as='a' icon>
+                  <Icon name='chevron right' />
+                </Menu.Item>
+              </Menu>
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Footer>
+      </Table>
+    </Container >
   );
 };
 
