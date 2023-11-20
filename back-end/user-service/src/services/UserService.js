@@ -8,7 +8,7 @@ const UserResetPassword = require("../models/UserResetPassword")
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const { name, email, password, phone } = newUser
+        const { name, email, password, phone ,address} = newUser
         try {
             const checkUser = await User.findOne({
                 email: email
@@ -27,12 +27,13 @@ const createUser = (newUser) => {
                 email,
                 password: hash,
                 phone,
-                verified: false
+                verified: false,
+                address
             })
             resolve({
                 code: 200,
                 success: true,
-                message: 'Đăng nhập thành công!',
+                message: 'Đăng ký thành công!',
                data:{ createdUser}
             })
         } catch (e) {
@@ -182,41 +183,39 @@ const deleteManyUser = async (ids) => {
 };
 
 
-const getAllUser = (limit,page) => {
+const getAllUser = (limit, page) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const totalUser = await User.count()
-            let allUser = []
+            const totalUser = await User.count();
+            let allUser = [];
+
             if (!limit) {
-                allUser = await User.find().sort({createdAt: -1, updatedAt: -1}).select('-image -password');
-                resolve({
-                    code: 200,
-                    success: true,
-                    message: 'Lấy danh sách User thành công!',
-                    data: allUser,
-                    total: totalUser,
-                    pageCurrent: Number(page + 1),
-                    totalPage: Math.ceil(1)
-                })
+                allUser = await User.find()
+                    
+                    .select('-image -password');
             } else {
-                allUser = await User.find().limit(limit).skip(page * limit).sort({ createdAt: -1, updatedAt: -1 })
-                resolve({
-                    code: 200,
-                    success: true,
-                    message: 'Lấy danh sách User thành công!',
-                    data: allUser,
-                    total: totalUser,
-                    pageCurrent: Number(page + 1),
-                    totalPage: Math.ceil(totalUser / limit)
-                })
+                const skip = (page - 1) * limit;
+                allUser = await User.find()
+                    .limit(limit)
+                    .skip(skip)
+                    
             }
 
-       
+            resolve({
+                code: 200,
+                success: true,
+                message: 'Lấy danh sách User thành công!',
+                data: allUser,
+                total: totalUser,
+                pageCurrent: Number(page),
+                totalPage: limit ? Math.ceil(totalUser / limit) : 1,
+            });
         } catch (e) {
-            reject(e)
+            reject(e);
         }
-    })
-}
+    });
+};
+
 
 const getDetailsUser = (id) => {
     return new Promise(async (resolve, reject) => {

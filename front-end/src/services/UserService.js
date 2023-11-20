@@ -34,10 +34,17 @@ export const detailUserLogin = async (id, accessToken) => {
     .catch((err) => err)
 }
 
-export const signupUser = async (data) => {
-  const res = await axios.post(`http://localhost:3001/api/user/sign-up`, data)
-  return res.data
-}
+export const signUpAccount = async (name, email, password, phone, address) =>
+  await axios
+    .post(BASE_URL + '/user/sign-up', {
+      name,
+      email,
+      password,
+      phone,
+      address,
+    })
+    .then((res) => res.data)
+    .catch((err) => err)
 
 export const deleteUser = async (id, access_token, data) => {
   const res = await axiosJWT.delete(`http://localhost:3001/api/user/delete-user/${id}`, data, {
@@ -47,15 +54,28 @@ export const deleteUser = async (id, access_token, data) => {
   },)
   return res.data
 }
-
-export const getAllUser = async (access_token) => {
-  const res = await axiosJWT.get(`http://localhost:3001/api/user/getAll`, {
-    headers: {
-      token: `Bearer ${access_token}`,
-    }
-  },)
-  return res.data
-}
+export const getAllUser = async (accessToken, limit, page) => {
+  return await apiService
+    .get(`/user/get-all-user`, {
+      headers: {
+        token: `Bearer ${accessToken}`,
+      },
+      params: {
+        limit,
+        page,
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => err);
+};
+// export const getAllUser1 = async (access_token) => {
+//   const res = await axiosJWT.get(`http://localhost:3001/api/user/getAll`, {
+//     headers: {
+//       token: `Bearer ${access_token}`,
+//     }
+//   },)
+//   return res.data
+// }
 
 // export const refreshToken = async () => {
 //     const res = await axios.post(`http://localhost:3001/api/user/refresh-token`, {

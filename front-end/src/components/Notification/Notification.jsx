@@ -6,10 +6,10 @@ export const Notification = (title, text, icon) => {
     text: `${text}`,
     icon: `${icon}`,
     showCancelButton: icon === 'error' ? true : false,
-    confirmButtonColor: '#3085d6',
+    confirmButtonColor: 'red',
     cancelButtonColor: '#d33',
     confirmButtonText:
-      icon === 'error' || icon === 'ok' ? 'Ok' : "<a href='/signin'>Signin</a>",
+      'OK'
   })
 }
 
