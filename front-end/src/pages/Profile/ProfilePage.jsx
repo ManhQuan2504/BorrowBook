@@ -2,12 +2,17 @@ import React from 'react';
 import { Image, List, Input, Form, Divider } from 'semantic-ui-react';
 import logoUser from '../../assets/images/logo-user.jpg'; // Đảm bảo import đúng đường dẫn của hình ảnh
 import './style.scss';
+import { useDispatch, useSelector  } from 'react-redux';
+
 
 const ProfilePage = () => {
+const [{ data: currentUser } = {}] = useSelector((state) => state.orebiReducer.userInfo);
+
   return (
     <div className="profile-container">
       <div className="profile-header">
-        <Image src={logoUser} size="medium" circular />
+      <Image src={currentUser?.image || logoUser} size="small" avatar />
+
         <h2>User Name</h2>
       </div>
       <Divider />
@@ -16,7 +21,7 @@ const ProfilePage = () => {
           <List.Icon name="user" />
           <List.Content>
             <List.Header>Full Name</List.Header>
-            John Doe
+           {currentUser?.name || ''}
           </List.Content>
         </List.Item>
 
@@ -24,7 +29,7 @@ const ProfilePage = () => {
           <List.Icon name="mail" />
           <List.Content>
             <List.Header>Email</List.Header>
-            john.doe@example.com
+            {currentUser?.email || ''}
           </List.Content>
         </List.Item>
 
@@ -32,7 +37,7 @@ const ProfilePage = () => {
           <List.Icon name="phone" />
           <List.Content>
             <List.Header>Phone</List.Header>
-            +1-123-456-7890
+            {currentUser?.phone || ''}
           </List.Content>
         </List.Item>
 
@@ -40,7 +45,7 @@ const ProfilePage = () => {
           <List.Icon name="home" />
           <List.Content>
             <List.Header>Address</List.Header>
-            54 Triều Khúc - Thanh Xuân - Hà Nội
+            {currentUser?.address || 'No address!'}
           </List.Content>
         </List.Item>
         {/* Thêm thông tin người dùng khác nếu cần */}
