@@ -76,6 +76,7 @@ const UserManagement = () => {
       .toLowerCase()
       .match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i);
   };
+
   const handleSearchChange = async (e, { value }) => {
     setSearchQuery(value);
   
@@ -89,8 +90,10 @@ const UserManagement = () => {
     setSearchResults(searchResults);
   };
 
+
   
   
+
   // ================= Email Validation End here ===============
   const handleSignUp = async (e) => {
     try {
@@ -132,6 +135,7 @@ const UserManagement = () => {
       console.log(error);
     }
   };
+
   const fetchData = async () => {
     const access_token = localStorage.getItem("access_token");
     // const limit = 10; // Set the limit to 1
@@ -142,6 +146,7 @@ const UserManagement = () => {
     setTotalRecords(res?.total || 0)
     setLoading(false);
   };
+  
   useEffect(() => {
     fetchData(); // Initial fetch when the component mounts
   }, [currentPage, recordsPerPage]);
@@ -201,6 +206,7 @@ const UserManagement = () => {
           User Management
         </Header>
         <div className="header-actions">
+
       <Button className="ButtonHandleAddUser" primary onClick={handleAddUser}>
         Thêm Người Dùng
       </Button>
@@ -219,8 +225,7 @@ const UserManagement = () => {
     
 />
 
-
-    </div>
+        </div>
         <Modal open={modalOpen} onClose={handleCloseModal} size="small">
           <Header content="Thêm Người Dùng" />
           <Modal.Content>
@@ -318,212 +323,212 @@ const UserManagement = () => {
         <div className="table-container">
 
 
-        <Dimmer.Dimmable className='DimmerTable' as={Table} dimmed={loading}> 
-          <Dimmer  active={loading} inverted>
-            <Loader inverted>Loading...</Loader>
-          </Dimmer>
-          <Table className="table-content" celled>
-            <Table.Header className="sticky-header">
-              <Table.Row>
-                <Table.HeaderCell
-                  style={{
-                    width: "20px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  <Checkbox />
-                </Table.HeaderCell>
-                <Table.HeaderCell
-                  style={{
-                    width: "20px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  STT
-                </Table.HeaderCell>
-                <Table.HeaderCell
-                  style={{
-                    width: "250px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  Name
-                </Table.HeaderCell>
-                <Table.HeaderCell
-                  style={{
-                    width: "250px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  Email
-                </Table.HeaderCell>
-                <Table.HeaderCell
-                  style={{
-                    width: "100px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  Phone
-                </Table.HeaderCell>
-                <Table.HeaderCell
-                  style={{
-                    width: "300px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  Address
-                </Table.HeaderCell>
-                <Table.HeaderCell
-                  style={{
-                    width: "100px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  Role
-                </Table.HeaderCell>
-                <Table.HeaderCell
-                  style={{
-                    width: "100px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  Action
-                </Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            {loading && (
-              <Dimmer active>
-                <Loader inverted indeterminate>
-                  Loading...
-                </Loader>
-              </Dimmer>
-            )}
-            <Table.Body>
-              {dataAllUser?.map((user, index) => (
-                <Table.Row key={index}>
-                  <Table.Cell>
+          <Dimmer.Dimmable className='DimmerTable' as={Table} dimmed={loading}>
+            <Dimmer active={loading} inverted>
+              <Loader inverted>Loading...</Loader>
+            </Dimmer>
+            <Table className="table-content" celled>
+              <Table.Header className="sticky-header">
+                <Table.Row>
+                  <Table.HeaderCell
+                    style={{
+                      width: "20px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
                     <Checkbox />
-                  </Table.Cell>
-                  <Table.Cell>{index + 1}</Table.Cell>
-                  <Table.Cell>{user.name}</Table.Cell>
-                  <Table.Cell>{user.email}</Table.Cell>
-                  <Table.Cell>{user.phone}</Table.Cell>
-                  <Table.Cell>
-                    {user.address ? user.address : "chưa bổ sung"}
-                  </Table.Cell>
-                  <Table.Cell>
-                    {user.isAdmin ? (
-                      <Icon name="adn">(admin)</Icon>
-                    ) : (
-                      <Icon name="user">(user)</Icon>
-                    )}
-                  </Table.Cell>
-
-                  <Table.Cell>
-                    <Icon size="big" name="edit"></Icon>{" "}
-                    <Icon size="big" name="delete"></Icon>
-                  </Table.Cell>
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    style={{
+                      width: "20px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    STT
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    style={{
+                      width: "250px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    Name
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    style={{
+                      width: "250px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    Email
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    style={{
+                      width: "100px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    Phone
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    style={{
+                      width: "300px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    Address
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    style={{
+                      width: "100px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    Role
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    style={{
+                      width: "100px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    Action
+                  </Table.HeaderCell>
                 </Table.Row>
-              ))}
-            </Table.Body>
-       
-            <Table.Footer className="TableFooter">
-              <Table.Row>
-        
-                <Table.HeaderCell colSpan="8">
-            <Menu className="MenuHeader" floated='left'>
-            <Header size="small">
-  Tìm thấy {totalRecords} bản ghi
-</Header>
-            </Menu>
-                  <Menu floated="right" pagination>
-                    <Menu.Item
-                      as="a"
-                      icon
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      <Icon name="chevron left" />
-                    </Menu.Item>
+              </Table.Header>
+              {loading && (
+                <Dimmer active>
+                  <Loader inverted indeterminate>
+                    Loading...
+                  </Loader>
+                </Dimmer>
+              )}
+              <Table.Body>
+                {dataAllUser?.map((user, index) => (
+                  <Table.Row key={index}>
+                    <Table.Cell>
+                      <Checkbox />
+                    </Table.Cell>
+                    <Table.Cell>{index + 1}</Table.Cell>
+                    <Table.Cell>{user.name}</Table.Cell>
+                    <Table.Cell>{user.email}</Table.Cell>
+                    <Table.Cell>{user.phone}</Table.Cell>
+                    <Table.Cell>
+                      {user.address ? user.address : "chưa bổ sung"}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {user.isAdmin ? (
+                        <Icon name="adn">(admin)</Icon>
+                      ) : (
+                        <Icon name="user">(user)</Icon>
+                      )}
+                    </Table.Cell>
 
-                    {/* Render page numbers dynamically with ellipsis */}
-                    {Array.from({ length: totalPages }, (_, i) => {
-                      const page = i + 1;
+                    <Table.Cell>
+                      <Icon size="big" name="edit"></Icon>{" "}
+                      <Icon size="big" name="delete"></Icon>
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
 
-                      // Show the current page and some pages around it
-                      if (
-                        page === 1 ||
-                        page === totalPages ||
-                        (page >= currentPage - 2 && page <= currentPage + 2)
-                      ) {
-                        return (
-                          <Menu.Item
-                            key={page}
-                            as="a"
-                            onClick={() => handlePageChange(page)}
-                            active={currentPage === page}
-                          >
-                            {page}
-                          </Menu.Item>
-                        );
-                      }
+              <Table.Footer className="TableFooter">
+                <Table.Row>
 
-                      // Show ellipsis for omitted pages
-                      if (
-                        page === currentPage - 3 ||
-                        page === currentPage + 3
-                      ) {
-                        return (
-                          <Menu.Item key={page} disabled>
-                            ...
-                          </Menu.Item>
-                        );
-                      }
+                  <Table.HeaderCell colSpan="8">
+                    <Menu className="MenuHeader" floated='left'>
+                      <Header size="small">
+                        Tìm thấy {totalRecords} bản ghi
+                      </Header>
+                    </Menu>
+                    <Menu floated="right" pagination>
+                      <Menu.Item
+                        as="a"
+                        icon
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                      >
+                        <Icon name="chevron left" />
+                      </Menu.Item>
 
-                      return null;
-                    })}
+                      {/* Render page numbers dynamically with ellipsis */}
+                      {Array.from({ length: totalPages }, (_, i) => {
+                        const page = i + 1;
 
-                    <Menu.Item
-                      as="a"
-                      icon
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                    >
-                      <Icon name="chevron right" />
-                    </Menu.Item>
-                   
-                    <Dropdown
-                    className="DropdownLimitPage"
-          selection
-          compact
-          options={[
-           
-            { key: 1, text: '1 bản ghi/trang', value: 1 },
-            { key: 5, text: '5 bản ghi/trang', value: 5 },
-            { key: 15, text: '15 bản ghi/trang', value: 15 },
-            { key: 30, text: '30 bản ghi/trang', value: 30 },
-            { key: 50, text: '50 bản ghi/trang', value: 50 },
-            { key: 100, text: '100 bản ghi/trang', value: 100 },
-            { key: 200, text: '200 bản ghi/trang', value: 200 },
-          ]}
-          value={recordsPerPage}
-          onChange={handleRecordsPerPageChange}
-        />
-                  
-                  </Menu>
-                </Table.HeaderCell>
-              </Table.Row>
-            </Table.Footer>
-          </Table>
-        </Dimmer.Dimmable>
+                        // Show the current page and some pages around it
+                        if (
+                          page === 1 ||
+                          page === totalPages ||
+                          (page >= currentPage - 2 && page <= currentPage + 2)
+                        ) {
+                          return (
+                            <Menu.Item
+                              key={page}
+                              as="a"
+                              onClick={() => handlePageChange(page)}
+                              active={currentPage === page}
+                            >
+                              {page}
+                            </Menu.Item>
+                          );
+                        }
+
+                        // Show ellipsis for omitted pages
+                        if (
+                          page === currentPage - 3 ||
+                          page === currentPage + 3
+                        ) {
+                          return (
+                            <Menu.Item key={page} disabled>
+                              ...
+                            </Menu.Item>
+                          );
+                        }
+
+                        return null;
+                      })}
+
+                      <Menu.Item
+                        as="a"
+                        icon
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                      >
+                        <Icon name="chevron right" />
+                      </Menu.Item>
+
+                      <Dropdown
+                        className="DropdownLimitPage"
+                        selection
+                        compact
+                        options={[
+
+                          { key: 1, text: '1 bản ghi/trang', value: 1 },
+                          { key: 5, text: '5 bản ghi/trang', value: 5 },
+                          { key: 15, text: '15 bản ghi/trang', value: 15 },
+                          { key: 30, text: '30 bản ghi/trang', value: 30 },
+                          { key: 50, text: '50 bản ghi/trang', value: 50 },
+                          { key: 100, text: '100 bản ghi/trang', value: 100 },
+                          { key: 200, text: '200 bản ghi/trang', value: 200 },
+                        ]}
+                        value={recordsPerPage}
+                        onChange={handleRecordsPerPageChange}
+                      />
+
+                    </Menu>
+                  </Table.HeaderCell>
+                </Table.Row>
+              </Table.Footer>
+            </Table>
+          </Dimmer.Dimmable>
         </div>
       </Container>
     </>

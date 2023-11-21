@@ -3,9 +3,10 @@ import axios from "axios";
 export const AxiosSchema = axios.create();
 export const BASE_URL = 'http://localhost:5555/api/';
 
-export const getBooks = async (page) => {
+export const getBooks = async ({ page, perPage }) => {
   try {
-    const response = await AxiosSchema.get(BASE_URL + `book/get?page=${page}`);
+    // console.log('Page: ', page);
+    const response = await AxiosSchema.get(BASE_URL + `book/get?page=${page}&perpage=${perPage}`);
     return response.data;
   } catch (error) {
     throw error;
