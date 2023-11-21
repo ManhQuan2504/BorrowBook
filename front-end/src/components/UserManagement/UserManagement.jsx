@@ -78,15 +78,17 @@ const UserManagement = () => {
   };
   const handleSearchChange = async (e, { value }) => {
     setSearchQuery(value);
-
-    // Perform a search based on the input value (adjust the logic as needed)
-    const filteredResults = dataAllUser.filter((user) =>
-      user.name.toLowerCase().includes(value.toLowerCase())
-    );
-
-    // Update search results
-    setSearchResults(filteredResults);
+  
+    const searchResults = [
+      { name: `Email : ${value}`, type: 'email' },
+      { name: `Name : ${value}`, type: 'name' },
+      { name: `Phone : ${value}`, type: 'phone' },
+      { name: `Address : ${value}`, type: 'address' },
+    ];
+  
+    setSearchResults(searchResults);
   };
+
   
   
   // ================= Email Validation End here ===============
@@ -143,7 +145,26 @@ const UserManagement = () => {
   useEffect(() => {
     fetchData(); // Initial fetch when the component mounts
   }, [currentPage, recordsPerPage]);
-
+ 
+  
+  const handleSearchResultSelect = async (e, { result }) => {
+    setSearchQuery(result.name);
+  
+    // Determine the search type based on the selected result
+    const searchType = result.description;
+    
+    // Make an API call to search for users based on the selected type and keyword
+    
+    try {
+      const access_token = localStorage.getItem("access_token");
+      const res = await UserService.getAllUserSearch(access_token,recordsPerPage, currentPage, searchType, result.title.split(':')[1].trim());
+      setdataAllUser(res?.data);
+    setTotalPages(res?.totalPage || 1);
+    setTotalRecords(res?.total || 0)
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const handlePageChange = (page) => {
     // Fetch data for the selected page
     // You need to implement the logic for fetching data based on the page number
@@ -186,12 +207,16 @@ const UserManagement = () => {
       <Search
   placeholder="Search..."
   onSearchChange={handleSearchChange}
+  onResultSelect={handleSearchResultSelect}
   value={searchQuery}
   results={searchResults.map((user, index) => ({
     key: index,
     title: user.name,
-    description: user.email, // You can customize the description as needed
+    description: user.type,
+    
   }))}
+  
+    
 />
 
 

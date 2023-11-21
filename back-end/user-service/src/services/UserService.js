@@ -215,6 +215,40 @@ const getAllUser = (limit, page) => {
         }
     });
 };
+const getAllUserSearch = (limit, page, type, key) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+           
+
+            let query = {};
+            query[`${type}`] = key;
+            let allUser = [];
+          console.log('query',query)
+            if (!limit) {
+                allUser = await User.find(query).select('-image -password');
+            } else {
+                const skip = (page - 1) * limit;
+                allUser = await User.find(query).limit(limit).skip(skip);
+              
+                
+            }
+         
+
+            resolve({
+                code: 200,
+                success: true,
+                message: 'Lấy danh sách User thành công!',
+                data: allUser,
+                total: allUser.length,
+                pageCurrent: Number(page),
+                totalPage: limit ? Math.ceil(allUser.length / limit) : 1,
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 
 
 const getDetailsUser = (id) => {
@@ -534,5 +568,6 @@ module.exports = {
     verifyEmailSignUpService,
     resetPasswordService,
     verifyResetPasswordService,
-    updatePasswordService
+    updatePasswordService,
+    getAllUserSearch
 }

@@ -7,7 +7,7 @@ const authMiddleWareAdmin = (req, res, next) => {
 
     if (token) {
         const accessToken = token.split(" ")[1];
-    
+   
         jwt.verify(accessToken, process.env.ACCESS_TOKEN, function (err, user) {
             if (err) {
                 return res.status(401).json({

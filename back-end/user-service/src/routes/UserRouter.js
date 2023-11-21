@@ -15,6 +15,7 @@ router.get('/get-detail-user/:id', authMiddleWareUser, userController.getDetails
 router.put('/update-user/:id',authMiddleWareUser, userController.updateUser)
 router.delete('/delete-user/:id', authMiddleWareAdmin, userController.deleteUser)
 router.get('/get-all-user', authMiddleWareAdmin, userController.getAllUser)
+router.get('/get-all-user-search', authMiddleWareAdmin, userController.getAllUserSearch)
 router.delete('/delete-many-user', authMiddleWareAdmin, userController.deleteMany)
 
 

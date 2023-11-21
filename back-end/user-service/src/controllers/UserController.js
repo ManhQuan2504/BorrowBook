@@ -220,6 +220,25 @@ const getAllUser = async (req, res) => {
         })
     }
 }
+const getAllUserSearch = async (req, res) => {
+    try {
+        const { limit,
+            page,
+            type,
+            key } = req.query
+          
+        const response = await UserService.getAllUserSearch(Number(limit) || null, Number(page) || 0,String(type) ||'_id',String(key) || '')
+        return res.status(response.code).json(response)
+
+    } catch (e) {
+        console.log('getAllUser err', e)
+        return res.status(500).json({
+            code: 500,
+            success: false,
+            message: e + ''
+        })
+    }
+}
 
 const getDetailsUser = async (req, res) => {
     try {
@@ -395,6 +414,7 @@ module.exports = {
     verifyEmailSignUp,
     resetPassword,
     verifyResetPassword,
-    updatePassword
+    updatePassword,
+    getAllUserSearch
 
 }
