@@ -39,7 +39,7 @@ const BookManagement = () => {
 
   const fetchData = async () => {
     try {
-      const result = await BookServices.getBooks(page);
+      const result = await BookServices.getBooks({page, perPage: 3});
       setDatas(result.data.data);
       setCountPage(result.data.countPage)
     } catch (error) {
@@ -106,7 +106,7 @@ const BookManagement = () => {
   }
 
   // Hàm xử lý khi thêm mới
-  const handleSaveUser = async () => {
+  const handleSaveBook = async () => {
     try {
       if (!title) return setErrTitle("Enter name book");
       if (!category) return setErrCategory("Enter book category");
@@ -147,6 +147,7 @@ const BookManagement = () => {
     setCountInStock(countInStock);
     setPublishYear(publishYear);
     setAuthorBook(authorBook);
+    console.log(id);
   }
 
   //xử lý update
@@ -205,9 +206,11 @@ const BookManagement = () => {
       <Header as='h1' textAlign='center'>
         Book Management
       </Header>
+
       <Button primary onClick={handleAddBook}>
         Thêm Sách
       </Button>
+
       <Modal open={modalOpen} onClose={handleCloseModal} size="small">
         <Header content="Thêm Sách" />
         <Modal.Content>
@@ -298,7 +301,7 @@ const BookManagement = () => {
           <Button negative onClick={handleCloseModal}>
             Hủy
           </Button>
-          <Button positive onClick={handleSaveUser}>
+          <Button positive onClick={handleSaveBook}>
             Lưu
           </Button>
         </Modal.Actions>
