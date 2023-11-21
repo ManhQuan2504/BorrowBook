@@ -3,7 +3,10 @@
    margin-right: 100px !important;
    width: 1419px  !important;
    
-
+.header-actions{
+  display: flex;
+  justify-content: space-between;
+}
  .MenuHeader{
    min-height:0 !important;
    border-color: #fff;
@@ -15,7 +18,7 @@
  }
  .table-container{
    max-width: 1557px;
-  max-height: 600px;
+  max-height: 500px;
   overflow: auto;
  }
  .TableFooter {

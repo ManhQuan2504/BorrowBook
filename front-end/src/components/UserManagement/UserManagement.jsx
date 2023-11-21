@@ -27,7 +27,7 @@ const UserManagement = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
-
+  const [searchQuery, setSearchQuery] = useState("");
 
   // ============= Initial State Start here =============
   const [clientName, setClientName] = useState("");
@@ -44,6 +44,7 @@ const UserManagement = () => {
   const [errAddress, setErrAddress] = useState("");
   // ============= Error Msg End here ===================
   const [successMsg, setSuccessMsg] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   // ============= Event Handler Start here =============
   const handleName = (e) => {
     setClientName(e.target.value);
@@ -75,6 +76,19 @@ const UserManagement = () => {
       .toLowerCase()
       .match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i);
   };
+  const handleSearchChange = async (e, { value }) => {
+    setSearchQuery(value);
+
+    // Perform a search based on the input value (adjust the logic as needed)
+    const filteredResults = dataAllUser.filter((user) =>
+      user.name.toLowerCase().includes(value.toLowerCase())
+    );
+
+    // Update search results
+    setSearchResults(filteredResults);
+  };
+  
+  
   // ================= Email Validation End here ===============
   const handleSignUp = async (e) => {
     try {
@@ -165,12 +179,23 @@ const UserManagement = () => {
         <Header as="h1" textAlign="center">
           User Management
         </Header>
-        {/* thêm 1 button thêm người dùng ở đây */}
-        <Button className="ButtonHandleAddUser" primary onClick={handleAddUser}>
-          Thêm Người Dùng
-        </Button>
-        {/* Modal for adding a new user */}
-        
+        <div className="header-actions">
+      <Button className="ButtonHandleAddUser" primary onClick={handleAddUser}>
+        Thêm Người Dùng
+      </Button>
+      <Search
+  placeholder="Search..."
+  onSearchChange={handleSearchChange}
+  value={searchQuery}
+  results={searchResults.map((user, index) => ({
+    key: index,
+    title: user.name,
+    description: user.email, // You can customize the description as needed
+  }))}
+/>
+
+
+    </div>
         <Modal open={modalOpen} onClose={handleCloseModal} size="small">
           <Header content="Thêm Người Dùng" />
           <Modal.Content>
