@@ -12,7 +12,8 @@ const Schema = Joi.object({
 
 const getBook = async (req, res) => {
     try {
-        const perPage = 3;
+        let perPage = parseInt(req.query.perpage) || 3;
+        perPage = Math.max(perPage, 3);
         let page = parseInt(req.query.page) || 1;
         page = Math.max(page, 1);
 
@@ -166,8 +167,8 @@ const deleteManyBook = async (req, res) => {
 const borrowBook = async (message) => {
     try {
         const id = message.idBook;
-        console.log({id});
-        const response = await BookService.borrowBook({id});
+        console.log({ id });
+        const response = await BookService.borrowBook({ id });
         return {
             status: "OK",
             data: response
@@ -183,8 +184,8 @@ const borrowBook = async (message) => {
 const returnBook = async (message) => {
     try {
         const id = message.idBook;
-        console.log({id});
-        const response = await BookService.returnBook({id});
+        console.log({ id });
+        const response = await BookService.returnBook({ id });
         return {
             status: "OK",
             data: response
