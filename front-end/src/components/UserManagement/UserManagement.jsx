@@ -12,6 +12,8 @@ import {
   Modal,
   Form,
   Grid,
+  Dropdown,
+  Search
 } from "semantic-ui-react";
 import "./style.scss";
 import * as UserService from "../../services/UserService";
@@ -20,9 +22,12 @@ import { Notification } from "../../components/Notification/Notification";
 const UserManagement = () => {
   const [loading, setLoading] = useState(true);
   const [dataAllUser, setdataAllUser] = useState([]);
+  const [recordsPerPage, setRecordsPerPage] = useState(30);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+
 
   // ============= Initial State Start here =============
   const [clientName, setClientName] = useState("");
@@ -60,6 +65,10 @@ const UserManagement = () => {
     setAddress(e.target.value);
     setErrAddress("");
   };
+  const handleRecordsPerPageChange = (e, { value }) => {
+    setRecordsPerPage(value);
+    setCurrentPage(1); // Reset to the first page when changing records per page
+  };
   // ================= Email Validation start here =============
   const EmailValidation = (email) => {
     return String(email)
@@ -71,7 +80,8 @@ const UserManagement = () => {
     try {
       if (!clientName) return setErrClientName("Enter your name");
       if (!email) return setErrEmail("Enter your email");
-      if (!EmailValidation(email)) return setErrEmail("Kiểm tra định dạng Email!");
+      if (!EmailValidation(email))
+        return setErrEmail("Kiểm tra định dạng Email!");
       if (!phone) return setErrPhone("Enter your phone number");
       if (!password) return setErrPassword("Create a password");
       if (password.length < 6)
@@ -108,20 +118,17 @@ const UserManagement = () => {
   };
   const fetchData = async () => {
     const access_token = localStorage.getItem("access_token");
-    const limit = 1; // Set the limit to 1
-    const res = await UserService.getAllUser(
-      access_token,
-      limit,
-      currentPage
-    );
-    // console.log('res', res);
+    // const limit = 10; // Set the limit to 1
+    const res = await UserService.getAllUser(access_token, recordsPerPage, currentPage);
+    console.log('res', res);
     setdataAllUser(res?.data);
     setTotalPages(res?.totalPage || 1);
+    setTotalRecords(res?.total || 0)
     setLoading(false);
   };
   useEffect(() => {
     fetchData(); // Initial fetch when the component mounts
-  }, [currentPage]);
+  }, [currentPage, recordsPerPage]);
 
   const handlePageChange = (page) => {
     // Fetch data for the selected page
@@ -159,10 +166,11 @@ const UserManagement = () => {
           User Management
         </Header>
         {/* thêm 1 button thêm người dùng ở đây */}
-        <Button primary onClick={handleAddUser}>
+        <Button className="ButtonHandleAddUser" primary onClick={handleAddUser}>
           Thêm Người Dùng
         </Button>
         {/* Modal for adding a new user */}
+        
         <Modal open={modalOpen} onClose={handleCloseModal} size="small">
           <Header content="Thêm Người Dùng" />
           <Modal.Content>
@@ -257,12 +265,15 @@ const UserManagement = () => {
             </Button>
           </Modal.Actions>
         </Modal>
-        <Dimmer.Dimmable as={Table} dimmed={loading}>
-          <Dimmer active={loading} inverted>
+        <div className="table-container">
+
+
+        <Dimmer.Dimmable className='DimmerTable' as={Table} dimmed={loading}> 
+          <Dimmer  active={loading} inverted>
             <Loader inverted>Loading...</Loader>
           </Dimmer>
-          <Table celled>
-            <Table.Header>
+          <Table className="table-content" celled>
+            <Table.Header className="sticky-header">
               <Table.Row>
                 <Table.HeaderCell
                   style={{
@@ -373,10 +384,16 @@ const UserManagement = () => {
                 </Table.Row>
               ))}
             </Table.Body>
-
-            <Table.Footer>
+       
+            <Table.Footer className="TableFooter">
               <Table.Row>
+        
                 <Table.HeaderCell colSpan="8">
+            <Menu className="MenuHeader" floated='left'>
+            <Header size="small">
+  Tìm thấy {totalRecords} bản ghi
+</Header>
+            </Menu>
                   <Menu floated="right" pagination>
                     <Menu.Item
                       as="a"
@@ -432,12 +449,32 @@ const UserManagement = () => {
                     >
                       <Icon name="chevron right" />
                     </Menu.Item>
+                   
+                    <Dropdown
+                    className="DropdownLimitPage"
+          selection
+          compact
+          options={[
+           
+            { key: 1, text: '1 bản ghi/trang', value: 1 },
+            { key: 5, text: '5 bản ghi/trang', value: 5 },
+            { key: 15, text: '15 bản ghi/trang', value: 15 },
+            { key: 30, text: '30 bản ghi/trang', value: 30 },
+            { key: 50, text: '50 bản ghi/trang', value: 50 },
+            { key: 100, text: '100 bản ghi/trang', value: 100 },
+            { key: 200, text: '200 bản ghi/trang', value: 200 },
+          ]}
+          value={recordsPerPage}
+          onChange={handleRecordsPerPageChange}
+        />
+                  
                   </Menu>
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Footer>
           </Table>
         </Dimmer.Dimmable>
+        </div>
       </Container>
     </>
   );
