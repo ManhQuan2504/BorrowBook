@@ -2,7 +2,46 @@
    margin-left: 100px !important;
    margin-right: 100px !important;
    width: 1419px  !important;
- 
+   
+
+ .MenuHeader{
+   min-height:0 !important;
+   border-color: #fff;
+ }
+ .DropdownLimitPage{
+   width: 200px;
+   font-size: 14px;
+   z-index: 10 !important;
+ }
+ .table-container{
+   max-width: 1557px;
+  max-height: 600px;
+  overflow: auto;
+ }
+ .TableFooter {
+   position: sticky;
+   bottom: 0;
+   background-color: #fff;
+   z-index: 1; /* Ensure the footer is above the table */
+ }
+ .table-content{
+    margin: 0 !important;
+   // border: 2px solid #000;
+   .sticky-header{
+      position: sticky;
+     top: 0;
+     z-index: 1;
+     background-color: white;
+    }
+ }
+ .ButtonHandleAddUser{
+   margin-bottom: 30px;
+ }
+ .DimmerTable{
+      // margin: 0 !important;
+
+ }
+
 }
 .error-message{
    color: red;
