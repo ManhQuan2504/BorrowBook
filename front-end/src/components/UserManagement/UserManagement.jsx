@@ -142,7 +142,7 @@ const UserManagement = () => {
   const handleSaveUser = async () => {
     try {
       const registrationSucceeded = await handleSignUp();
-      fetchData(); 
+      fetchData();
 
       if (registrationSucceeded) {
         setModalOpen(false); // Close the modal on successful registration
@@ -179,8 +179,8 @@ const UserManagement = () => {
                         placeholder="john@workemail.com"
                       />
                       {errEmail && (
-            <div className="error-message">{errEmail}</div>
-          )}
+                        <div className="error-message">{errEmail}</div>
+                      )}
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
@@ -194,8 +194,8 @@ const UserManagement = () => {
                         placeholder="Create password"
                       />
                       {errPassword && (
-            <div className="error-message">{errPassword}</div>
-          )}
+                        <div className="error-message">{errPassword}</div>
+                      )}
                     </Form.Field>
                   </Grid.Column>
                 </Grid.Row>
@@ -209,9 +209,9 @@ const UserManagement = () => {
                         type="text"
                         placeholder="eg. John Doe"
                       />
-                                {errClientName && (
-            <div className="error-message">{errClientName}</div>
-          )}
+                      {errClientName && (
+                        <div className="error-message">{errClientName}</div>
+                      )}
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column>
@@ -223,9 +223,9 @@ const UserManagement = () => {
                         type="text"
                         placeholder="0123456789"
                       />
-                       {errPhone && (
-            <div className="error-message">{errPhone}</div>
-          )}
+                      {errPhone && (
+                        <div className="error-message">{errPhone}</div>
+                      )}
                     </Form.Field>
                   </Grid.Column>
                 </Grid.Row>
@@ -239,9 +239,9 @@ const UserManagement = () => {
                         type="text"
                         placeholder="road-001, house-115, example area"
                       />
-                              {errAddress && (
-            <div className="error-message">{errAddress}</div>
-          )}
+                      {errAddress && (
+                        <div className="error-message">{errAddress}</div>
+                      )}
                     </Form.Field>
                   </Grid.Column>
                 </Grid.Row>

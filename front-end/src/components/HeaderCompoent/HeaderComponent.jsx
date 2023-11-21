@@ -1,16 +1,17 @@
 
 import React, { useState, useEffect } from "react";
-import { Menu, Segment, Dropdown,Image } from "semantic-ui-react";
+import { Header, Image } from "semantic-ui-react";
+import { Menu, Segment, Dropdown } from "semantic-ui-react";
 import "./style.scss";
 import { useDispatch, useSelector } from 'react-redux';
 import { decodeToken } from "react-jwt";
 
 
 import bookImage from "../../assets/images/ngonha.png";
-import { Link, useNavigate,useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as UserService from '../../services/UserService'
 import { detailUser } from "../../redux/orebiSlice";
-
+import { resetUser } from '../../redux/slides/userSlide'
 
 import { PATHS } from "../../contants/path";
 
@@ -19,27 +20,13 @@ const HeaderComponent = () => {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const location = useLocation();
   const [{ data: currentUser } = {}] = useSelector((state) => state.orebiReducer.userInfo);
 
 
   const handleItemClick = (itemName) => {
     setActiveItem(itemName);
   };
-  useEffect(() => {
-    const pathname = location.pathname;
 
-    // Dựa vào địa chỉ trang để cập nhật giá trị của activeItem
-    if (pathname === PATHS.HOME) {
-      setActiveItem("home");
-    } else if (pathname === PATHS.USER) {
-      setActiveItem("user");
-    } else if (pathname === PATHS.BOOK) {
-      setActiveItem("book");
-    } else if (pathname === PATHS.BORROW) {
-      setActiveItem("borrow");
-    }
-  }, [location.pathname]);
   useEffect(() => {
     // After login, return user detail
     const fetchDetailUser = async () => {

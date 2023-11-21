@@ -8,7 +8,46 @@ export const getBooks = async (page) => {
     const response = await AxiosSchema.get(BASE_URL + `book/get?page=${page}`);
     return response.data;
   } catch (error) {
-    throw error; 
+    throw error;
+  }
+};
+
+export const createBook = async ({ title, category, countInStock, publishYear, authorBook }) => {
+  try {
+    const response = await AxiosSchema.post(BASE_URL + `book/create`, {
+      title,
+      category,
+      countInStock,
+      publishYear,
+      authorBook
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteBook = async ({ id }) => {
+  try {
+    const response = await AxiosSchema.delete(BASE_URL + `book/delete/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateBook = async ({ id, title, category, countInStock, publishYear, authorBook }) => {
+  try {
+    const response = await AxiosSchema.put(BASE_URL + `book/update/${id}`, {
+      title,
+      category,
+      countInStock,
+      publishYear,
+      authorBook
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 };
 
