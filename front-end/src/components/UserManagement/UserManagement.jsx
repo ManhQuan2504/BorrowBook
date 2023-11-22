@@ -13,7 +13,7 @@ import {
   Form,
   Grid,
   Dropdown,
-  Search
+  Search,
 } from "semantic-ui-react";
 import "./style.scss";
 import * as UserService from "../../services/UserService";
@@ -27,8 +27,9 @@ const UserManagement = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [modalOpenEdit, setModalOpenEdit] = useState(false);
 
+  const [searchQuery, setSearchQuery] = useState("");
   // ============= Initial State Start here =============
   const [clientName, setClientName] = useState("");
   const [email, setEmail] = useState("");
@@ -45,7 +46,22 @@ const UserManagement = () => {
   // ============= Error Msg End here ===================
   const [successMsg, setSuccessMsg] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [editEmail, setEditEmail] = useState("");
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editAddress, setEditAddress] = useState("");
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
+  const isDeleteButtonVisible = selectedCheckboxes.length > 0;
+  const [selectedCount, setSelectedCount] = useState(0);
+
   // ============= Event Handler Start here =============
+
   const handleName = (e) => {
     setClientName(e.target.value);
     setErrClientName("");
@@ -66,6 +82,34 @@ const UserManagement = () => {
     setAddress(e.target.value);
     setErrAddress("");
   };
+  const handleDeleteUser = (user) => {
+    setUserToDelete(user);
+    setDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setUserToDelete(null);
+    setDeleteModalOpen(false);
+  };
+  const handleConfirmDelete = async () => {
+    try {
+      const access_token = localStorage.getItem("access_token");
+      // Call the API to delete the user using userToDelete._id
+      const res = await UserService.deleteUser(access_token, userToDelete._id);
+      // Handle the response as needed
+      if (res.code === 200) {
+        // User deleted successfully
+        await fetchData(); // Fetch data again after deletion
+        Notification("Xóa thành công", res.message, "success");
+      } else {
+        Notification("Xóa thất bại", res.message, "error");
+      }
+    } catch (error) {
+      console.error("Error deleting user", error);
+    } finally {
+      handleCloseDeleteModal(); // Close the modal after deletion attempt
+    }
+  };
   const handleRecordsPerPageChange = (e, { value }) => {
     setRecordsPerPage(value);
     setCurrentPage(1); // Reset to the first page when changing records per page
@@ -79,20 +123,48 @@ const UserManagement = () => {
 
   const handleSearchChange = async (e, { value }) => {
     setSearchQuery(value);
-  
+
     const searchResults = [
-      { name: `Email : ${value}`, type: 'email' },
-      { name: `Name : ${value}`, type: 'name' },
-      { name: `Phone : ${value}`, type: 'phone' },
-      { name: `Address : ${value}`, type: 'address' },
+      { name: `Email : ${value}`, type: "email", value: `${value}` },
+      { name: `Name : ${value}`, type: "name", value: `${value}` },
+      { name: `Phone : ${value}`, type: "phone", value: `${value}` },
+      { name: `Address : ${value}`, type: "address", value: `${value}` },
     ];
-  
+
     setSearchResults(searchResults);
   };
+  const handleSaveEditUser = async () => {
+    // Get the user data from the state variables (editEmail, editPassword, etc.)
+    const editedUserData = {
+      email: editEmail,
+      name: editName,
+      phone: editPhone,
+      address: editAddress,
 
+      // Add other user fields if needed
+    };
+    console.log("editedUserData", editedUserData);
 
-  
-  
+    // Add logic to send the edited user data to the API
+    // For example:
+    try {
+      const access_token = localStorage.getItem("access_token");
+      const res = await UserService.updateUserInfo(
+        access_token,
+        selectedUser._id,
+        editedUserData
+      );
+      // Handle the response as needed
+      if (res.code === 200) {
+        await fetchData();
+      }
+    } catch (error) {
+      console.error("Error editing user", error);
+    }
+
+    // Close the modal after saving
+    setModalOpenEdit(false);
+  };
 
   // ================= Email Validation End here ===============
   const handleSignUp = async (e) => {
@@ -135,37 +207,48 @@ const UserManagement = () => {
       console.log(error);
     }
   };
-
+  useEffect(() => {
+    setSelectedCount(selectedCheckboxes.length);
+  }, [selectedCheckboxes]);
   const fetchData = async () => {
     const access_token = localStorage.getItem("access_token");
     // const limit = 10; // Set the limit to 1
-    const res = await UserService.getAllUser(access_token, recordsPerPage, currentPage);
-    console.log('res', res);
+    const res = await UserService.getAllUser(
+      access_token,
+      recordsPerPage,
+      currentPage
+    );
+    console.log("res", res);
     setdataAllUser(res?.data);
     setTotalPages(res?.totalPage || 1);
-    setTotalRecords(res?.total || 0)
+    setTotalRecords(res?.total || 0);
     setLoading(false);
   };
-  
+
   useEffect(() => {
     fetchData(); // Initial fetch when the component mounts
   }, [currentPage, recordsPerPage]);
- 
-  
+
   const handleSearchResultSelect = async (e, { result }) => {
-    setSearchQuery(result.name);
-  
+    setSearchQuery(result.value);
+
     // Determine the search type based on the selected result
     const searchType = result.description;
-    
+
     // Make an API call to search for users based on the selected type and keyword
-    
+
     try {
       const access_token = localStorage.getItem("access_token");
-      const res = await UserService.getAllUserSearch(access_token,recordsPerPage, currentPage, searchType, result.title.split(':')[1].trim());
+      const res = await UserService.getAllUserSearch(
+        access_token,
+        recordsPerPage,
+        currentPage,
+        searchType,
+        result.title.split(":")[1].trim()
+      );
       setdataAllUser(res?.data);
-    setTotalPages(res?.totalPage || 1);
-    setTotalRecords(res?.total || 0)
+      setTotalPages(res?.totalPage || 1);
+      setTotalRecords(res?.total || 0);
     } catch (error) {
       console.error(error);
     }
@@ -185,6 +268,10 @@ const UserManagement = () => {
     // Close the modal
     setModalOpen(false);
   };
+  const handleCloseModalEdit = () => {
+    // Close the modal
+    setModalOpenEdit(false);
+  };
 
   const handleSaveUser = async () => {
     try {
@@ -198,6 +285,60 @@ const UserManagement = () => {
       console.error(error);
     }
   };
+  const handleRefresh = async () => {
+    try {
+      // setLoading(true); // Set loading to true before making the API call
+      await fetchData(); // Fetch data again
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false); // Set loading back to false after the API call is complete
+    }
+  };
+  const handleCheckboxChange = (userId) => {
+    setSelectedCheckboxes((prevSelected) => {
+      if (prevSelected.includes(userId)) {
+        // If user is already selected, remove it
+        return prevSelected.filter((id) => id !== userId);
+      } else {
+        // If user is not selected, add it
+        return [...prevSelected, userId];
+      }
+    });
+  };
+
+  const handleEditUser = (user) => {
+    console.log("user", user);
+    setSelectedUser(user);
+    setEditEmail(user.email);
+    setEditName(user.name);
+    setEditPhone(user.phone);
+    setEditAddress(user.address);
+
+    setModalOpenEdit(true);
+  };
+  const handleDeleteSelected = async () => {
+    try {
+      const access_token = localStorage.getItem("access_token");
+      const res = await UserService.deleteManyUser(
+        access_token,
+        selectedCheckboxes
+      );
+
+      // Handle the response as needed
+      if (res.code === 200) {
+        // Users deleted successfully
+        await fetchData(); // Fetch data again after deletion
+        Notification("Xóa thành công", res.message, "success");
+      } else {
+        Notification("Xóa thất bại", res.message, "error");
+      }
+    } catch (error) {
+      console.error("Error deleting users", error);
+    } finally {
+      setSelectedCheckboxes([]); // Clear the selected checkboxes after deletion
+    }
+  };
 
   return (
     <>
@@ -205,26 +346,41 @@ const UserManagement = () => {
         <Header as="h1" textAlign="center">
           User Management
         </Header>
+
         <div className="header-actions">
-
-      <Button className="ButtonHandleAddUser" primary onClick={handleAddUser}>
-        Thêm Người Dùng
-      </Button>
-      <Search
-  placeholder="Search..."
-  onSearchChange={handleSearchChange}
-  onResultSelect={handleSearchResultSelect}
-  value={searchQuery}
-  results={searchResults.map((user, index) => ({
-    key: index,
-    title: user.name,
-    description: user.type,
-    
-  }))}
-  
-    
-/>
-
+          <Button
+            className="ButtonHandleAddUser"
+            primary
+            onClick={handleAddUser}
+          >
+            Thêm Người Dùng
+          </Button>
+          <div style={{ display: "flex" }}>
+          {isDeleteButtonVisible && (
+            <Button
+            className="ButtonDeleteSelected"
+            negative
+            onClick={handleDeleteSelected}
+          >
+            {selectedCount > 1 ? `Xóa ${selectedCount} lựa chọn` : "Xóa 1 lựa chọn"}
+          </Button>
+            )}
+            <Button className="ButtonRefresh" icon onClick={handleRefresh}>
+              <Icon name="refresh" />
+            </Button>
+            <Search
+              placeholder="Search..."
+              onSearchChange={handleSearchChange}
+              onResultSelect={handleSearchResultSelect}
+              value={searchQuery}
+              results={searchResults.map((user, index) => ({
+                key: index,
+                title: user.name,
+                description: user.type,
+                value: user.value,
+              }))}
+            />
+          </div>
         </div>
         <Modal open={modalOpen} onClose={handleCloseModal} size="small">
           <Header content="Thêm Người Dùng" />
@@ -321,9 +477,7 @@ const UserManagement = () => {
           </Modal.Actions>
         </Modal>
         <div className="table-container">
-
-
-          <Dimmer.Dimmable className='DimmerTable' as={Table} dimmed={loading}>
+          <Dimmer.Dimmable className="DimmerTable" as={Table} dimmed={loading}>
             <Dimmer active={loading} inverted>
               <Loader inverted>Loading...</Loader>
             </Dimmer>
@@ -415,7 +569,10 @@ const UserManagement = () => {
                 {dataAllUser?.map((user, index) => (
                   <Table.Row key={index}>
                     <Table.Cell>
-                      <Checkbox />
+                      <Checkbox
+                        checked={selectedCheckboxes.includes(user._id)}
+                        onChange={() => handleCheckboxChange(user._id)}
+                      />
                     </Table.Cell>
                     <Table.Cell>{index + 1}</Table.Cell>
                     <Table.Cell>{user.name}</Table.Cell>
@@ -433,18 +590,128 @@ const UserManagement = () => {
                     </Table.Cell>
 
                     <Table.Cell>
-                      <Icon size="big" name="edit"></Icon>{" "}
-                      <Icon size="big" name="delete"></Icon>
+                      <Icon
+                        className="IconEdit"
+                        size="big"
+                        name="edit"
+                        onClick={() => handleEditUser(user)}
+                      ></Icon>{" "}
+                      <Icon
+                        className="IconDelete"
+                        size="big"
+                        name="delete"
+                        onClick={() => handleDeleteUser(user)}
+                      ></Icon>
                     </Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
+              <Modal
+                open={deleteModalOpen}
+                onClose={handleCloseDeleteModal}
+                size="small"
+              >
+                <Header content="Xác nhận xóa người dùng" />
+                <Modal.Content>
+                  <p>Bạn có chắc chắn muốn xóa người dùng này?</p>
+                </Modal.Content>
+                <Modal.Actions>
+                  <Button negative onClick={handleCloseDeleteModal}>
+                    Hủy
+                  </Button>
+                  <Button positive onClick={handleConfirmDelete}>
+                    Xác nhận
+                  </Button>
+                </Modal.Actions>
+              </Modal>
+              <Modal
+                open={modalOpenEdit}
+                onClose={handleCloseModalEdit}
+                size="small"
+              >
+                <Header content="Sửa Người Dùng" />
+                <Modal.Content>
+                  <Form>
+                    <Grid>
+                      <Grid.Row columns={2}>
+                        <Grid.Column>
+                          <Form.Field>
+                            <label>Email</label>
+                            <input
+                              onChange={(e) => setEditEmail(e.target.value)}
+                              value={editEmail}
+                              type="email"
+                              placeholder="john@workemail.com"
+                              readOnly
+                            />
+                            {errEmail && (
+                              <div className="error-message">{errEmail}</div>
+                            )}
+                          </Form.Field>
+                        </Grid.Column>
+                        <Grid.Column>
+                          <Form.Field>
+                            <label>Phone</label>
+                            <input
+                              onChange={(e) => setEditPhone(e.target.value)}
+                              value={editPhone}
+                              type="text"
+                              placeholder="0398870512"
+                            />
+                            {errPhone && (
+                              <div className="error-message">{errPhone}</div>
+                            )}
+                          </Form.Field>
+                        </Grid.Column>
+                      </Grid.Row>
+                      <Grid.Row columns={2}>
+                        <Grid.Column>
+                          <Form.Field>
+                            <label>Name</label>
+                            <input
+                              onChange={(e) => setEditName(e.target.value)}
+                              value={editName}
+                              type="text"
+                              placeholder="Đào Quang Huy Hoàng"
+                            />
+                            {errClientName && (
+                              <div className="error-message">
+                                {errClientName}
+                              </div>
+                            )}
+                          </Form.Field>
+                        </Grid.Column>
+                        <Grid.Column>
+                          <Form.Field>
+                            <label>Address</label>
+                            <input
+                              onChange={(e) => setEditAddress(e.target.value)}
+                              value={editAddress}
+                              type="text"
+                            />
+                            {errAddress && (
+                              <div className="error-message">{errAddress}</div>
+                            )}
+                          </Form.Field>
+                        </Grid.Column>
+                      </Grid.Row>
+                    </Grid>
+                  </Form>
+                </Modal.Content>
+                <Modal.Actions>
+                  <Button negative onClick={handleCloseModalEdit}>
+                    Hủy
+                  </Button>
+                  <Button positive onClick={handleSaveEditUser}>
+                    Lưu
+                  </Button>
+                </Modal.Actions>
+              </Modal>
 
               <Table.Footer className="TableFooter">
                 <Table.Row>
-
                   <Table.HeaderCell colSpan="8">
-                    <Menu className="MenuHeader" floated='left'>
+                    <Menu className="MenuHeader" floated="left">
                       <Header size="small">
                         Tìm thấy {totalRecords} bản ghi
                       </Header>
@@ -510,19 +777,17 @@ const UserManagement = () => {
                         selection
                         compact
                         options={[
-
-                          { key: 1, text: '1 bản ghi/trang', value: 1 },
-                          { key: 5, text: '5 bản ghi/trang', value: 5 },
-                          { key: 15, text: '15 bản ghi/trang', value: 15 },
-                          { key: 30, text: '30 bản ghi/trang', value: 30 },
-                          { key: 50, text: '50 bản ghi/trang', value: 50 },
-                          { key: 100, text: '100 bản ghi/trang', value: 100 },
-                          { key: 200, text: '200 bản ghi/trang', value: 200 },
+                          { key: 1, text: "1 bản ghi/trang", value: 1 },
+                          { key: 5, text: "5 bản ghi/trang", value: 5 },
+                          { key: 15, text: "15 bản ghi/trang", value: 15 },
+                          { key: 30, text: "30 bản ghi/trang", value: 30 },
+                          { key: 50, text: "50 bản ghi/trang", value: 50 },
+                          { key: 100, text: "100 bản ghi/trang", value: 100 },
+                          { key: 200, text: "200 bản ghi/trang", value: 200 },
                         ]}
                         value={recordsPerPage}
                         onChange={handleRecordsPerPageChange}
                       />
-
                     </Menu>
                   </Table.HeaderCell>
                 </Table.Row>

@@ -11,7 +11,7 @@ import bookImage from "../../assets/images/ngonha.png";
 import { Link, useNavigate } from "react-router-dom";
 import * as UserService from '../../services/UserService'
 import { detailUser } from "../../redux/orebiSlice";
-import { resetUser } from '../../redux/slides/userSlide'
+
 
 import { PATHS } from "../../contants/path";
 
@@ -24,8 +24,17 @@ const HeaderComponent = () => {
 
 
   const handleItemClick = (itemName) => {
+    localStorage.setItem('activeItem', itemName);
     setActiveItem(itemName);
   };
+  useEffect(() => {
+    // Retrieve activeItem from localStorage on component mount
+    const storedActiveItem = localStorage.getItem('activeItem');
+    if (storedActiveItem) {
+      setActiveItem(storedActiveItem);
+    }
+  }, []);
+  
 
   useEffect(() => {
     // After login, return user detail
@@ -94,6 +103,7 @@ const HeaderComponent = () => {
       // Add your logout logic here, such as clearing user session, etc.
     }
   };
+ 
 
   return (
     <div>

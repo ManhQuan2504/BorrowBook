@@ -40,6 +40,34 @@
  .ButtonHandleAddUser{
    margin-bottom: 30px;
  }
+ .ButtonRefresh{
+
+ padding: 10px !important;
+height: 30px;
+ background-color: #2185d0;
+ color: #fff;
+ font-size: .78571429rem;
+ margin-top: 4px;
+  &:hover{
+    background-color: #1678c2;
+    color: #fff;
+    text-shadow: none;
+  }
+ }
+ .IconEdit {
+  &:hover{
+    cursor: pointer;
+  }
+ }
+ .IconDelete{
+  &:hover{
+    cursor: pointer;
+  }
+ }
+ .ButtonDeleteSelected{
+  height: 30px;
+  margin-top: 4px;
+ }
  .DimmerTable{
       // margin: 0 !important;
 
