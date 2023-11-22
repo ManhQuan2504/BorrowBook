@@ -20,7 +20,7 @@ const borrowbookSchema = new mongoose.Schema(
         },
         dueDate: {
             type: Date,
-            required: true,
+            required: false,
         },
         status: {
             type: Number,
