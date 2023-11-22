@@ -33,6 +33,65 @@ export const detailUserLogin = async (id, accessToken) => {
     .then((res) => res.data)
     .catch((err) => err)
 }
+export const updateUserInfo = async (access_token,id,dataEdit) => {
+  try {
+    console.log('dataEdit',dataEdit)
+    const { data } = await axios.put(
+      BASE_URL + `/user/update-user/${id}`,
+      {
+        dataEdit
+      },
+      {
+        headers: {
+          token: `Bearer ${access_token}`,
+        },
+      }
+    )
+    console.log(data)
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+export const deleteUser = async (access_token,id) => {
+  try {
+    
+    const { data } = await axios.delete(
+      BASE_URL + `/user/delete-user/${id}`,
+      
+      {
+        headers: {
+          token: `Bearer ${access_token}`,
+        },
+      }
+    )
+    console.log(data)
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+// In UserService.js
+export const deleteManyUser = async (access_token, userIds) => {
+  try {
+    const res = await axios.delete(
+      BASE_URL + `/user/delete-many-user`,
+      {
+        headers: {
+          token: `Bearer ${access_token}`,
+        },
+        params: {
+          ids: userIds.join(','), // Convert array of IDs to comma-separated string
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error) {
+    console.error("Error deleting multiple users", error);
+    throw error;
+  }
+};
 
 export const signUpAccount = async (name, email, password, phone, address) =>
   await axios

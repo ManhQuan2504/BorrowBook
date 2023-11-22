@@ -99,8 +99,8 @@ const updateUser = async (req, res) => {
         const userId = req.params.id
         const data = req.body
         // const image = req.file;
-
-        const { phone, image } = data
+console.log('data',data)
+        const { phone } = data.dataEdit
         const phoneRegex = /^(0|\+84)(3[2-9]|5[2689]|7[06789]|8[1-9]|9[0-9])\d{7}$/;
         const isCheckPhone = phoneRegex.test(phone)
         if (!userId) {
@@ -133,7 +133,7 @@ const updateUser = async (req, res) => {
             })
         }
 
-        const response = await UserService.updateUser(userId, data)
+        const response = await UserService.updateUser(userId, data.dataEdit)
         return res.status(response.code).json(response)
     } catch (e) {
         console.log('err updateUser ', e)
