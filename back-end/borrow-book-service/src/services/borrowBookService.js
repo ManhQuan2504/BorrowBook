@@ -55,14 +55,14 @@ const searchBorrowBook = async ({ perPage, status, page }) => {
 };
 
 
-const createBorrowBook = async ({ idUser, idBook, returnDate, borrowDate, dueDate, status }) => {
+const createBorrowBook = async ({ idUser, idBook, returnDate, borrowDate }) => {
     const newBorrowBook = new BorrowBookModel({
         idUser: idUser,
         idBook: idBook,
         returnDate: returnDate,
         borrowDate: borrowDate,
-        dueDate: dueDate,
-        status: status,
+        dueDate: null,
+        status: 1,
     });
 
     const createdBorrowBook = await newBorrowBook.save();

@@ -60,17 +60,17 @@ const searchBorrowBook = async (req, res) => {
 
 const createBorrowBook = async (req, res) => {
     try {
-        const { idUser, email, idBook, returnDate, borrowDate, dueDate, status } = req.body;
-        if (!idUser || !idBook || !returnDate || !borrowDate || !dueDate || !status) {
+        const { idUser, email, idBook, returnDate, borrowDate } = req.body;
+        if (!idUser || !idBook || !returnDate || !borrowDate) {
             throw new Error(`Input is require`);
         }
-        const validationInput = Schema.validate({ returnDate, borrowDate, dueDate, status });
+        const validationInput = Schema.validate({ returnDate, borrowDate });
         if (validationInput.error) {
             const errorMessages = validationInput.error.details.map((error) => error.message);
             throw new Error(`Dữ liệu không hợp lệ: ${errorMessages.join(', ')}`);
         }
 
-        const response = await borrowbookService.createBorrowBook({ idUser, idBook, returnDate, borrowDate, dueDate, status })
+        const response = await borrowbookService.createBorrowBook({ idUser, idBook, returnDate, borrowDate })
 
         if (response && response != undefined) {
             const messageData = {
@@ -78,9 +78,9 @@ const createBorrowBook = async (req, res) => {
                 email: email,
                 idBook: idBook
             };
-    
+
             rabbitmqFunc.send_msg(messageData)
-    
+
             console.log(`Sent message: ${JSON.stringify(messageData)}`);
         }
         return res.status(200).json(
@@ -102,9 +102,9 @@ const createBorrowBook = async (req, res) => {
 const updateBorrowBook = async (req, res) => {
     try {
         const idBorrowBook = req.params.id;
-        const {email, idBook} = req.body;
+        const { email, idBook } = req.body;
 
-        const response = await borrowbookService.updateBorrowBook({ idBorrowBook});
+        const response = await borrowbookService.updateBorrowBook({ idBorrowBook });
 
         if (response && response != undefined) {
             const messageData = {
@@ -191,7 +191,7 @@ const deleteBorrowBook = async (req, res) => {
 
 const deleteManyBorrowBook = async (req, res) => {
     try {
-        
+
     } catch (error) {
         return res.status(400).json(
             {

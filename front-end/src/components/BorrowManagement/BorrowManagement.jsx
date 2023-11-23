@@ -4,6 +4,7 @@ import './style.scss';
 import * as BorrowBook from '../../services/BorrowBookService';
 import * as UserService from '../../services/UserService';
 import * as BookServices from '../../services/BookService';
+import { Notification } from "../../components/Notification/Notification";
 
 import moment from 'moment';
 
@@ -26,30 +27,35 @@ const BorrowManagement = () => {
   const [datas, setDatas] = useState([]);
 
   const [modalOpen, setModalOpen] = useState(false); //modal add
-  // State để lưu 
-  const [bookId, setBookId] = useState(null);
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [countInStock, setCountInStock] = useState("");
-  const [publishYear, setPublishYear] = useState("");
-  const [authorBook, setAuthorBook] = useState("");
 
   //state lưu thông tin modal thêm
   const [searchUser, setSearchUser] = useState("");
   const [searchUserResults, setSearchUserResults] = useState([]);
-  const [recordsPerPage, setRecordsPerPage] = useState(300);
+  const recordsPerPage = 300;
   const [dataAllUser, setdataAllUser] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const currentPage = 1;
   const [searchBook, setSearchBook] = useState("");
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [dataAllBook, setDataAllBook] = useState([]);
-  const [borrowDate, setBorrowDate] = useState(new Date());
-  const [returnDate, setReturnDate] = useState(new Date());
+  const [borrowDate, setBorrowDate] = useState(getCurrentDateTime());
+  const [returnDate, setReturnDate] = useState("");
 
+  const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedUserName, setSelectedUserName] = useState("");
   const [selectedUserEmail, setSelectedUserEmail] = useState("");
+  const [selectedBookId, setSelectedBookId] = useState("");
   const [selectedBookTitle, setSelectedBookTitle] = useState("");
   const [selectedBookAuthor, setSelectedBookAuthor] = useState("");
+
+  const [errBook, setErrBook] = useState("");
+  const [errUsername, setErrUsername] = useState("");
+  const [errReturnDate, setErrReturnDate] = useState("");
+
+  const setErrDefault = () => {
+    setErrBook("");
+    setErrUsername("");
+    setErrReturnDate("");
+  }
 
   const fetchData = async () => {
     try {
@@ -67,9 +73,6 @@ const BorrowManagement = () => {
       console.error(`ERR: http://localhost:1234/api/borrowbook/get?page=${page}\n`, error);
     }
   };
-  // console.log(page);
-  console.log(dataAllBook);
-  console.log(dataAllUser);
 
   useEffect(() => {
     fetchData();
@@ -78,43 +81,37 @@ const BorrowManagement = () => {
   // Hàm mở modal add
   const handleAddBook = () => {
     setModalOpen(true);
-    setInPutDefault();
-  }
-
-  const setInPutDefault = () => {
-    setTitle("");
-    setCategory("");
-    setCountInStock("");
-    setPublishYear("");
-    setAuthorBook("");
   }
 
   // Hàm đóng modal add
   const handleCloseModal = () => {
+    setErrDefault();
     setModalOpen(false);
-    setInPutDefault();
   };
 
   // Hàm xử lý khi thêm mới
   const handleSaveBorrowBook = async () => {
     try {
-      // if (!title) return setErrTitle("Enter name book");
-      // if (!category) return setErrCategory("Enter book category");
-      // if (!countInStock) return setErrCountInStock("Enter count in stock");
-      // if (!publishYear) return setErrPublishYear("Enter publish year");
-      // if (!authorBook) return setErrAuthorBook("Enter authorbook");
 
-      // const result = await BookServices.createBook({ title, category, countInStock, publishYear, authorBook });
+      if (!selectedUserId) return setErrUsername("Select User");
+      if (!selectedBookId) return setErrBook("Select Book");
+      if (!returnDate) return setErrReturnDate("Select Date return");
 
-      // console.log(result);
-      // if (result.status === "OK") {
-      //   Notification("Thêm mới thành công", "", "success");
-      // } else {
-      //   Notification("Thêm mới thất bại", "", "error");
-      //   return false; // Registration failed
-      // }
+      const result = await BorrowBook.createBorrowBooks({
+        idUser: selectedUserId,
+        email: selectedUserEmail,
+        idBook: selectedBookId,
+        borrowDate: borrowDate,
+        returnDate: returnDate
+      });
 
-      setInPutDefault();
+      if (result.status === "OK") {
+        Notification("Thêm mới thành công", "", "success");
+      } else {
+        Notification("Thêm mới thất bại", "", "error");
+        return false; // Registration failed
+      }
+      setErrDefault();
       handleCloseModal();
     } catch (error) {
       console.error(error);
@@ -123,8 +120,7 @@ const BorrowManagement = () => {
 
   const handleUserSearchChange = async (e, { value }) => {
     setSearchUser(value);
-    // console.log("Handle Search User: \n",searchUser);
-    // Perform a search based on the input value (adjust the logic as needed)
+
     const filteredResults = dataAllUser.filter((user) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
@@ -135,8 +131,7 @@ const BorrowManagement = () => {
 
   const handleBookSearchChange = async (e, { value }) => {
     setSearchBook(value);
-    // console.log("Handle Search User: \n",searchUser);
-    // Perform a search based on the input value (adjust the logic as needed)
+
     const filteredResults = dataAllBook.filter((book) =>
       book.title.toLowerCase().includes(value.toLowerCase())
     );
@@ -145,24 +140,17 @@ const BorrowManagement = () => {
   };
 
   const handleBookResultSelect = (e, { result }) => {
-    // Access additional properties from the selected result
-    console.log("Selected Book:", result);
+    setSelectedBookId(result.id)
     setSelectedBookTitle(result.title);
     setSelectedBookAuthor(result.description);
 
-    // Perform any other actions you need with the selected book information
-    // For example, you can update state variables or trigger additional functions
   };
 
   const handleUserResultSelect = (e, { result }) => {
     // Access additional properties from the selected result
+    setSelectedUserId(result.id)
     setSelectedUserName(result.title);
     setSelectedUserEmail(result.description);
-    console.log("Selected User:", result);
-
-
-    // Perform any other actions you need with the selected book information
-    // For example, you can update state variables or trigger additional functions
   };
 
   //lấy ngày hiện tại cho  datetime
@@ -173,25 +161,24 @@ const BorrowManagement = () => {
     const day = String(now.getDate()).padStart(2, '0');
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+    const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+    return formattedDate;
   }
 
   function handleDateChange(e) {
     const inputDate = new Date(e.target.value);
-    const formattedDate =
-      inputDate.getDate().toString().padStart(2, '0') +
-      '/' +
-      (inputDate.getMonth() + 1).toString().padStart(2, '0') +
-      '/' +
-      inputDate.getFullYear();
 
-    // You can use formattedDate as needed (e.g., store in state, send to server, etc.)
-    console.log('Formatted Date:', formattedDate);
+    // Extract day, month, year, and time
+    const day = inputDate.getDate().toString().padStart(2, '0');
+    const month = (inputDate.getMonth() + 1).toString().padStart(2, '0');
+    const year = inputDate.getFullYear();
+    const hours = String(inputDate.getHours()).padStart(2, '0');
+    const minutes = String(inputDate.getMinutes()).padStart(2, '0');
+
+    // Create the formatted string
+    const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+    setReturnDate(formattedDate);
   }
-
-
-
 
   return (
     <Container className='ContainerBookManagement'>
@@ -204,7 +191,9 @@ const BorrowManagement = () => {
       </Button>
 
       <Modal open={modalOpen} onClose={handleCloseModal} size="small">
+
         <Header content="Borrow Book" />
+
         <Modal.Content>
           <Form>
             <Grid>
@@ -226,9 +215,12 @@ const BorrowManagement = () => {
                     />
                     <label>Username: {selectedUserName}</label>
                     <label>Email: {selectedUserEmail}</label>
-
+                    {errUsername && (
+                      <div className="error-message">{errUsername}</div>
+                    )}
                   </Form.Field>
                 </Grid.Column>
+
                 <Grid.Column>
                   <Form.Field>
                     <label>Search Book</label>
@@ -246,41 +238,48 @@ const BorrowManagement = () => {
                     />
                     <label>Book name: {selectedBookTitle}</label>
                     <label>AuthorBook: {selectedBookAuthor}</label>
-
+                    {errBook && (
+                      <div className="error-message">{errBook}</div>
+                    )}
                   </Form.Field>
                 </Grid.Column>
+
               </Grid.Row>
+
               <Grid.Row columns={2}>
+
                 <Grid.Column>
                   <Form.Field>
                     <label>Borrow Date</label>
                     <input
                       type="datetime-local"
-                      value={getCurrentDateTime()}
-                      onChange={(e) => setBorrowDate(new Date(e.target.value))}
+                      value={borrowDate}
+                      onChange={(e) => setBorrowDate(e.target.value)}
                       disabled
                     />
                   </Form.Field>
-
-
                 </Grid.Column>
+
                 <Grid.Column>
                   <Form.Field>
                     <label htmlFor="returnDate">Return date:</label>
                     <input
-                      type="datetime-local"
+                      type="date"
                       id="returnDate"
                       name="returnDate"
                       onChange={(e) => handleDateChange(e)}
                     />
+                    {errReturnDate && (
+                      <div className="error-message">{errReturnDate}</div>
+                    )}
                   </Form.Field>
-
-
                 </Grid.Column>
+
               </Grid.Row>
             </Grid>
           </Form>
         </Modal.Content>
+
         <Modal.Actions>
           <Button negative onClick={handleCloseModal}>
             Cancel
@@ -289,9 +288,11 @@ const BorrowManagement = () => {
             Save
           </Button>
         </Modal.Actions>
+
       </Modal>
 
       <Table celled>
+
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell> <Checkbox /></Table.HeaderCell>
@@ -301,8 +302,8 @@ const BorrowManagement = () => {
             <Table.HeaderCell>Ngày mượn</Table.HeaderCell>
             <Table.HeaderCell>Ngày hẹn trả</Table.HeaderCell>
             <Table.HeaderCell>Ngày trả</Table.HeaderCell>
+            <Table.HeaderCell>Ngày trả</Table.HeaderCell>
             <Table.HeaderCell>Trạng thái</Table.HeaderCell>
-            <Table.HeaderCell>Action</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
@@ -315,10 +316,13 @@ const BorrowManagement = () => {
               <Table.Cell>{data._id}</Table.Cell>
               <Table.Cell>{data.idUser}</Table.Cell>
               <Table.Cell>{data.idBook}</Table.Cell>
-              <Table.Cell>{moment(data.returnDate).format('DD/MM/YYYY HH:mm')}</Table.Cell>
-              <Table.Cell>{moment(data.borrowDate).format('DD/MM/YYYY')}</Table.Cell>
-              <Table.Cell>{moment(data.dueDate).format('DD/MM/YYYY HH:mm')}</Table.Cell>
+              <Table.Cell>{moment(data.borrowDate).format('DD/MM/YYYY HH:mm')}</Table.Cell>
+              <Table.Cell>{moment(data.returnDate).format('DD/MM/YYYY')}</Table.Cell>
+              <Table.Cell>
+                {data.dueDate ? moment(data.dueDate).format('DD/MM/YYYY HH:mm') : "-----"}
+              </Table.Cell>
               <Table.Cell>{getStatusText(data.status)}</Table.Cell>
+              <Table.Cell><Icon size="big" name="edit" /></Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
@@ -326,7 +330,7 @@ const BorrowManagement = () => {
 
         <Table.Footer>
           <Table.Row>
-            <Table.HeaderCell colSpan='8'>
+            <Table.HeaderCell colSpan='9'>
               <Menu floated='right' pagination>
                 <Menu.Item as='a' icon>
                   <Icon name='chevron left' />
