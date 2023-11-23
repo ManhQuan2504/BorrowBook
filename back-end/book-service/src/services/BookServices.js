@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 const getBook = async ({ perPage, page }) => {
     try {
         const count = await bookModel.count();
-        const countPage = Math.floor(count / perPage) + 1;
+        const countPage = Math.ceil(count / perPage);
         const data = await bookModel.findAll({
             limit: perPage,
             offset: (page - 1) * perPage
