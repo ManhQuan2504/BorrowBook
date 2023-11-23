@@ -3,7 +3,7 @@ import BorrowBookModel from "../models/borrowBookModel.js";
 const getBorrowBook = async ({ perPage, page }) => {
     try {
         const count = await BorrowBookModel.countDocuments();
-        const countPage = Math.floor(count / perPage) + 1;
+        const countPage = Math.ceil(count / perPage); // Sử dụng hàm Math.ceil để làm tròn lên
         const data = await BorrowBookModel
             .find()
             .limit(perPage)
@@ -20,10 +20,7 @@ const getBorrowBook = async ({ perPage, page }) => {
     }
 };
 
-function isDate(str) {
-    // Kiểm tra xem một chuỗi có thể chuyển đổi thành kiểu Date hay không
-    return !isNaN(Date.parse(str));
-}
+
 
 const searchBorrowBook = async ({ perPage, status, page }) => {
     const statusValue = parseInt(status);
@@ -55,13 +52,13 @@ const searchBorrowBook = async ({ perPage, status, page }) => {
 };
 
 
-const createBorrowBook = async ({ idUser, idBook, returnDate, borrowDate }) => {
+const createBorrowBook = async ({ idUser, idBook, borrowDate, dueDate }) => {
     const newBorrowBook = new BorrowBookModel({
         idUser: idUser,
         idBook: idBook,
-        returnDate: returnDate,
         borrowDate: borrowDate,
-        dueDate: null,
+        dueDate: dueDate,
+        returnDate: null,
         status: 1,
     });
 
@@ -74,7 +71,7 @@ const createBorrowBook = async ({ idUser, idBook, returnDate, borrowDate }) => {
     }
 };
 
-const updateBorrowBook = async ({ idBorrowBook }) => {
+const updateBorrowBook = async ({ idBorrowBook, returnDate }) => {
     try {
         // Kiểm tra xem bản ghi mượn sách có tồn tại không
         const existingBorrowBook = await BorrowBookModel.findById(idBorrowBook);
@@ -83,6 +80,7 @@ const updateBorrowBook = async ({ idBorrowBook }) => {
             throw new Error("Không tìm thấy bản ghi mượn sách");
         }
 
+        existingBorrowBook.returnDate = returnDate;
         existingBorrowBook.status = 2;
 
         // Lưu các thay đổi

@@ -60,17 +60,17 @@ const searchBorrowBook = async (req, res) => {
 
 const createBorrowBook = async (req, res) => {
     try {
-        const { idUser, email, idBook, returnDate, borrowDate } = req.body;
-        if (!idUser || !idBook || !returnDate || !borrowDate) {
+        const { idUser, email, idBook, borrowDate, dueDate } = req.body;
+        if (!idUser || !idBook || !borrowDate || !dueDate) {
             throw new Error(`Input is require`);
         }
-        const validationInput = Schema.validate({ returnDate, borrowDate });
+        const validationInput = Schema.validate({ borrowDate, dueDate });
         if (validationInput.error) {
             const errorMessages = validationInput.error.details.map((error) => error.message);
             throw new Error(`Dữ liệu không hợp lệ: ${errorMessages.join(', ')}`);
         }
 
-        const response = await borrowbookService.createBorrowBook({ idUser, idBook, returnDate, borrowDate })
+        const response = await borrowbookService.createBorrowBook({ idUser, idBook, borrowDate, dueDate })
 
         if (response && response != undefined) {
             const messageData = {
@@ -102,19 +102,19 @@ const createBorrowBook = async (req, res) => {
 const updateBorrowBook = async (req, res) => {
     try {
         const idBorrowBook = req.params.id;
-        const { email, idBook } = req.body;
+        const { returnDate } = req.body;
 
-        const response = await borrowbookService.updateBorrowBook({ idBorrowBook });
+        const response = await borrowbookService.updateBorrowBook({ idBorrowBook, returnDate });
 
-        if (response && response != undefined) {
-            const messageData = {
-                type: 'return',
-                email: email,
-                idBook: idBook
-            };
-            rabbitmqFunc.send_msg(messageData)
-            console.log(`Sent message: ${JSON.stringify(messageData)}`);
-        }
+        // if (response && response != undefined) {
+        //     const messageData = {
+        //         type: 'return',
+        //         email: email,
+        //         idBook: idBook
+        //     };
+        //     rabbitmqFunc.send_msg(messageData)
+        //     console.log(`Sent message: ${JSON.stringify(messageData)}`);
+        // }
         return res.status(200).json(
             {
                 status: "OK",
