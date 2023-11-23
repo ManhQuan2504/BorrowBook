@@ -59,7 +59,7 @@ const UserManagement = () => {
   const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
   const isDeleteButtonVisible = selectedCheckboxes.length > 0;
   const [selectedCount, setSelectedCount] = useState(0);
-
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
   // ============= Event Handler Start here =============
 
   const handleName = (e) => {
@@ -296,15 +296,19 @@ const UserManagement = () => {
     }
   };
   const handleCheckboxChange = (userId) => {
-    setSelectedCheckboxes((prevSelected) => {
-      if (prevSelected.includes(userId)) {
-        // If user is already selected, remove it
-        return prevSelected.filter((id) => id !== userId);
-      } else {
-        // If user is not selected, add it
-        return [...prevSelected, userId];
-      }
-    });
+    if (userId === "selectAll") {
+      // Handle "Select All" checkbox separately
+      setSelectAllChecked(!selectAllChecked);
+      setSelectedCheckboxes(selectAllChecked ? [] : dataAllUser.map(user => user._id));
+    } else {
+      setSelectedCheckboxes((prevSelected) => {
+        if (prevSelected.includes(userId)) {
+          return prevSelected.filter((id) => id !== userId);
+        } else {
+          return [...prevSelected, userId];
+        }
+      });
+    }
   };
 
   const handleEditUser = (user) => {
@@ -325,10 +329,8 @@ const UserManagement = () => {
         selectedCheckboxes
       );
 
-      // Handle the response as needed
       if (res.code === 200) {
-        // Users deleted successfully
-        await fetchData(); // Fetch data again after deletion
+        await fetchData();
         Notification("Xóa thành công", res.message, "success");
       } else {
         Notification("Xóa thất bại", res.message, "error");
@@ -336,7 +338,8 @@ const UserManagement = () => {
     } catch (error) {
       console.error("Error deleting users", error);
     } finally {
-      setSelectedCheckboxes([]); // Clear the selected checkboxes after deletion
+      setSelectedCheckboxes([]);
+      setSelectAllChecked(false); // Reset "Select All" checkbox state
     }
   };
 
@@ -361,6 +364,7 @@ const UserManagement = () => {
             className="ButtonDeleteSelected"
             negative
             onClick={handleDeleteSelected}
+            disabled={!isDeleteButtonVisible}
           >
             {selectedCount > 1 ? `Xóa ${selectedCount} lựa chọn` : "Xóa 1 lựa chọn"}
           </Button>
@@ -491,7 +495,10 @@ const UserManagement = () => {
                       textOverflow: "ellipsis",
                     }}
                   >
-                    <Checkbox />
+                   <Checkbox
+                checked={selectAllChecked}
+                onChange={() => handleCheckboxChange("selectAll")}
+              />
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     style={{

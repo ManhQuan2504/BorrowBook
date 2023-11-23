@@ -12,7 +12,7 @@ export const getBorrowBooks = async (page) => {
   }
 };
 
-export const createBorrowBooks = async ({ idUser, email, idBook, borrowDate, returnDate, }) => {
+export const createBorrowBooks = async ({ idUser, email, idBook, borrowDate, dueDate, }) => {
   try {
 
     const response = await AxiosSchema.post(`${BASE_URL}borrowbook/create`, {
@@ -20,7 +20,22 @@ export const createBorrowBooks = async ({ idUser, email, idBook, borrowDate, ret
       email,
       idBook,
       borrowDate,
-      returnDate
+      dueDate
+    });
+
+    return response.data;
+
+  } catch (error) {
+    throw error.message || "There was an error processing your request.";
+  }
+};
+
+export const updateBorrowBooks = async ({ id, returnDate, email, idBook }) => {
+  try {
+    const response = await AxiosSchema.put(`${BASE_URL}borrowbook/update/${id}`, {
+      returnDate,
+      email,
+      idBook
     });
 
     return response.data;

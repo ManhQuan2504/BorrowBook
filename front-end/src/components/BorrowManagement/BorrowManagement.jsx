@@ -27,6 +27,7 @@ const BorrowManagement = () => {
   const [datas, setDatas] = useState([]);
 
   const [modalOpen, setModalOpen] = useState(false); //modal add
+  const [openModalReturnBook, setOpenModalReturnBook] = React.useState(false) //modall trả sách
 
   //state lưu thông tin modal thêm
   const [searchUser, setSearchUser] = useState("");
@@ -38,7 +39,7 @@ const BorrowManagement = () => {
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [dataAllBook, setDataAllBook] = useState([]);
   const [borrowDate, setBorrowDate] = useState(getCurrentDateTime());
-  const [returnDate, setReturnDate] = useState("");
+  const [dueDate, setDuaDate] = useState("");
 
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedUserName, setSelectedUserName] = useState("");
@@ -49,12 +50,12 @@ const BorrowManagement = () => {
 
   const [errBook, setErrBook] = useState("");
   const [errUsername, setErrUsername] = useState("");
-  const [errReturnDate, setErrReturnDate] = useState("");
+  const [errDueDate, setErrDueDate] = useState("");
 
   const setErrDefault = () => {
     setErrBook("");
     setErrUsername("");
-    setErrReturnDate("");
+    setErrDueDate("");
   }
 
   const fetchData = async () => {
@@ -95,14 +96,14 @@ const BorrowManagement = () => {
 
       if (!selectedUserId) return setErrUsername("Select User");
       if (!selectedBookId) return setErrBook("Select Book");
-      if (!returnDate) return setErrReturnDate("Select Date return");
-
+      if (!dueDate) return setErrDueDate("Select Date return");
+      // console.log("ID U: ",selectedUserId, "ID S: ", selectedBookId, "BRT: ", borrowDate, "DD:", dueDate, "EM: ", selectedUserEmail);
       const result = await BorrowBook.createBorrowBooks({
         idUser: selectedUserId,
         email: selectedUserEmail,
         idBook: selectedBookId,
         borrowDate: borrowDate,
-        returnDate: returnDate
+        dueDate: dueDate
       });
 
       if (result.status === "OK") {
@@ -113,6 +114,7 @@ const BorrowManagement = () => {
       }
       setErrDefault();
       handleCloseModal();
+      fetchData();
     } catch (error) {
       console.error(error);
     }
@@ -140,6 +142,11 @@ const BorrowManagement = () => {
   };
 
   const handleBookResultSelect = (e, { result }) => {
+    if (!result) {
+      setErrBook("Please select a book");
+    } else {
+      setErrBook(""); // Xóa thông báo lỗi nếu giá trị không trống
+    }
     setSelectedBookId(result.id)
     setSelectedBookTitle(result.title);
     setSelectedBookAuthor(result.description);
@@ -148,6 +155,11 @@ const BorrowManagement = () => {
 
   const handleUserResultSelect = (e, { result }) => {
     // Access additional properties from the selected result
+    if (!result) {
+      setErrUsername("Please select a username");
+    } else {
+      setErrUsername(""); // Xóa thông báo lỗi nếu giá trị không trống
+    }
     setSelectedUserId(result.id)
     setSelectedUserName(result.title);
     setSelectedUserEmail(result.description);
@@ -166,18 +178,63 @@ const BorrowManagement = () => {
   }
 
   function handleDateChange(e) {
-    const inputDate = new Date(e.target.value);
+    const selectedDate = new Date(e.target.value);
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate()); // Ngày hiện tại + 1
+  
+    if (selectedDate < currentDate) {
+      setErrDueDate("Ngày trả phải lớn hơn ngày mượn");
+    } else {
+      setErrDueDate("");
+      const day = selectedDate.getDate().toString().padStart(2, '0');
+      const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = selectedDate.getFullYear();
+      const hours = String(selectedDate.getHours()).padStart(2, '0');
+      const minutes = String(selectedDate.getMinutes()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+      setDuaDate(formattedDate);
+    }
+  }
+  
 
-    // Extract day, month, year, and time
-    const day = inputDate.getDate().toString().padStart(2, '0');
-    const month = (inputDate.getMonth() + 1).toString().padStart(2, '0');
-    const year = inputDate.getFullYear();
-    const hours = String(inputDate.getHours()).padStart(2, '0');
-    const minutes = String(inputDate.getMinutes()).padStart(2, '0');
+  const handleReturnbook = (id) => {
+    setSelectedUserId(id);
+    console.log(id);
+    console.log(selectedUserId);
+    handleOpenModalReturnBook();
+  }
 
-    // Create the formatted string
+  const handleOpenModalReturnBook = () => {
+    setOpenModalReturnBook(true)
+  }
+
+  const handleCloseModalReturnBook = () => {
+    setOpenModalReturnBook(false)
+  }
+  //trả sách
+  const handleReturnBookYes = async () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
-    setReturnDate(formattedDate);
+    console.log("ID: ", selectedUserId, "   Time: ", formattedDate)
+    const result = await BorrowBook.updateBorrowBooks({
+      id: selectedUserId,
+      returnDate: formattedDate,
+    });
+
+    if (result.status === "OK") {
+      Notification("Trả sách thành công", "", "success");
+    } else {
+      Notification("Trả sách thất bại", "", "error");
+      return false; // Registration failed
+    }
+    setErrDefault();
+    handleCloseModalReturnBook();
+    fetchData();
   }
 
   return (
@@ -262,15 +319,15 @@ const BorrowManagement = () => {
 
                 <Grid.Column>
                   <Form.Field>
-                    <label htmlFor="returnDate">Return date:</label>
+                    <label htmlFor="duedate">Due date:</label>
                     <input
                       type="date"
-                      id="returnDate"
-                      name="returnDate"
+                      id="duedate"
+                      name="duedate"
                       onChange={(e) => handleDateChange(e)}
                     />
-                    {errReturnDate && (
-                      <div className="error-message">{errReturnDate}</div>
+                    {errDueDate && (
+                      <div className="error-message">{errDueDate}</div>
                     )}
                   </Form.Field>
                 </Grid.Column>
@@ -302,8 +359,8 @@ const BorrowManagement = () => {
             <Table.HeaderCell>Ngày mượn</Table.HeaderCell>
             <Table.HeaderCell>Ngày hẹn trả</Table.HeaderCell>
             <Table.HeaderCell>Ngày trả</Table.HeaderCell>
-            <Table.HeaderCell>Ngày trả</Table.HeaderCell>
             <Table.HeaderCell>Trạng thái</Table.HeaderCell>
+            <Table.HeaderCell>Action</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
@@ -317,12 +374,33 @@ const BorrowManagement = () => {
               <Table.Cell>{data.idUser}</Table.Cell>
               <Table.Cell>{data.idBook}</Table.Cell>
               <Table.Cell>{moment(data.borrowDate).format('DD/MM/YYYY HH:mm')}</Table.Cell>
-              <Table.Cell>{moment(data.returnDate).format('DD/MM/YYYY')}</Table.Cell>
+              <Table.Cell>{moment(data.dueDate).format('DD/MM/YYYY')}</Table.Cell>
               <Table.Cell>
-                {data.dueDate ? moment(data.dueDate).format('DD/MM/YYYY HH:mm') : "-----"}
+                {data.dueDate ? moment(data.returnDate).format('DD/MM/YYYY HH:mm') : "-----"}
               </Table.Cell>
               <Table.Cell>{getStatusText(data.status)}</Table.Cell>
-              <Table.Cell><Icon size="big" name="edit" /></Table.Cell>
+              <Table.Cell><Icon size="big" name="edit" onClick={() => handleReturnbook(data._id)} /></Table.Cell>
+
+              <Modal
+                open={openModalReturnBook}
+                onClose={() => setOpenModalReturnBook(false)}
+              // onOpen={() => setOpen(true)}
+              >
+                <Header content='Trả sách' />
+                <Modal.Content>
+                  <p>
+                    Hoàn thành đơn mượn ?
+                  </p>
+                </Modal.Content>
+                <Modal.Actions>
+                  <Button color='red' onClick={() => setOpenModalReturnBook(false)}>
+                    <Icon name='remove' /> No
+                  </Button>
+                  <Button color='green' onClick={() => handleReturnBookYes()}>
+                    <Icon name='checkmark' /> Yes
+                  </Button>
+                </Modal.Actions>
+              </Modal>
             </Table.Row>
           ))}
         </Table.Body>
