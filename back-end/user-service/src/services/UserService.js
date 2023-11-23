@@ -498,10 +498,10 @@ const verifyResetPasswordService = (data) => {
         }
     })
 }
-const updatePasswordService = (data) => {
+const updatePasswordService = (userId,data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const user = await User.findOne({_id : data.userId});
+            const user = await User.findOne({_id : userId});
             if (!user) {
               
                 resolve({
@@ -524,7 +524,7 @@ const updatePasswordService = (data) => {
                 let hashedNewPassword = await  bcrypt.hash(data.newPassword, saltRounds)
                
     
-                const updatePassword =  User.updateOne({ _id: data.userId }, { password: hashedNewPassword }).then().catch((error)=>{
+                const updatePassword =  User.updateOne({ _id: userId }, { password: hashedNewPassword }).then().catch((error)=>{
                    console.log('Có lỗi khi update mật khẩu mới!',error)
                     resolve({
                         code: 500,

@@ -33,6 +33,45 @@ export const detailUserLogin = async (id, accessToken) => {
     .then((res) => res.data)
     .catch((err) => err)
 }
+
+export const updatePassword1 = async (access_token,newPassword,confirmNewPassword) => {
+  try {
+   
+    const { data } = await axios.put(
+      BASE_URL + `/user/updatePassword`,
+      {
+        newPassword
+        ,confirmNewPassword
+      },
+      {
+        headers: {
+          token: `Bearer ${access_token}`,
+        },
+      }
+    )
+    console.log('data',data)
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+export const updatePassword = async (access_token, newPassword, confirmNewPassword, customHeaders = {}) =>
+  await axios
+    .put(
+      BASE_URL + '/user/updatePassword',
+      {
+        newPassword,
+        confirmNewPassword,
+      },
+      {
+        headers: {
+          token: `Bearer ${access_token}`,
+          ...customHeaders, // Thêm custom headers nếu có
+        },
+      }
+    )
+    .then((res) => res.data)
+    .catch((err) => err)
 export const updateUserInfo = async (access_token,id,dataEdit) => {
   try {
     console.log('dataEdit',dataEdit)

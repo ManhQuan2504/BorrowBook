@@ -10,7 +10,7 @@ import { decodeToken } from "react-jwt";
 import bookImage from "../../assets/images/ngonha.png";
 import { Link, useNavigate } from "react-router-dom";
 import * as UserService from '../../services/UserService'
-import { detailUser } from "../../redux/orebiSlice";
+import { detailUser } from "../../redux/borrowBookSlice";
 
 
 import { PATHS } from "../../contants/path";
@@ -20,7 +20,7 @@ const HeaderComponent = () => {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const [{ data: currentUser } = {}] = useSelector((state) => state.orebiReducer.userInfo);
+  const [{ data: currentUser } = {}] = useSelector((state) => state.borrowBookReducer.userInfo);
 
 
   const handleItemClick = (itemName) => {

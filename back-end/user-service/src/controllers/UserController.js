@@ -2,6 +2,7 @@ const UserService = require('../services/UserService')
 const amqplib = require("amqplib")
 const JwtService = require('../services/JwtService')
 const rabbitmqFunc = require('../config/rabbitmq')
+const jwt = require('jsonwebtoken')
 
 const createUser = async (req, res) => {
     try {
@@ -369,7 +370,23 @@ const verifyResetPassword = async (req, res) => {
 }
 const updatePassword = async (req, res) => {
     try {
-        const { userId, newPassword, confirmNewPassword } = req.body
+        const token = req.headers.token;
+        const accessToken = token.split(" ")[1];
+
+        // Sử dụng Promise để chờ xác thực token
+        const user = await new Promise((resolve, reject) => {
+            jwt.verify(accessToken, process.env.ACCESS_TOKEN, (err, user) => {
+                if (err) {
+                    console.log('Lỗi khi xác thực token:', err);
+                    reject('Lỗi xác thực token');
+                } else {
+                    resolve(user);
+                }
+            });
+        });
+
+        const userId = user.id;
+        const {  newPassword, confirmNewPassword } = req.body
         if (!newPassword || !confirmNewPassword) {
             return res.status(400).json({
                 code: 400,
@@ -390,7 +407,7 @@ const updatePassword = async (req, res) => {
                 message: 'Nhập lại mật khẩu sai!'
             });
         }
-        const response = await UserService.updatePasswordService(req.body)
+        const response = await UserService.updatePasswordService(userId,req.body)
         return res.status(response.code).json(response)
 
     } catch (e) {

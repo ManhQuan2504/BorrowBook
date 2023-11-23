@@ -6,8 +6,8 @@ const initialState = {
   view: {},
 };
 
-export const orebiSlice = createSlice({
-  name: "orebi",
+export const borrowBookSlice = createSlice({
+  name: "borrowBook",
   initialState,
   reducers: {
   
@@ -30,5 +30,5 @@ export const {
  
   setView,
   detailUser,
-} = orebiSlice.actions;
-export default orebiSlice.reducer;
+} = borrowBookSlice.actions;
+export default borrowBookSlice.reducer;
