@@ -1,9 +1,17 @@
 /* style.scss */
 
 .headerComponent_container{
+   padding-top: 0 !important;
+ 
   
 .Menu-border{
    border-color: #2185d0 !important;
+   padding-top: 5px;
+}
+.LinkTMS{
+   border: 1px solid #ddd;
+   padding: 0px 18px;
+   border-radius: 4px;
 }
  .MenuItemImage{
 margin: 0 !important;

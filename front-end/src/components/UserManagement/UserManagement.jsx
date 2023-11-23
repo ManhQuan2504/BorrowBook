@@ -346,8 +346,8 @@ const UserManagement = () => {
   return (
     <>
       <Container className="ContainerUserManagement">
-        <Header as="h1" textAlign="center">
-          User Management
+        <Header className="HeaderManagement" as="h1" textAlign="center">
+         <Icon name="user outline"></Icon> User Management
         </Header>
 
         <div className="header-actions">

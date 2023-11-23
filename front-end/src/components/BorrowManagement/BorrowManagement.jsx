@@ -239,8 +239,8 @@ const BorrowManagement = () => {
 
   return (
     <Container className='ContainerBookManagement'>
-      <Header as='h1' textAlign='center'>
-        Borrow Book Management
+      <Header className='HeaderManagement' as='h1' textAlign='center'>
+      <Icon name="address book"></Icon> Borrow Book Management
       </Header>
 
       <Button primary onClick={handleAddBook}>

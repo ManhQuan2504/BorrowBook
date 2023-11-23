@@ -11,7 +11,7 @@ const BookManagement = () => {
   const [datas, setDatas] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false); // nút delete
 
-  const [recordsPerPage, setRecordsPerPage] = useState(30);
+  const [recordsPerPage, setRecordsPerPage] = useState(5);
 
 
   //set input add
@@ -219,8 +219,8 @@ const BookManagement = () => {
 
   return (
     <Container className='ContainerBookManagement'>
-      <Header as='h1' textAlign='center'>
-        Book Management
+      <Header className='HeaderManagement' as='h1' textAlign='center'>
+      <Icon name="book"></Icon> Book Management
       </Header>
 
       <Button primary onClick={handleAddBook}>

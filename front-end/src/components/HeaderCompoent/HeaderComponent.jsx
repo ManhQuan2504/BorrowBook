@@ -16,7 +16,7 @@ import { detailUser } from "../../redux/borrowBookSlice";
 import { PATHS } from "../../contants/path";
 
 const HeaderComponent = () => {
-  const [activeItem, setActiveItem] = useState("home");
+  const [activeItem, setActiveItem] = useState("tms");
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -110,11 +110,11 @@ const HeaderComponent = () => {
       <Segment className="headerComponent_container" inverted color="blue">
         <Menu className="Menu-border" inverted pointing secondary>
           <Menu.Item
-            name="home"
-            active={activeItem === "home"}
+            name="tms"
+            active={activeItem === "tms"}
 
           >
-            <Link onClick={() => handleItemClick("home")} to={PATHS.HOME}>LOGO</Link>
+            <Link className="LinkTMS" onClick={() => handleItemClick("tms")} to={PATHS.HOME}>TMS</Link>
           </Menu.Item>
           <Menu.Item
             name="User Management"
