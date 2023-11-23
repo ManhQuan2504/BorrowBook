@@ -10,15 +10,15 @@ const borrowbookSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        returnDate: {
-            type: Date,
-            required: true,
-        },
         borrowDate: {
             type: Date,
             required: true,
         },
         dueDate: {
+            type: Date,
+            required: true,
+        },
+        returnDate: {
             type: Date,
             required: false,
         },
