@@ -218,21 +218,19 @@ const getAllUser = (limit, page) => {
 const getAllUserSearch = (limit, page, type, key) => {
     return new Promise(async (resolve, reject) => {
         try {
-           
-
             let query = {};
-            query[`${type}`] = key;
+
+            // Sử dụng biểu thức chính quy để tạo điều kiện tìm kiếm gần đúng
+            query[`${type}`] = { $regex: key, $options: 'i' };
+console.log('query', query)
             let allUser = [];
-          console.log('query',query)
+
             if (!limit) {
                 allUser = await User.find(query).select('-image -password');
             } else {
                 const skip = (page - 1) * limit;
                 allUser = await User.find(query).limit(limit).skip(skip);
-              
-                
             }
-         
 
             resolve({
                 code: 200,

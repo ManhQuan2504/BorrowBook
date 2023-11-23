@@ -11,6 +11,7 @@ const BookManagement = () => {
   const [datas, setDatas] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false); // nút delete
 
+  const [recordsPerPage, setRecordsPerPage] = useState(30);
 
 
   //set input add
@@ -31,6 +32,10 @@ const BookManagement = () => {
   const [errPublishYear, setErrPublishYear] = useState("");
   const [errAuthorBook, setErrAuthorBook] = useState("");
 
+
+ 
+  const [totalPages, setTotalPages] = useState(1);
+
   // Tạo danh sách năm cho Dropdown
   const years = Array.from({ length: 50 }, (_, index) => {
     const currentYear = new Date().getFullYear();
@@ -39,8 +44,10 @@ const BookManagement = () => {
 
   const fetchData = async () => {
     try {
-      const result = await BookServices.getBooks({page, perPage: 3});
+      const result = await BookServices.getBooks({page, perPage:recordsPerPage});
       setDatas(result.data.data);
+    setTotalPages(result.data.countPage || 1);
+
       setCountPage(result.data.countPage)
     } catch (error) {
       console.error('ERR: , error');
@@ -49,7 +56,7 @@ const BookManagement = () => {
 
   useEffect(() => {
     fetchData();
-  }, [page]);
+  }, [page,recordsPerPage]);
 
   const setInPutDefault = () => {
     setTitle("");
@@ -69,6 +76,10 @@ const BookManagement = () => {
   const handleCloseModal = () => {
     setModalOpen(false);
     setInPutDefault();
+  };
+  const handleRecordsPerPageChange = (e, { value }) => {
+    setRecordsPerPage(value);
+    setPage(1); // Reset to the first page when changing records per page
   };
 
   // Hàm xử lý thay đổi giá trị của ô "Tên sách"
@@ -130,7 +141,12 @@ const BookManagement = () => {
       console.error(error);
     }
   };
-
+  const handlePageChange = (page) => {
+    // Fetch data for the selected page
+    // You need to implement the logic for fetching data based on the page number
+    // console.log(`Fetching data for page ${page}`);
+    setPage(page);
+  };
   // Hàm đóng modal update
   const handleCloseUpdateModal = (id) => {
     setModalUpdateOpen(false);
@@ -452,25 +468,90 @@ const BookManagement = () => {
         </Table.Body>
 
 
-        <Table.Footer>
-          <Table.Row>
-            <Table.HeaderCell colSpan='8'>
-              <Menu floated='right' pagination>
-                <Menu.Item as='a' icon>
-                  <Icon name='chevron left' />
-                </Menu.Item>
-                {Array.from({ length: countPage }, (_, index) => (
-                  <Menu.Item key={index} as='a' onClick={() => setPage(index + 1)}>
-                    {index + 1}
-                  </Menu.Item>
-                ))}
-                <Menu.Item as='a' icon>
-                  <Icon name='chevron right' />
-                </Menu.Item>
-              </Menu>
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Footer>
+        <Table.Footer className="TableFooter">
+                <Table.Row>
+                  <Table.HeaderCell colSpan="8">
+                    {/* <Menu className="MenuHeader" floated="left">
+                      <Header size="small">
+                        Tìm thấy {totalRecords} bản ghi
+                      </Header>
+                    </Menu> */}
+                    <Menu floated="right" pagination>
+                      <Menu.Item
+                        as="a"
+                        icon
+                        onClick={() => handlePageChange(page - 1)}
+                        disabled={page === 1}
+                      >
+                        <Icon name="chevron left" />
+                      </Menu.Item>
+
+                      {/* Render page numbers dynamically with ellipsis */}
+                      {Array.from({ length: totalPages }, (_, i) => {
+                        const pageChange = i + 1;
+
+                        // Show the current page and some pages around it
+                        if (
+                          pageChange === 1 ||
+                          pageChange === totalPages ||
+                          (pageChange >= page - 2 && pageChange <= page + 2)
+                        ) {
+                          return (
+                            <Menu.Item
+                              key={pageChange}
+                              as="a"
+                              onClick={() => handlePageChange(pageChange)}
+                              active={page === pageChange}
+                            >
+                              {pageChange}
+                            </Menu.Item>
+                          );
+                        }
+
+                        // Show ellipsis for omitted pages
+                        if (
+                          pageChange === page - 3 ||
+                          pageChange === page + 3
+                        ) {
+                          return (
+                            <Menu.Item key={pageChange} disabled>
+                              ...
+                            </Menu.Item>
+                          );
+                        }
+
+                        return null;
+                      })}
+
+                      <Menu.Item
+                        as="a"
+                        icon
+                        onClick={() => handlePageChange(page + 1)}
+                        disabled={page === totalPages}
+                      >
+                        <Icon name="chevron right" />
+                      </Menu.Item>
+
+                      <Dropdown
+                        className="DropdownLimitPage"
+                        selection
+                        compact
+                        options={[
+                          { key: 1, text: "1 bản ghi/trang", value: 1 },
+                          { key: 5, text: "5 bản ghi/trang", value: 5 },
+                          { key: 15, text: "15 bản ghi/trang", value: 15 },
+                          { key: 30, text: "30 bản ghi/trang", value: 30 },
+                          { key: 50, text: "50 bản ghi/trang", value: 50 },
+                          { key: 100, text: "100 bản ghi/trang", value: 100 },
+                          { key: 200, text: "200 bản ghi/trang", value: 200 },
+                        ]}
+                        value={recordsPerPage}
+                        onChange={handleRecordsPerPageChange}
+                      />
+                    </Menu>
+                  </Table.HeaderCell>
+                </Table.Row>
+              </Table.Footer>
 
       </Table>
     </Container >
