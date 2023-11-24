@@ -17,6 +17,8 @@ router.delete('/delete-user/:id', authMiddleWareAdmin, userController.deleteUser
 router.get('/get-all-user', authMiddleWareAdmin, userController.getAllUser)
 router.get('/get-all-user-search', authMiddleWareAdmin, userController.getAllUserSearch)
 router.delete('/delete-many-user', authMiddleWareAdmin, userController.deleteMany)
+router.get('/export', authMiddleWareAdmin, userController.exportExcel)
+
 
 
 

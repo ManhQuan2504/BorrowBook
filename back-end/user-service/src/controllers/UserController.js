@@ -3,6 +3,10 @@ const amqplib = require("amqplib")
 const JwtService = require('../services/JwtService')
 const rabbitmqFunc = require('../config/rabbitmq')
 const jwt = require('jsonwebtoken')
+var XLSX = require("xlsx");
+const saveAs = require('file-saver');
+const fs = require('fs-extra')
+const path = require('path');
 
 const createUser = async (req, res) => {
     try {
@@ -40,26 +44,26 @@ const createUser = async (req, res) => {
         }
         const response = await UserService.createUser(req.body)
         if (response && response != undefined) {
-        const messageData = {
-            type: 'register',
-            _id: response?.data?.createdUser?._id,
-            email: response?.data?.createdUser?.email,
-        };
+            const messageData = {
+                type: 'register',
+                _id: response?.data?.createdUser?._id,
+                email: response?.data?.createdUser?.email,
+            };
 
-        rabbitmqFunc.send_msg(messageData)
+            rabbitmqFunc.send_msg(messageData)
 
-        console.log(`Sent message: ${JSON.stringify(messageData)}`);
+            console.log(`Sent message: ${JSON.stringify(messageData)}`);
+        }
+
+        return res.status(response.code).json(response);
+    } catch (e) {
+        console.log('Có lỗi khi createUser', e);
+        return res.status(500).json({
+            code: 500,
+            success: false,
+            message: e + '',
+        });
     }
-
-    return res.status(response.code).json(response);
-} catch (e) {
-    console.log('Có lỗi khi createUser', e);
-    return res.status(500).json({
-        code: 500,
-        success: false,
-        message: e + '',
-    });
-}
 }
 
 const loginUser = async (req, res) => {
@@ -100,7 +104,7 @@ const updateUser = async (req, res) => {
         const userId = req.params.id
         const data = req.body
         // const image = req.file;
-console.log('data',data)
+        console.log('data', data)
         const { phone } = data.dataEdit
         const phoneRegex = /^(0|\+84)(3[2-9]|5[2689]|7[06789]|8[1-9]|9[0-9])\d{7}$/;
         const isCheckPhone = phoneRegex.test(phone)
@@ -227,8 +231,8 @@ const getAllUserSearch = async (req, res) => {
             page,
             type,
             key } = req.query
-          
-        const response = await UserService.getAllUserSearch(Number(limit) || null, Number(page) || 0,String(type) ||'_id',String(key) || '')
+
+        const response = await UserService.getAllUserSearch(Number(limit) || null, Number(page) || 0, String(type) || '_id', String(key) || '')
         return res.status(response.code).json(response)
 
     } catch (e) {
@@ -386,7 +390,7 @@ const updatePassword = async (req, res) => {
         });
 
         const userId = user.id;
-        const {  newPassword, confirmNewPassword } = req.body
+        const { newPassword, confirmNewPassword } = req.body
         if (!newPassword || !confirmNewPassword) {
             return res.status(400).json({
                 code: 400,
@@ -407,7 +411,7 @@ const updatePassword = async (req, res) => {
                 message: 'Nhập lại mật khẩu sai!'
             });
         }
-        const response = await UserService.updatePasswordService(userId,req.body)
+        const response = await UserService.updatePasswordService(userId, req.body)
         return res.status(response.code).json(response)
 
     } catch (e) {
@@ -417,6 +421,68 @@ const updatePassword = async (req, res) => {
         })
     }
 }
+
+const exportExcel = async (req, res) => {
+    try {
+        const response = await UserService.exportExcel();
+        if (!response) {
+            return res.status(400).json({
+                message: "No data available for export."
+            });
+        }
+
+        const data = response.data;
+
+        const rows = data.map(user => [
+            user.id || '',
+            user.name || '',
+            user.email || '',
+            user.phone || '',
+            user.address || '',
+        ]);
+
+        // Thêm header
+        const headers = ['ID', 'Họ tên', 'Email', 'SĐT', 'Địa chỉ'];
+        rows.unshift(headers);
+
+        // Tạo worksheet, thêm data, bắt đầu từ ô A1
+        const worksheet = XLSX.utils.aoa_to_sheet(rows, { origin: "A1" });
+
+        const MAX_COLUMN_WIDTH = 1000;
+        // Tính chiều rộng tối đa của mỗi cột
+        const columnWidths = rows[0].map((_, colIndex) =>
+            Math.min(
+                MAX_COLUMN_WIDTH,
+                rows.reduce((acc, row) => Math.max(acc, `${row[colIndex]}`.length), headers[colIndex].length)
+            )
+        );
+
+        // Thêm chiều rộng cột vào worksheet
+        worksheet['!cols'] = columnWidths.map(width => ({ wch: width }));
+
+        // Tạo workbook và thêm worksheet
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'User Data');
+        // XLSX.writeFile(workbook, 'dataUser.xlsx'); 
+        // Lưu file Excel vào memory buffer
+        const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+
+        // Set header Content-Disposition
+        res.setHeader('Content-Disposition', 'attachment; filename=userData123.xlsx');
+        // Set content type
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+        // Send the Excel file as a response
+        res.send(buffer);
+
+        return res.status(200);
+    } catch (error) {
+        console.error('Export Excel ERR: ', error);
+        return res.status(500).json({
+            message: "Internal server error during Excel export."
+        });
+    }
+};
 
 module.exports = {
     createUser,
@@ -432,6 +498,6 @@ module.exports = {
     resetPassword,
     verifyResetPassword,
     updatePassword,
-    getAllUserSearch
-
+    getAllUserSearch,
+    exportExcel
 }

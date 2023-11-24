@@ -8,7 +8,7 @@ const UserResetPassword = require("../models/UserResetPassword")
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const { name, email, password, phone ,address} = newUser
+        const { name, email, password, phone, address } = newUser
         try {
             const checkUser = await User.findOne({
                 email: email
@@ -18,7 +18,7 @@ const createUser = (newUser) => {
                     code: 404,
                     success: false,
                     message: 'Email này đã tồn tại, vui lòng đăng ký bằng Email khác!',
-                    data:[]
+                    data: []
                 })
             }
             const hash = bcrypt.hashSync(password, 10)
@@ -34,7 +34,7 @@ const createUser = (newUser) => {
                 code: 200,
                 success: true,
                 message: 'Đăng ký thành công!',
-               data:{ createdUser}
+                data: { createdUser }
             })
         } catch (e) {
             reject(e)
@@ -43,14 +43,14 @@ const createUser = (newUser) => {
 }
 
 const loginUser = (userLogin) => {
-    
+
     return new Promise(async (resolve, reject) => {
         const { email, password } = userLogin
         try {
             const checkUser = await User.findOne({
                 email: email
             })
-          
+
 
             if (checkUser === null) {
                 resolve({
@@ -89,8 +89,10 @@ const loginUser = (userLogin) => {
                     code: 200,
                     success: true,
                     message: 'Đăng nhập thành công!',
-                   data:{ access_token,
-                    refresh_token}
+                    data: {
+                        access_token,
+                        refresh_token
+                    }
                 })
 
             }
@@ -109,7 +111,7 @@ const updateUser = (id, data) => {
             const checkUser = await User.findOne({
                 _id: id
             })
-           
+
             if (checkUser === null) {
                 resolve({
                     code: 404,
@@ -118,24 +120,24 @@ const updateUser = (id, data) => {
                 })
             }
 
-            const updatedUser = await User.findByIdAndUpdate(id,{...data} , { new: true },)
-         
-        
+            const updatedUser = await User.findByIdAndUpdate(id, { ...data }, { new: true },)
+
+
             resolve({
                 code: 200,
                 success: true,
-                message: 'Sửa thành công!',            
+                message: 'Sửa thành công!',
                 data: updatedUser
             })
-  
 
 
 
 
-           
-        
 
-            
+
+
+
+
         } catch (e) {
             reject(e)
         }
@@ -159,8 +161,8 @@ const deleteUser = (id) => {
             await User.findByIdAndDelete(id)
             resolve({
                 code: 200,
-                    success: true,
-                    message: 'Xóa thành công!'
+                success: true,
+                message: 'Xóa thành công!'
             })
         } catch (e) {
             reject(e)
@@ -191,14 +193,14 @@ const getAllUser = (limit, page) => {
 
             if (!limit) {
                 allUser = await User.find()
-                    
+
                     .select('-image -password');
             } else {
                 const skip = (page - 1) * limit;
                 allUser = await User.find()
                     .limit(limit)
                     .skip(skip)
-                    
+
             }
 
             resolve({
@@ -222,7 +224,7 @@ const getAllUserSearch = (limit, page, type, key) => {
 
             // Sử dụng biểu thức chính quy để tạo điều kiện tìm kiếm gần đúng
             query[`${type}`] = { $regex: key, $options: 'i' };
-console.log('query', query)
+            console.log('query', query)
             let allUser = [];
 
             if (!limit) {
@@ -257,15 +259,15 @@ const getDetailsUser = (id) => {
             }).select('-password');
             if (user === null) {
                 resolve({
-                   code:404,
-                   success:false,
+                    code: 404,
+                    success: false,
                     message: 'Không tìm thấy người dùng!'
                 })
             }
-            
+
             resolve({
-                code:200,
-                success:true,
+                code: 200,
+                success: true,
                 message: 'Lấy thông tin người dùng thành công!',
                 data: user
             })
@@ -498,12 +500,12 @@ const verifyResetPasswordService = (data) => {
         }
     })
 }
-const updatePasswordService = (userId,data) => {
+const updatePasswordService = (userId, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const user = await User.findOne({_id : userId});
+            const user = await User.findOne({ _id: userId });
             if (!user) {
-              
+
                 resolve({
                     code: 404,
                     success: false,
@@ -511,21 +513,21 @@ const updatePasswordService = (userId,data) => {
                 })
             }
             const isCurrentPassword = await bcrypt.compare(data.newPassword, user.password);
-         
+
             if (isCurrentPassword) {
-            
+
                 resolve({
                     code: 404,
                     success: false,
                     message: 'Mật khẩu mới không được giống mật khẩu hiện tại!'
                 })
-            }else{
+            } else {
                 const saltRounds = 10
-                let hashedNewPassword = await  bcrypt.hash(data.newPassword, saltRounds)
-               
-    
-                const updatePassword =  User.updateOne({ _id: userId }, { password: hashedNewPassword }).then().catch((error)=>{
-                   console.log('Có lỗi khi update mật khẩu mới!',error)
+                let hashedNewPassword = await bcrypt.hash(data.newPassword, saltRounds)
+
+
+                const updatePassword = User.updateOne({ _id: userId }, { password: hashedNewPassword }).then().catch((error) => {
+                    console.log('Có lỗi khi update mật khẩu mới!', error)
                     resolve({
                         code: 500,
                         success: false,
@@ -538,7 +540,7 @@ const updatePasswordService = (userId,data) => {
                         success: true,
                         message: 'Đổi mật khẩu thành công!'
                     })
-                }else{
+                } else {
                     resolve({
                         code: 500,
                         success: false,
@@ -546,14 +548,34 @@ const updatePasswordService = (userId,data) => {
                     })
                 }
             }
-           
-           
+
+
 
         } catch (e) {
             reject(e)
         }
     })
 }
+
+const exportExcel = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const totalUser = await User.count();
+            let allUser = [];
+            allUser = await User.find();
+
+            resolve({
+                code: 200,
+                success: true,
+                message: 'Lấy danh sách User thành công!',
+                data: allUser,
+                total: totalUser,
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 module.exports = {
     createUser,
@@ -567,5 +589,6 @@ module.exports = {
     resetPasswordService,
     verifyResetPasswordService,
     updatePasswordService,
-    getAllUserSearch
+    getAllUserSearch,
+    exportExcel
 }

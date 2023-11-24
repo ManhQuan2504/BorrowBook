@@ -285,6 +285,7 @@ const UserManagement = () => {
       console.error(error);
     }
   };
+
   const handleRefresh = async () => {
     try {
       // setLoading(true); // Set loading to true before making the API call
@@ -295,6 +296,17 @@ const UserManagement = () => {
       setLoading(false); // Set loading back to false after the API call is complete
     }
   };
+
+  const handleExportExcel = async () => {
+    try {
+      const access_token = localStorage.getItem("access_token");
+      await UserService.exportExcel(access_token);
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const handleCheckboxChange = (userId) => {
     if (userId === "selectAll") {
       // Handle "Select All" checkbox separately
@@ -347,7 +359,7 @@ const UserManagement = () => {
     <>
       <Container className="ContainerUserManagement">
         <Header className="HeaderManagement" as="h1" textAlign="center">
-         <Icon name="user outline"></Icon> User Management
+          <Icon name="user outline"></Icon> User Management
         </Header>
 
         <div className="header-actions">
@@ -359,16 +371,19 @@ const UserManagement = () => {
             Thêm Người Dùng
           </Button>
           <div style={{ display: "flex" }}>
-          {isDeleteButtonVisible && (
-            <Button
-            className="ButtonDeleteSelected"
-            negative
-            onClick={handleDeleteSelected}
-            disabled={!isDeleteButtonVisible}
-          >
-            {selectedCount > 1 ? `Xóa ${selectedCount} lựa chọn` : "Xóa 1 lựa chọn"}
-          </Button>
+            {isDeleteButtonVisible && (
+              <Button
+                className="ButtonDeleteSelected"
+                negative
+                onClick={handleDeleteSelected}
+                disabled={!isDeleteButtonVisible}
+              >
+                {selectedCount > 1 ? `Xóa ${selectedCount} lựa chọn` : "Xóa 1 lựa chọn"}
+              </Button>
             )}
+            <Button className="ButtonRefresh" icon onClick={handleExportExcel}>
+              <Icon name="cloud download" />
+            </Button>
             <Button className="ButtonRefresh" icon onClick={handleRefresh}>
               <Icon name="refresh" />
             </Button>
@@ -495,10 +510,10 @@ const UserManagement = () => {
                       textOverflow: "ellipsis",
                     }}
                   >
-                   <Checkbox
-                checked={selectAllChecked}
-                onChange={() => handleCheckboxChange("selectAll")}
-              />
+                    <Checkbox
+                      checked={selectAllChecked}
+                      onChange={() => handleCheckboxChange("selectAll")}
+                    />
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     style={{

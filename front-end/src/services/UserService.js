@@ -34,14 +34,14 @@ export const detailUserLogin = async (id, accessToken) => {
     .catch((err) => err)
 }
 
-export const updatePassword1 = async (access_token,newPassword,confirmNewPassword) => {
+export const updatePassword1 = async (access_token, newPassword, confirmNewPassword) => {
   try {
-   
+
     const { data } = await axios.put(
       BASE_URL + `/user/updatePassword`,
       {
         newPassword
-        ,confirmNewPassword
+        , confirmNewPassword
       },
       {
         headers: {
@@ -49,12 +49,13 @@ export const updatePassword1 = async (access_token,newPassword,confirmNewPasswor
         },
       }
     )
-    console.log('data',data)
+    console.log('data', data)
     return data
   } catch (error) {
     console.log(error)
   }
 }
+
 export const updatePassword = async (access_token, newPassword, confirmNewPassword, customHeaders = {}) =>
   await axios
     .put(
@@ -72,9 +73,10 @@ export const updatePassword = async (access_token, newPassword, confirmNewPasswo
     )
     .then((res) => res.data)
     .catch((err) => err)
-export const updateUserInfo = async (access_token,id,dataEdit) => {
+
+export const updateUserInfo = async (access_token, id, dataEdit) => {
   try {
-    console.log('dataEdit',dataEdit)
+    console.log('dataEdit', dataEdit)
     const { data } = await axios.put(
       BASE_URL + `/user/update-user/${id}`,
       {
@@ -92,12 +94,13 @@ export const updateUserInfo = async (access_token,id,dataEdit) => {
     console.log(error)
   }
 }
-export const deleteUser = async (access_token,id) => {
+
+export const deleteUser = async (access_token, id) => {
   try {
-    
+
     const { data } = await axios.delete(
       BASE_URL + `/user/delete-user/${id}`,
-      
+
       {
         headers: {
           token: `Bearer ${access_token}`,
@@ -159,7 +162,8 @@ export const getAllUser = async (accessToken, limit, page) => {
     .then((res) => res.data)
     .catch((err) => err);
 };
-export const getAllUserSearch = async (accessToken, limit, page,type,key) => {
+
+export const getAllUserSearch = async (accessToken, limit, page, type, key) => {
   console.log(type, key);
   return await apiService
     .get(`/user/get-all-user-search`, {
@@ -179,7 +183,6 @@ export const getAllUserSearch = async (accessToken, limit, page,type,key) => {
 
 
 export const refreshToken = async (refreshToken) => {
-  // console.log('refreshToken', refreshToken)
   const res = await axios.post(`http://localhost:3001/api/user/refresh-token`, {}, {
     headers: {
       token: `Bearer ${refreshToken}`,
@@ -203,4 +206,23 @@ export const logoutAccount = async (accessToken) => {
     .catch((err) => err)
 }
 
+export const exportExcel = async (accessToken) => {
+  try {
+    const response = await apiService.get(`/user/export`, {
+      headers: {
+        token: `Bearer ${accessToken}`,
+      },
+      responseType: 'arraybuffer', // Đặt kiểu dữ liệu trả về là arraybuffer
+    });
 
+    const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.setAttribute('download', 'UserData.xlsx'); // Bạn có thể đặt tên file tùy ý ở đây
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error(error);
+  }
+};
