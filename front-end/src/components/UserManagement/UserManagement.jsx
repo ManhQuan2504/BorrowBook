@@ -18,8 +18,15 @@ import {
 import "./style.scss";
 import * as UserService from "../../services/UserService";
 import { Notification } from "../../components/Notification/Notification";
+import { useSelector } from "react-redux";
+import languageDataEn from "../../translations/en.json";
+import languageDataVi from "../../translations/vi.json";
+import { LANGUAGES } from "../../contants/path";
 
 const UserManagement = () => {
+  const language = useSelector((state) => state.borrowBookReducer.language);
+ 
+
   const [loading, setLoading] = useState(true);
   const [dataAllUser, setdataAllUser] = useState([]);
   const [recordsPerPage, setRecordsPerPage] = useState(30);
@@ -311,7 +318,9 @@ const UserManagement = () => {
     if (userId === "selectAll") {
       // Handle "Select All" checkbox separately
       setSelectAllChecked(!selectAllChecked);
-      setSelectedCheckboxes(selectAllChecked ? [] : dataAllUser.map(user => user._id));
+      setSelectedCheckboxes(
+        selectAllChecked ? [] : dataAllUser.map((user) => user._id)
+      );
     } else {
       setSelectedCheckboxes((prevSelected) => {
         if (prevSelected.includes(userId)) {
@@ -359,7 +368,10 @@ const UserManagement = () => {
     <>
       <Container className="ContainerUserManagement">
         <Header className="HeaderManagement" as="h1" textAlign="center">
-          <Icon name="user outline"></Icon> User Management
+          <Icon name="user outline"></Icon>
+          {language === LANGUAGES.VI
+            ? languageDataVi.content.userManagement.userManagementTitle
+            : languageDataEn.content.userManagement.userManagementTitle}
         </Header>
 
         <div className="header-actions">
@@ -368,7 +380,9 @@ const UserManagement = () => {
             primary
             onClick={handleAddUser}
           >
-            Thêm Người Dùng
+            {language === LANGUAGES.VI
+              ? languageDataVi.content.userManagement.buttonAddUser
+              : languageDataEn.content.userManagement.buttonAddUser}
           </Button>
           <div style={{ display: "flex" }}>
             {isDeleteButtonVisible && (
@@ -378,7 +392,9 @@ const UserManagement = () => {
                 onClick={handleDeleteSelected}
                 disabled={!isDeleteButtonVisible}
               >
-                {selectedCount > 1 ? `Xóa ${selectedCount} lựa chọn` : "Xóa 1 lựa chọn"}
+                {selectedCount > 1
+                  ? `Xóa ${selectedCount} lựa chọn`
+                  : "Xóa 1 lựa chọn"}
               </Button>
             )}
             <Button className="ButtonRefresh" icon onClick={handleExportExcel}>
@@ -388,7 +404,11 @@ const UserManagement = () => {
               <Icon name="refresh" />
             </Button>
             <Search
-              placeholder="Search..."
+              placeholder={
+                language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.search
+                  : languageDataEn.content.userManagement.search
+              }
               onSearchChange={handleSearchChange}
               onResultSelect={handleSearchResultSelect}
               value={searchQuery}
@@ -402,7 +422,11 @@ const UserManagement = () => {
           </div>
         </div>
         <Modal open={modalOpen} onClose={handleCloseModal} size="small">
-          <Header content="Thêm Người Dùng" />
+          <Header content={
+                language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.buttonAddUser
+                  : languageDataEn.content.userManagement.buttonAddUser
+              } />
           <Modal.Content>
             <Form>
               <Grid>
@@ -423,13 +447,21 @@ const UserManagement = () => {
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Field>
-                      <label>Password</label>
+                      <label>{
+                language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.password
+                  : languageDataEn.content.userManagement.password
+              }</label>
                       <input
                         onChange={handlePassword}
                         value={password}
                         minLength={6}
                         type="password"
-                        placeholder="Create password"
+                        placeholder={
+                          language === LANGUAGES.VI
+                            ? languageDataVi.content.userManagement.password
+                            : languageDataEn.content.userManagement.password
+                        }
                       />
                       {errPassword && (
                         <div className="error-message">{errPassword}</div>
@@ -440,7 +472,11 @@ const UserManagement = () => {
                 <Grid.Row columns={2}>
                   <Grid.Column>
                     <Form.Field>
-                      <label>Name</label>
+                      <label>{
+                language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.name
+                  : languageDataEn.content.userManagement.name
+              }</label>
                       <input
                         onChange={handleName}
                         value={clientName}
@@ -454,7 +490,11 @@ const UserManagement = () => {
                   </Grid.Column>
                   <Grid.Column>
                     <Form.Field>
-                      <label>Phone</label>
+                      <label>{
+                language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.phone
+                  : languageDataEn.content.userManagement.phone
+              }</label>
                       <input
                         onChange={handlePhone}
                         value={phone}
@@ -470,7 +510,11 @@ const UserManagement = () => {
                 <Grid.Row columns={2}>
                   <Grid.Column>
                     <Form.Field>
-                      <label>Address</label>
+                      <label>{
+                language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.address
+                  : languageDataEn.content.userManagement.address
+              }</label>
                       <input
                         onChange={handleAddress}
                         value={address}
@@ -488,10 +532,18 @@ const UserManagement = () => {
           </Modal.Content>
           <Modal.Actions>
             <Button negative onClick={handleCloseModal}>
-              Hủy
+            {
+                language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.cancel
+                  : languageDataEn.content.userManagement.cancel
+              }
             </Button>
             <Button positive onClick={handleSaveUser}>
-              Lưu
+            {
+                language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.save
+                  : languageDataEn.content.userManagement.save
+              }
             </Button>
           </Modal.Actions>
         </Modal>
@@ -517,12 +569,14 @@ const UserManagement = () => {
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     style={{
-                      width: "20px",
+                      width: "50px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                     }}
                   >
-                    STT
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.stt
+                      : languageDataEn.content.userManagement.stt}
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     style={{
@@ -531,7 +585,9 @@ const UserManagement = () => {
                       textOverflow: "ellipsis",
                     }}
                   >
-                    Name
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.name
+                      : languageDataEn.content.userManagement.name}
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     style={{
@@ -540,7 +596,9 @@ const UserManagement = () => {
                       textOverflow: "ellipsis",
                     }}
                   >
-                    Email
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.email
+                      : languageDataEn.content.userManagement.email}
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     style={{
@@ -549,7 +607,9 @@ const UserManagement = () => {
                       textOverflow: "ellipsis",
                     }}
                   >
-                    Phone
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.phone
+                      : languageDataEn.content.userManagement.phone}
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     style={{
@@ -558,7 +618,9 @@ const UserManagement = () => {
                       textOverflow: "ellipsis",
                     }}
                   >
-                    Address
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.address
+                      : languageDataEn.content.userManagement.address}
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     style={{
@@ -567,7 +629,9 @@ const UserManagement = () => {
                       textOverflow: "ellipsis",
                     }}
                   >
-                    Role
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.role
+                      : languageDataEn.content.userManagement.role}
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     style={{
@@ -576,7 +640,9 @@ const UserManagement = () => {
                       textOverflow: "ellipsis",
                     }}
                   >
-                    Action
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.action
+                      : languageDataEn.content.userManagement.action}
                   </Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
@@ -633,16 +699,24 @@ const UserManagement = () => {
                 onClose={handleCloseDeleteModal}
                 size="small"
               >
-                <Header content="Xác nhận xóa người dùng" />
+                <Header content={language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.confirmUserDeletion
+                      : languageDataEn.content.userManagement.confirmUserDeletion} />
                 <Modal.Content>
-                  <p>Bạn có chắc chắn muốn xóa người dùng này?</p>
+                  <p>{language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.areYouSure
+                      : languageDataEn.content.userManagement.areYouSure}</p>
                 </Modal.Content>
                 <Modal.Actions>
                   <Button negative onClick={handleCloseDeleteModal}>
-                    Hủy
+                  {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.cancel
+                      : languageDataEn.content.userManagement.cancel}
                   </Button>
                   <Button positive onClick={handleConfirmDelete}>
-                    Xác nhận
+                  {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.confirm
+                      : languageDataEn.content.userManagement.confirm}
                   </Button>
                 </Modal.Actions>
               </Modal>
@@ -651,7 +725,9 @@ const UserManagement = () => {
                 onClose={handleCloseModalEdit}
                 size="small"
               >
-                <Header content="Sửa Người Dùng" />
+                <Header content= {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.editUser
+                      : languageDataEn.content.userManagement.editUser} />
                 <Modal.Content>
                   <Form>
                     <Grid>
@@ -673,7 +749,9 @@ const UserManagement = () => {
                         </Grid.Column>
                         <Grid.Column>
                           <Form.Field>
-                            <label>Phone</label>
+                            <label>{language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.phone
+                      : languageDataEn.content.userManagement.phone}</label>
                             <input
                               onChange={(e) => setEditPhone(e.target.value)}
                               value={editPhone}
@@ -689,7 +767,9 @@ const UserManagement = () => {
                       <Grid.Row columns={2}>
                         <Grid.Column>
                           <Form.Field>
-                            <label>Name</label>
+                            <label>{language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.name
+                      : languageDataEn.content.userManagement.name}</label>
                             <input
                               onChange={(e) => setEditName(e.target.value)}
                               value={editName}
@@ -705,7 +785,9 @@ const UserManagement = () => {
                         </Grid.Column>
                         <Grid.Column>
                           <Form.Field>
-                            <label>Address</label>
+                            <label>{language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.address
+                      : languageDataEn.content.userManagement.address}</label>
                             <input
                               onChange={(e) => setEditAddress(e.target.value)}
                               value={editAddress}
@@ -722,10 +804,14 @@ const UserManagement = () => {
                 </Modal.Content>
                 <Modal.Actions>
                   <Button negative onClick={handleCloseModalEdit}>
-                    Hủy
+                  {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.cancel
+                      : languageDataEn.content.userManagement.cancel}
                   </Button>
                   <Button positive onClick={handleSaveEditUser}>
-                    Lưu
+                  {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.save
+                      : languageDataEn.content.userManagement.save}
                   </Button>
                 </Modal.Actions>
               </Modal>
@@ -735,7 +821,13 @@ const UserManagement = () => {
                   <Table.HeaderCell colSpan="8">
                     <Menu className="MenuHeader" floated="left">
                       <Header size="small">
-                        Tìm thấy {totalRecords} bản ghi
+                        {language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.found
+                          : languageDataEn.content.userManagement.found}{" "}
+                        {totalRecords}{" "}
+                        {language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.records
+                          : languageDataEn.content.userManagement.records}
                       </Header>
                     </Menu>
                     <Menu floated="right" pagination>
@@ -799,13 +891,83 @@ const UserManagement = () => {
                         selection
                         compact
                         options={[
-                          { key: 1, text: "1 bản ghi/trang", value: 1 },
-                          { key: 5, text: "5 bản ghi/trang", value: 5 },
-                          { key: 15, text: "15 bản ghi/trang", value: 15 },
-                          { key: 30, text: "30 bản ghi/trang", value: 30 },
-                          { key: 50, text: "50 bản ghi/trang", value: 50 },
-                          { key: 100, text: "100 bản ghi/trang", value: 100 },
-                          { key: 200, text: "200 bản ghi/trang", value: 200 },
+                          {
+                            key: 1,
+                            text: `1 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 1,
+                          },
+                          {
+                            key: 5,
+                            text: `5 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 5,
+                          },
+                          {
+                            key: 15,
+                            text: `15 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 15,
+                          },
+                          {
+                            key: 30,
+                            text: `30 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 30,
+                          },
+                          {
+                            key: 50,
+                            text: `50 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 50,
+                          },
+                          {
+                            key: 100,
+                            text: `100 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 100,
+                          },
+                          {
+                            key: 200,
+                            text: `200 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 200,
+                          },
                         ]}
                         value={recordsPerPage}
                         onChange={handleRecordsPerPageChange}

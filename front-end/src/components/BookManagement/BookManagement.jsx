@@ -3,7 +3,10 @@ import { Icon, Table, Header, Container, Menu, Checkbox, Button, Modal, Form, Gr
 import './style.scss';
 import * as BookServices from '../../services/BookService';
 import { Notification } from "../../components/Notification/Notification";
-
+import languageDataEn from "../../translations/en.json";
+import languageDataVi from "../../translations/vi.json";
+import { LANGUAGES } from "../../contants/path";
+import { useSelector } from 'react-redux';
 
 const BookManagement = () => {
   const [countPage, setCountPage] = useState(0);
@@ -32,6 +35,7 @@ const BookManagement = () => {
   const [errPublishYear, setErrPublishYear] = useState("");
   const [errAuthorBook, setErrAuthorBook] = useState("");
 
+  const language = useSelector((state) => state.borrowBookReducer.language);
 
  
   const [totalPages, setTotalPages] = useState(1);
@@ -220,22 +224,30 @@ const BookManagement = () => {
   return (
     <Container className='ContainerBookManagement'>
       <Header className='HeaderManagement' as='h1' textAlign='center'>
-      <Icon name="book"></Icon> Book Management
+      <Icon name="book"></Icon> {language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.bookManagementTitle
+            : languageDataEn.content.bookManagement.bookManagementTitle}
       </Header>
 
       <Button primary onClick={handleAddBook}>
-        Thêm Sách
+      {language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.buttonAddBook
+            : languageDataEn.content.bookManagement.buttonAddBook}
       </Button>
 
       <Modal open={modalOpen} onClose={handleCloseModal} size="small">
-        <Header content="Thêm Sách" />
+        <Header content={language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.buttonAddBook
+            : languageDataEn.content.bookManagement.buttonAddBook} />
         <Modal.Content>
           <Form>
             <Grid>
               <Grid.Row columns={2}>
                 <Grid.Column>
                   <Form.Field>
-                    <label>Tên sách</label>
+                    <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.nameBook
+            : languageDataEn.content.bookManagement.nameBook}</label>
                     <input
                       onChange={handleTitle}
                       value={title}
@@ -249,7 +261,9 @@ const BookManagement = () => {
                 </Grid.Column>
                 <Grid.Column>
                   <Form.Field>
-                    <label>Thể loại</label>
+                    <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.category
+            : languageDataEn.content.bookManagement.category}</label>
                     <input
                       onChange={handelCategory}
                       value={category}
@@ -266,7 +280,9 @@ const BookManagement = () => {
               <Grid.Row columns={2}>
                 <Grid.Column>
                   <Form.Field>
-                    <label>Số lượng</label>
+                    <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.quantity
+            : languageDataEn.content.bookManagement.quantity}</label>
                     <input
                       onChange={handleCountInStock}
                       value={countInStock}
@@ -280,7 +296,9 @@ const BookManagement = () => {
                 </Grid.Column>
                 <Grid.Column>
                   <Form.Field>
-                    <label>Năm xuất bản</label>
+                    <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.yearPublication
+            : languageDataEn.content.bookManagement.yearPublication}</label>
                     <Dropdown
                       placeholder="Select Year"
                       selection
@@ -297,7 +315,9 @@ const BookManagement = () => {
               <Grid.Row columns={2}>
                 <Grid.Column>
                   <Form.Field>
-                    <label>Tác giả</label>
+                    <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.author
+            : languageDataEn.content.bookManagement.author}</label>
                     <input
                       onChange={handleAuthorBook}
                       value={authorBook}
@@ -315,10 +335,14 @@ const BookManagement = () => {
         </Modal.Content>
         <Modal.Actions>
           <Button negative onClick={handleCloseModal}>
-            Hủy
+          {language === LANGUAGES.VI
+            ? languageDataVi.content.userManagement.cancel
+            : languageDataEn.content.userManagement.cancel}
           </Button>
           <Button positive onClick={handleSaveBook}>
-            Lưu
+          {language === LANGUAGES.VI
+            ? languageDataVi.content.userManagement.save
+            : languageDataEn.content.userManagement.save}
           </Button>
         </Modal.Actions>
       </Modal>
@@ -329,12 +353,24 @@ const BookManagement = () => {
           <Table.Row>
             <Table.HeaderCell> <Checkbox /></Table.HeaderCell>
             <Table.HeaderCell>ID</Table.HeaderCell>
-            <Table.HeaderCell>Tên</Table.HeaderCell>
-            <Table.HeaderCell>Thể loại</Table.HeaderCell>
-            <Table.HeaderCell>Số lượng</Table.HeaderCell>
-            <Table.HeaderCell>Năm xuất bản</Table.HeaderCell>
-            <Table.HeaderCell>Tác giả</Table.HeaderCell>
-            <Table.HeaderCell>Action</Table.HeaderCell>
+            <Table.HeaderCell> {language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.nameBook
+            : languageDataEn.content.bookManagement.nameBook}</Table.HeaderCell>
+            <Table.HeaderCell>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.category
+            : languageDataEn.content.bookManagement.category}</Table.HeaderCell>
+            <Table.HeaderCell>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.quantity
+            : languageDataEn.content.bookManagement.quantity}</Table.HeaderCell>
+            <Table.HeaderCell>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.yearPublication
+            : languageDataEn.content.bookManagement.yearPublication}</Table.HeaderCell>
+            <Table.HeaderCell>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.author
+            : languageDataEn.content.bookManagement.author}</Table.HeaderCell>
+            <Table.HeaderCell>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.action
+            : languageDataEn.content.bookManagement.action}</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
@@ -358,14 +394,18 @@ const BookManagement = () => {
                 <Icon size="big" name="delete" onClick={() => handleDeleteBook(data.id)} />
 
                 <Modal open={modalUpdateOpen} onClose={handleCloseUpdateModal} size="small">
-                  <Header content="Sửa thông tin Sách" />
+                  <Header content={language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.editBook
+            : languageDataEn.content.bookManagement.editBook} />
                   <Modal.Content>
                     <Form>
                       <Grid>
                         <Grid.Row columns={2}>
                           <Grid.Column>
                             <Form.Field>
-                              <label>Tên sách</label>
+                              <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.nameBook
+            : languageDataEn.content.bookManagement.nameBook}</label>
                               <input
                                 onChange={handleTitle}
                                 value={title}
@@ -379,7 +419,9 @@ const BookManagement = () => {
                           </Grid.Column>
                           <Grid.Column>
                             <Form.Field>
-                              <label>Thể loại</label>
+                              <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.category
+            : languageDataEn.content.bookManagement.category}</label>
                               <input
                                 onChange={handelCategory}
                                 value={category}
@@ -396,7 +438,9 @@ const BookManagement = () => {
                         <Grid.Row columns={2}>
                           <Grid.Column>
                             <Form.Field>
-                              <label>Số lượng</label>
+                              <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.quantity
+            : languageDataEn.content.bookManagement.quantity}</label>
                               <input
                                 onChange={handleCountInStock}
                                 value={countInStock}
@@ -410,7 +454,9 @@ const BookManagement = () => {
                           </Grid.Column>
                           <Grid.Column>
                             <Form.Field>
-                              <label>Năm xuất bản</label>
+                              <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.yearPublication
+            : languageDataEn.content.bookManagement.yearPublication}</label>
                               <Dropdown
                                 placeholder="Select Year"
                                 selection
@@ -427,7 +473,9 @@ const BookManagement = () => {
                         <Grid.Row columns={2}>
                           <Grid.Column>
                             <Form.Field>
-                              <label>Tác giả</label>
+                              <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.bookManagement.author
+            : languageDataEn.content.bookManagement.author}</label>
                               <input
                                 onChange={handleAuthorBook}
                                 value={authorBook}
@@ -445,10 +493,14 @@ const BookManagement = () => {
                   </Modal.Content>
                   <Modal.Actions>
                     <Button negative onClick={handleCloseUpdateModal}>
-                      Hủy
+                    {language === LANGUAGES.VI
+            ? languageDataVi.content.userManagement.cancel
+            : languageDataEn.content.userManagement.cancel}
                     </Button>
                     <Button positive onClick={handleSaveUpdateBook}>
-                      Lưu
+                    {language === LANGUAGES.VI
+            ? languageDataVi.content.userManagement.save
+            : languageDataEn.content.userManagement.save}
                     </Button>
                   </Modal.Actions>
                 </Modal>
@@ -458,9 +510,15 @@ const BookManagement = () => {
                   size='mini'
                   onCancel={() => setConfirmOpen(false)}
                   onConfirm={handleDelete}
-                  cancelButton="No"
-                  confirmButton="Yes"
-                  content="Are you sure you want to delete this book?"
+                  cancelButton={language === LANGUAGES.VI
+                    ? languageDataVi.content.bookManagement.no
+                    : languageDataEn.content.bookManagement.no}
+                  confirmButton={language === LANGUAGES.VI
+                    ? languageDataVi.content.bookManagement.yes
+                    : languageDataEn.content.bookManagement.yes}
+                  content= {language === LANGUAGES.VI
+                    ? languageDataVi.content.bookManagement.areYouSure
+                    : languageDataEn.content.bookManagement.areYouSure}
                 />
               </Table.Cell>
             </Table.Row>
@@ -537,13 +595,83 @@ const BookManagement = () => {
                         selection
                         compact
                         options={[
-                          { key: 1, text: "1 bản ghi/trang", value: 1 },
-                          { key: 5, text: "5 bản ghi/trang", value: 5 },
-                          { key: 15, text: "15 bản ghi/trang", value: 15 },
-                          { key: 30, text: "30 bản ghi/trang", value: 30 },
-                          { key: 50, text: "50 bản ghi/trang", value: 50 },
-                          { key: 100, text: "100 bản ghi/trang", value: 100 },
-                          { key: 200, text: "200 bản ghi/trang", value: 200 },
+                          {
+                            key: 1,
+                            text: `1 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 1,
+                          },
+                          {
+                            key: 5,
+                            text: `5 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 5,
+                          },
+                          {
+                            key: 15,
+                            text: `15 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 15,
+                          },
+                          {
+                            key: 30,
+                            text: `30 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 30,
+                          },
+                          {
+                            key: 50,
+                            text: `50 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 50,
+                          },
+                          {
+                            key: 100,
+                            text: `100 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 100,
+                          },
+                          {
+                            key: 200,
+                            text: `200 ${
+                              language === LANGUAGES.VI
+                                ? languageDataVi.content.userManagement
+                                    .recordPage
+                                : languageDataEn.content.userManagement
+                                    .recordPage
+                            }`,
+                            value: 200,
+                          },
                         ]}
                         value={recordsPerPage}
                         onChange={handleRecordsPerPageChange}

@@ -1,0 +1,82 @@
+{
+    "header":{
+        "userManagement":"Quản Lý Người Dùng",
+        "bookManagement":"Quản Lý Sách",
+        "bookBorrowManagement":"Quản Lý Mượn Sách",
+        "myProfile":"Thông tin cá nhân",
+        "logOut":"Đăng xuất"
+        
+  }
+  ,
+    "content":{
+        "userManagement":{
+            "userManagementTitle":"Quản Lý Người Dùng",
+            "buttonAddUser":"Thêm người dùng",
+            "search":"Tìm kiếm",
+            "stt":"STT",
+            "name":"Tên",
+            "email":"Email",
+            "phone":"Điện Thoại",
+            "address":"Địa Chỉ",
+            "role":"Vai trò",
+            "action":"Hành Động",
+            "found":"Tìm thấy",
+            "records":"bản ghi",
+            "recordPage":"bản ghi/trang",
+            "admin":"quản trị",
+            "user":"người dùng",
+            "password":"Mật khẩu",
+            "save":"Lưu",
+            "cancel":"Hủy",
+            "editUser":"Sửa Người Dùng",
+            "confirmUserDeletion":"Xác nhận xóa người dùng",
+            "areYouSure":"Bạn có chắc chắn muốn xóa người dùng này?",
+            "confirm":"Xác Nhận"
+        },
+        "bookManagement":{
+            "bookManagementTitle":"Quản Lý Sách",
+            "buttonAddBook":"Thêm sách",
+            "nameBook":"Tên sách",
+            "category":"Thể Loại",
+            "quantity":"Số lượng",
+            "yearPublication":"Năm xuất bản",
+            "author":"Tác giả",
+            "action":"Hành động",
+            "recordPage":"bản ghi/trang",
+            "editBook":"Sửa thông tin Sách",
+            "areYouSure":"Bạn có chắc chắn muốn xóa sách này?",
+            "no":"Có",
+            "yes":"Không"
+        },
+        "bookBorrowManagement":{
+            "bookBorrowManagementTitle":"Quản Lý Mượn Sách",
+            "buttonAddBookBorrow":"Mượn Sách",
+            "borrower":"Người mượn",
+            "borrowedBook":"Sách mượn",
+            "borrowedDate":"Ngày mượn",
+            "dueDate":"Ngày hẹn trả",
+            "returnDate":"Ngày trả",
+            "status":"Trạng thái",
+            "action":"Hành động",
+            "recordPage":"bản ghi/trang",
+            "searchUser":"Tìm kiếm người dùng",
+            "searchBook":"Tìm kiếm sách",
+            "returnBook":"Trả sách",
+            "areYouSure":"Bạn có chắc chắn muốn trả sách này?",
+            "no":"Không",
+            "yes":"Có"
+        },
+        "profile":{
+            "userName":"Tên người dùng",
+            "fullName":"Tên người dùng",
+            "email":"Email",
+            "phone":"Số điện thoại",
+            "address":"Địa chỉ",
+            "noAddress":"Không có địa chỉ",
+            "changePassword":"Thay đổi mật khẩu",
+            "newPassword":"Mật khẩu mới",
+            "confirmPassword":"Nhập lại mật khẩu",
+            "updatePassword":"Cập nhật mật khẩu"
+        }
+    }
+}

@@ -7,6 +7,8 @@
     border: 1px solid #ddd;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: 79vh; // Set the height to 100% of the viewport height
+    overflow-y: auto; // Enable vertical scrollbar if needed
   }
   
   .profile-header {

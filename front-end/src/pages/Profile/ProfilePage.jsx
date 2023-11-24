@@ -5,9 +5,13 @@ import './style.scss';
 import { useDispatch, useSelector  } from 'react-redux';
 import * as UserService from '../../services/UserService';
 import { Notification } from "../../components/Notification/Notification";
-
+import languageDataEn from "../../translations/en.json";
+import languageDataVi from "../../translations/vi.json";
+import { LANGUAGES } from "../../contants/path";
 
 const ProfilePage = () => {
+  const language = useSelector((state) => state.borrowBookReducer.language);
+
 const [{ data: currentUser } = {}] = useSelector((state) => state.borrowBookReducer.userInfo);
 const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -35,14 +39,16 @@ const [newPassword, setNewPassword] = useState('');
     <div className="profile-container">
     <div className="profile-header">
       <Image src={currentUser?.image || logoUser} size="small" avatar />
-      <h2>User Name</h2>
+     
     </div>
     <Divider />
     <List>
       <List.Item>
         <List.Icon name="user" />
         <List.Content>
-          <List.Header>Full Name</List.Header>
+          <List.Header> {language === LANGUAGES.VI
+            ? languageDataVi.content.profile.fullName
+            : languageDataEn.content.profile.fullName}</List.Header>
           <Input value={currentUser?.name || ''} readOnly />
         </List.Content>
       </List.Item>
@@ -50,7 +56,9 @@ const [newPassword, setNewPassword] = useState('');
       <List.Item>
         <List.Icon name="mail" />
         <List.Content>
-          <List.Header>Email</List.Header>
+          <List.Header>{language === LANGUAGES.VI
+            ? languageDataVi.content.profile.email
+            : languageDataEn.content.profile.email}</List.Header>
           <Input value={currentUser?.email || ''} readOnly />
         </List.Content>
       </List.Item>
@@ -58,7 +66,9 @@ const [newPassword, setNewPassword] = useState('');
       <List.Item>
         <List.Icon name="phone" />
         <List.Content>
-          <List.Header>Phone</List.Header>
+          <List.Header>{language === LANGUAGES.VI
+            ? languageDataVi.content.profile.phone
+            : languageDataEn.content.profile.phone}</List.Header>
           <Input value={currentUser?.phone || ''} readOnly />
         </List.Content>
       </List.Item>
@@ -66,18 +76,26 @@ const [newPassword, setNewPassword] = useState('');
       <List.Item>
         <List.Icon name="home" />
         <List.Content>
-          <List.Header>Address</List.Header>
-          <Input value={currentUser?.address || 'No address!'} readOnly />
+          <List.Header>{language === LANGUAGES.VI
+            ? languageDataVi.content.profile.address
+            : languageDataEn.content.profile.address}</List.Header>
+          <Input value={currentUser?.address || language === LANGUAGES.VI
+            ? languageDataVi.content.profile.noAddress
+            : languageDataEn.content.profile.noAddress} readOnly />
         </List.Content>
       </List.Item>
     </List>
     <Divider />
     <Form>
       <Form.Field>
-        <label>Change Password</label>
+        <label>{language === LANGUAGES.VI
+            ? languageDataVi.content.profile.changePassword
+            : languageDataEn.content.profile.changePassword}</label>
         <Input
           type="password"
-          placeholder="New Password"
+          placeholder={language === LANGUAGES.VI
+            ? languageDataVi.content.profile.newPassword
+            : languageDataEn.content.profile.newPassword}
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
@@ -85,13 +103,17 @@ const [newPassword, setNewPassword] = useState('');
       <Form.Field>
         <Input
           type="password"
-          placeholder="Confirm Password"
+          placeholder= {language === LANGUAGES.VI
+            ? languageDataVi.content.profile.confirmPassword
+            : languageDataEn.content.profile.confirmPassword}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
       </Form.Field>
       <Button primary onClick={handlePasswordChange}>
-        Update Password
+      {language === LANGUAGES.VI
+            ? languageDataVi.content.profile.updatePassword
+            : languageDataEn.content.profile.updatePassword}
       </Button>
     </Form>
   </div>
