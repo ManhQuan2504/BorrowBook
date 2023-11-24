@@ -2,33 +2,26 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   userInfo: [],
-  
-  view: {},
+  language: 'vi', // Mặc định là tiếng Việt
+
 };
 
 export const borrowBookSlice = createSlice({
   name: "borrowBook",
   initialState,
   reducers: {
-  
-
-    // View
-    setView: (state, action) => {
-      state.view = action.payload;
-    },
-
     // userInfo
     detailUser: (state, action) => {
       state.userInfo[0] = action.payload;
-    
-    },
 
+    },
+    setLanguage: (state, action) => {
+      state.language = action.payload;
+    },
   },
 });
 
 export const {
- 
-  setView,
-  detailUser,
+  detailUser,setLanguage
 } = borrowBookSlice.actions;
 export default borrowBookSlice.reducer;

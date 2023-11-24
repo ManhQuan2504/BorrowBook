@@ -1,0 +1,84 @@
+{
+    "header":{
+        "userManagement":" User Management",
+        "bookManagement":"Book Management",
+        "bookBorrowManagement":"Book Borrow Management",
+        "myProfile":"My Profile",
+        "logOut":"Log Out"
+        
+  }
+  ,
+    "content":{
+        "userManagement":{
+            "userManagementTitle":"User Management",
+            "buttonAddUser":"Add User",
+            "search":"Search",
+            "stt":"No",
+            "name":"Name",
+            "email":"Email",
+            "phone":"Phone",
+            "address":"Address",
+            "role":"Role",
+            "action":"Action",
+            "found":"Found",
+            "records":"Records",
+            "recordPage":"record/page",
+            "admin":"admin",
+            "user":"user",
+            "password":"Password",
+            "save":"Save",
+            "cancel":"Cancel",
+            "editUser":"Edit User",
+            "confirmUserDeletion":"Confirm user deletion",
+            "areYouSure":"Are you sure you want to delete this user?",
+            "confirm":"Confirm"
+        },
+        "bookManagement":{
+            "bookManagementTitle":"Book Management",
+            "buttonAddBook":"Add Book",
+            "nameBook":"Book name",
+            "category":"Category",
+            "quantity":"Quantity",
+            "yearPublication":"Year Publication",
+            "author":"Author",
+            "action":"Action",
+            "recordPage":"record/page",
+            "editBook":"Edit Book",
+            "areYouSure":"Are you sure you want to delete this book?",
+            "no":"No",
+            "yes":"Yes"
+        },
+        "bookBorrowManagement":{
+            "bookBorrowManagementTitle":"Book Borrow Management",
+            "buttonAddBookBorrow":"Book Borrow",
+            "borrower":"Borrower",
+            "borrowedBook":"Borrowed Book",
+            "borrowedDate":"Borrowed Date",
+            "dueDate":"Due Date",
+            "returnDate":"Return Date",
+            "status":"Status",
+            "action":"Action",
+            "recordPage":"record/page",
+            "searchUser":"Search User",
+            "searchBook":"Search Book",
+            "returnBook":"Return Book",
+            "areYouSure":"Are you sure you want to return this book?",
+            "no":"No",
+            "yes":"Yes"
+
+
+        },
+        "profile":{
+            "userName":"User Name",
+            "fullName":"Full Name",
+            "email":"Email",
+            "phone":"Phone",
+            "address":"Address",
+            "noAddress":"No Address",
+            "changePassword":"Change Password",
+            "newPassword":"New Password",
+            "confirmPassword":"Confirm Password",
+            "updatePassword":"Update Password"
+        }
+    }
+}

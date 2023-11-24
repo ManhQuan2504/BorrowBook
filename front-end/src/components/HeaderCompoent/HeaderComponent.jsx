@@ -6,14 +6,15 @@ import "./style.scss";
 import { useDispatch, useSelector } from 'react-redux';
 import { decodeToken } from "react-jwt";
 
-
+import { LANGUAGES } from "../../contants/path";
 import bookImage from "../../assets/images/ngonha.png";
 import { Link, useNavigate } from "react-router-dom";
 import * as UserService from '../../services/UserService'
-import { detailUser } from "../../redux/borrowBookSlice";
-
-
+import { detailUser,setLanguage } from "../../redux/borrowBookSlice";
 import { PATHS } from "../../contants/path";
+import languageDataEn from '../../translations/en.json';
+import languageDataVi from '../../translations/vi.json';
+
 
 const HeaderComponent = () => {
   const [activeItem, setActiveItem] = useState("tms");
@@ -21,8 +22,13 @@ const HeaderComponent = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [{ data: currentUser } = {}] = useSelector((state) => state.borrowBookReducer.userInfo);
+  const language = useSelector((state) => state.borrowBookReducer.language);
 
 
+  const changeLanguage = (newLanguage) => {
+    dispatch(setLanguage(newLanguage));
+    // Gọi hàm thực hiện các thay đổi cần thiết khi thay đổi ngôn ngữ
+  };
   const handleItemClick = (itemName) => {
     localStorage.setItem('activeItem', itemName);
     setActiveItem(itemName);
@@ -92,15 +98,10 @@ const HeaderComponent = () => {
   }
 
   const handleDropdownItemClick = (event, data) => {
-    // data.value contains the selected option value
     if (data.value === 1) {
-      // Thông tin cá nhân
-      navigate(PATHS.PROFILE); // Navigate to the "/profile" route
+      navigate(PATHS.PROFILE);
     } else if (data.value === 2) {
-      // Đăng xuất
       handleLogOut();
-      // alert("Đăng xuất");
-      // Add your logout logic here, such as clearing user session, etc.
     }
   };
  
@@ -121,14 +122,14 @@ const HeaderComponent = () => {
             active={activeItem === "user"}
 
           >
-            <Link onClick={() => handleItemClick("user")} to={PATHS.USER}>User Management</Link>
+            <Link onClick={() => handleItemClick("user")} to={PATHS.USER}>{language === LANGUAGES.VI ? languageDataVi.header.userManagement : languageDataEn.header.userManagement}</Link>
           </Menu.Item>
           <Menu.Item
             name="Book Management"
             active={activeItem === "book"}
 
           >
-            <Link onClick={() => handleItemClick("book")} to={PATHS.BOOK}>Book Management</Link>
+            <Link onClick={() => handleItemClick("book")} to={PATHS.BOOK}>{language === LANGUAGES.VI ? languageDataVi.header.bookManagement : languageDataEn.header.bookManagement}</Link>
           </Menu.Item>
           <Menu.Item
             name="Book Borrow Management"
@@ -136,11 +137,28 @@ const HeaderComponent = () => {
 
           >
             {" "}
-            <Link onClick={() => handleItemClick("borrow")} to={PATHS.BORROW}>Book Borrow Management</Link>
+            <Link onClick={() => handleItemClick("borrow")} to={PATHS.BORROW}>{language === LANGUAGES.VI ? languageDataVi.header.bookBorrowManagement : languageDataEn.header.bookBorrowManagement}</Link>
           </Menu.Item>
 
-          {/* Add right-aligned items */}
+        
           <Menu.Menu position="right">
+         
+        
+          <Menu.Item className="right-content">
+          <div
+        className={`language-vi ${language === LANGUAGES.VI ? 'active' : ''}`}
+        onClick={() => changeLanguage('vi')}
+      >
+        VN
+      </div>
+      <div
+        className={`language-en ${language === LANGUAGES.EN ? 'active' : ''}`}
+        onClick={() => changeLanguage('en')}
+      >
+        EN
+      </div>
+
+          </Menu.Item>
             <Menu.Item className="MenuItemImage">
               <Image className="imageAvatar" src={bookImage} avatar />
             </Menu.Item>
@@ -148,8 +166,8 @@ const HeaderComponent = () => {
               <Dropdown text={currentUser?.name || 'user'}>
 
                 <Dropdown.Menu>
-                  <Dropdown.Item text='Thông tin cá nhân' active={activeItem === ""} value={1} onClick={handleCombinedClick} />
-                  <Dropdown.Item text='Đăng xuất' value={2} onClick={handleDropdownItemClick} />
+                  <Dropdown.Item text={language === LANGUAGES.VI ? languageDataVi.header.myProfile : languageDataEn.header.myProfile} active={activeItem === ""} value={1} onClick={handleCombinedClick} />
+                  <Dropdown.Item text={language === LANGUAGES.VI ? languageDataVi.header.logOut : languageDataEn.header.logOut} value={2} onClick={handleDropdownItemClick} />
                 </Dropdown.Menu>
 
 

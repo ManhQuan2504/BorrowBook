@@ -7,6 +7,51 @@
 .Menu-border{
    border-color: #2185d0 !important;
    padding-top: 5px;
+   
+      .right-content{
+         padding: 0!important;
+         margin-right: 10px !important;
+         margin-bottom: 1px !important;
+
+         
+         .language-vi{
+            margin-right:5px;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            background-color: rgb(216, 216, 159);
+            color: #fff;
+            border-radius: 10px;
+            &.active{
+                background-color: red;
+                color: yellow;
+            }
+            &:hover{
+                background-color: red;
+                color: yellow;
+            }
+           
+        }
+        .language-en{
+            font-weight: 600;
+            padding: 10px;
+           
+                background-color: rgb(225, 225, 159);
+                color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            &:hover{
+                background-color: red;
+                color: rgb(136, 136, 235);
+             }
+            &.active{
+                background-color: red;
+                color: rgb(136, 136, 235);
+            }
+        }
+      }
+    
+//   }
 }
 .LinkTMS{
    border: 1px solid #ddd;
