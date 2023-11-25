@@ -137,6 +137,15 @@ const returnBook = async ({ id }) => {
     }
 };
 
+const exportExcel = async () => {
+    try {
+        const data = await bookModel.findAll();
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 export default {
     getBook,
@@ -145,5 +154,6 @@ export default {
     updateBook,
     deleteBook,
     borrowBook,
-    returnBook
+    returnBook,
+    exportExcel
 }

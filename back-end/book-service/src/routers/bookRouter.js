@@ -15,4 +15,6 @@ router.delete('/delete/:id', bookController.deleteBook);
 
 router.delete('/deletemany/:id', bookController.deleteManyBook);
 
+router.get('/export/', bookController.exportExcel);
+
 export default router;

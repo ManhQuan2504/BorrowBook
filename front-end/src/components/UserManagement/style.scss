@@ -1,82 +1,99 @@
-.ContainerUserManagement{
-   margin-left: 100px !important;
-   margin-right: 100px !important;
-   width: 1419px  !important;
-   .HeaderManagement{
-    color:#2185d0!important;
+.ContainerUserManagement {
+  margin-left: 100px !important;
+  margin-right: 100px !important;
+  width: 1419px !important;
+
+  .HeaderManagement {
+    color: #2185d0 !important;
     padding-top: 20px;
-   }
-.header-actions{
-  display: flex;
-  justify-content: space-between;
-}
- .MenuHeader{
-   min-height:0 !important;
-   border-color: #fff;
- }
- .DropdownLimitPage{
-   width: 200px;
-   font-size: 14px;
-   z-index: 10 !important;
- }
- .table-container{
-   max-width: 1557px;
-  max-height: 500px;
-  overflow: auto;
- }
- .TableFooter {
-   position: sticky;
-   bottom: 0;
-   background-color: #fff;
-   z-index: 1; /* Ensure the footer is above the table */
- }
- .table-content{
+  }
+
+  .header-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .MenuHeader {
+    min-height: 0 !important;
+    border-color: #fff;
+  }
+
+  .DropdownLimitPage {
+    width: 200px;
+    font-size: 14px;
+    z-index: 10 !important;
+  }
+
+  .table-container {
+    max-width: 1557px;
+    max-height: 500px;
+    overflow: auto;
+  }
+
+  .TableFooter {
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 1;
+    /* Ensure the footer is above the table */
+  }
+
+  .table-content {
     margin: 0 !important;
-   // border: 2px solid #000;
-   .sticky-header{
+
+    // border: 2px solid #000;
+    .sticky-header {
       position: sticky;
-     top: 0;
-     z-index: 1;
-     background-color: white;
+      top: 0;
+      z-index: 1;
+      background-color: white;
     }
- }
- .ButtonHandleAddUser{
-   margin-bottom: 30px;
- }
- .ButtonRefresh{
+  }
 
- padding: 10px !important;
-height: 30px;
- background-color: #2185d0;
- color: #fff;
- font-size: .78571429rem;
- margin-top: 4px;
-  &:hover{
-    background-color: #1678c2;
+  .ButtonHandleAddUser {
+    margin-bottom: 30px;
+  }
+
+  .ButtonRefresh {
+
+    padding: 10px !important;
+    height: 30px;
+    background-color: #2185d0;
     color: #fff;
-    text-shadow: none;
-  }
- }
- .IconEdit {
-  &:hover{
-    cursor: pointer;
-  }
- }
- .IconDelete{
-  &:hover{
-    cursor: pointer;
-  }
- }
- .ButtonDeleteSelected{
-  height: 30px;
-  margin-top: 4px;
- }
- .DimmerTable{
-      // margin: 0 !important;
+    font-size: .78571429rem;
+    margin-top: 4px;
 
- }
+    &:hover {
+      background-color: #1678c2;
+      color: #fff;
+      text-shadow: none;
+    }
+  }
+
+  .IconEdit {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .IconDelete {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .ButtonDeleteSelected {
+    height: 30px;
+    margin-top: 4px;
+  }
+
+  .DimmerTable {
+    // margin: 0 !important;
+
+  }
 
 }
-.error-message{
-   color: red;
+
+.error-message {
+  color: red;
 }

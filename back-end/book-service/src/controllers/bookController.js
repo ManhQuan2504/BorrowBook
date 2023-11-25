@@ -1,6 +1,7 @@
 import Joi from "joi";
 import BookService from "../services/BookServices.js"
 import shortid from "shortid";
+import ExcelJS from "exceljs"
 
 const Schema = Joi.object({
     title: Joi.string().label('title'),
@@ -181,7 +182,7 @@ const borrowBook = async (message) => {
     }
 };
 
-const returnBook = async (message) => {
+const returnBook = async (req, res) => {
     try {
         const id = message.idBook;
         console.log({ id });
@@ -198,6 +199,50 @@ const returnBook = async (message) => {
     }
 };
 
+const exportExcel = async (req, res) => {
+    try {
+        const response = await BookService.exportExcel();
+
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('My Sheet', { properties: { tabColor: { argb: 'FFC0000' } } });
+
+        // Chỉnh sửa tên biến từ "worksheet" thành "sheet"
+        sheet.columns = [
+            { header: "Id", key: "id", width: 15 } || "",
+            { header: "Tên sách", key: "title", width: 25 } || "",
+            { header: "Thể loại", key: "category", width: 15 } || "",
+            { header: "Số lượng", key: "countInStock", width: 15 } || "",
+            { header: "Năm xuất bản", key: "publishYear", width: 15 } || "",
+            { header: "Tác giả", key: "authorBook", width: 15 } || "",
+        ];
+
+        // Chỉnh sửa từ "worksheet" thành "sheet"
+        sheet.addRows(response);
+
+        const buffer = await workbook.xlsx.writeBuffer();
+
+        // Set header Content-Disposition
+        res.setHeader('Content-Disposition', 'attachment; filename=userData123.xlsx');
+        // Set content type
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+        res.send(buffer);
+
+        // Không cần return trước khi gửi phản hồi
+        // res.status(200).json({
+        //     status: "OK",
+        //     data: response
+        // });
+    } catch (error) {
+        console.error(error); // Log lỗi để dễ dàng theo dõi
+        res.status(500).json({
+            status: "ERR",
+            error: error.message // Truyền thông điệp lỗi trong phản hồi
+        });
+    }
+};
+
+
 export default {
     getBook,
     searchBook,
@@ -206,5 +251,6 @@ export default {
     deleteBook,
     deleteManyBook,
     borrowBook,
-    returnBook
+    returnBook,
+    exportExcel
 };

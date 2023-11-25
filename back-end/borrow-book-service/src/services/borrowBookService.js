@@ -146,10 +146,28 @@ const deleteBorrowBook = async ({ idBorrowBook }) => {
     }
 };
 
+const exportExcel = async () => {
+    try {
+        const data = await BorrowBookModel
+            .find()
+        if (!data.length) {
+            throw new Error("Can't get BorrowBook");
+        }
+        const formattedData = data.map(item => {
+            item.statusLabel = item.status === 1 ? 'Đang mượn' : (item.status === 2 ? 'Đã trả' : '');
+            return item;
+        });
+        return formattedData;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export default {
     getBorrowBook,
     searchBorrowBook,
     createBorrowBook,
     updateBorrowBook,
-    deleteBorrowBook
+    deleteBorrowBook,
+    exportExcel
 }

@@ -15,4 +15,6 @@ router.delete('/delete/:id', borrowBookController.deleteBorrowBook);
 
 router.delete('/deletemany/:id', borrowBookController.deleteManyBorrowBook);
 
+router.get('/export', borrowBookController.exportExcel);
+
 export default router;

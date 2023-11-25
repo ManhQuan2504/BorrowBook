@@ -25,7 +25,7 @@ import { LANGUAGES } from "../../contants/path";
 
 const UserManagement = () => {
   const language = useSelector((state) => state.borrowBookReducer.language);
- 
+
 
   const [loading, setLoading] = useState(true);
   const [dataAllUser, setdataAllUser] = useState([]);
@@ -403,6 +403,7 @@ const UserManagement = () => {
             <Button className="ButtonRefresh" icon onClick={handleRefresh}>
               <Icon name="refresh" />
             </Button>
+            
             <Search
               placeholder={
                 language === LANGUAGES.VI
@@ -423,10 +424,10 @@ const UserManagement = () => {
         </div>
         <Modal open={modalOpen} onClose={handleCloseModal} size="small">
           <Header content={
-                language === LANGUAGES.VI
-                  ? languageDataVi.content.userManagement.buttonAddUser
-                  : languageDataEn.content.userManagement.buttonAddUser
-              } />
+            language === LANGUAGES.VI
+              ? languageDataVi.content.userManagement.buttonAddUser
+              : languageDataEn.content.userManagement.buttonAddUser
+          } />
           <Modal.Content>
             <Form>
               <Grid>
@@ -448,10 +449,10 @@ const UserManagement = () => {
                   <Grid.Column>
                     <Form.Field>
                       <label>{
-                language === LANGUAGES.VI
-                  ? languageDataVi.content.userManagement.password
-                  : languageDataEn.content.userManagement.password
-              }</label>
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.password
+                          : languageDataEn.content.userManagement.password
+                      }</label>
                       <input
                         onChange={handlePassword}
                         value={password}
@@ -473,10 +474,10 @@ const UserManagement = () => {
                   <Grid.Column>
                     <Form.Field>
                       <label>{
-                language === LANGUAGES.VI
-                  ? languageDataVi.content.userManagement.name
-                  : languageDataEn.content.userManagement.name
-              }</label>
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.name
+                          : languageDataEn.content.userManagement.name
+                      }</label>
                       <input
                         onChange={handleName}
                         value={clientName}
@@ -491,10 +492,10 @@ const UserManagement = () => {
                   <Grid.Column>
                     <Form.Field>
                       <label>{
-                language === LANGUAGES.VI
-                  ? languageDataVi.content.userManagement.phone
-                  : languageDataEn.content.userManagement.phone
-              }</label>
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.phone
+                          : languageDataEn.content.userManagement.phone
+                      }</label>
                       <input
                         onChange={handlePhone}
                         value={phone}
@@ -511,10 +512,10 @@ const UserManagement = () => {
                   <Grid.Column>
                     <Form.Field>
                       <label>{
-                language === LANGUAGES.VI
-                  ? languageDataVi.content.userManagement.address
-                  : languageDataEn.content.userManagement.address
-              }</label>
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.address
+                          : languageDataEn.content.userManagement.address
+                      }</label>
                       <input
                         onChange={handleAddress}
                         value={address}
@@ -532,14 +533,14 @@ const UserManagement = () => {
           </Modal.Content>
           <Modal.Actions>
             <Button negative onClick={handleCloseModal}>
-            {
+              {
                 language === LANGUAGES.VI
                   ? languageDataVi.content.userManagement.cancel
                   : languageDataEn.content.userManagement.cancel
               }
             </Button>
             <Button positive onClick={handleSaveUser}>
-            {
+              {
                 language === LANGUAGES.VI
                   ? languageDataVi.content.userManagement.save
                   : languageDataEn.content.userManagement.save
@@ -700,21 +701,21 @@ const UserManagement = () => {
                 size="small"
               >
                 <Header content={language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.confirmUserDeletion
-                      : languageDataEn.content.userManagement.confirmUserDeletion} />
+                  ? languageDataVi.content.userManagement.confirmUserDeletion
+                  : languageDataEn.content.userManagement.confirmUserDeletion} />
                 <Modal.Content>
                   <p>{language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.areYouSure
-                      : languageDataEn.content.userManagement.areYouSure}</p>
+                    ? languageDataVi.content.userManagement.areYouSure
+                    : languageDataEn.content.userManagement.areYouSure}</p>
                 </Modal.Content>
                 <Modal.Actions>
                   <Button negative onClick={handleCloseDeleteModal}>
-                  {language === LANGUAGES.VI
+                    {language === LANGUAGES.VI
                       ? languageDataVi.content.userManagement.cancel
                       : languageDataEn.content.userManagement.cancel}
                   </Button>
                   <Button positive onClick={handleConfirmDelete}>
-                  {language === LANGUAGES.VI
+                    {language === LANGUAGES.VI
                       ? languageDataVi.content.userManagement.confirm
                       : languageDataEn.content.userManagement.confirm}
                   </Button>
@@ -725,9 +726,9 @@ const UserManagement = () => {
                 onClose={handleCloseModalEdit}
                 size="small"
               >
-                <Header content= {language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.editUser
-                      : languageDataEn.content.userManagement.editUser} />
+                <Header content={language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.editUser
+                  : languageDataEn.content.userManagement.editUser} />
                 <Modal.Content>
                   <Form>
                     <Grid>
@@ -750,8 +751,8 @@ const UserManagement = () => {
                         <Grid.Column>
                           <Form.Field>
                             <label>{language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.phone
-                      : languageDataEn.content.userManagement.phone}</label>
+                              ? languageDataVi.content.userManagement.phone
+                              : languageDataEn.content.userManagement.phone}</label>
                             <input
                               onChange={(e) => setEditPhone(e.target.value)}
                               value={editPhone}
@@ -768,8 +769,8 @@ const UserManagement = () => {
                         <Grid.Column>
                           <Form.Field>
                             <label>{language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.name
-                      : languageDataEn.content.userManagement.name}</label>
+                              ? languageDataVi.content.userManagement.name
+                              : languageDataEn.content.userManagement.name}</label>
                             <input
                               onChange={(e) => setEditName(e.target.value)}
                               value={editName}
@@ -786,8 +787,8 @@ const UserManagement = () => {
                         <Grid.Column>
                           <Form.Field>
                             <label>{language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.address
-                      : languageDataEn.content.userManagement.address}</label>
+                              ? languageDataVi.content.userManagement.address
+                              : languageDataEn.content.userManagement.address}</label>
                             <input
                               onChange={(e) => setEditAddress(e.target.value)}
                               value={editAddress}
@@ -804,12 +805,12 @@ const UserManagement = () => {
                 </Modal.Content>
                 <Modal.Actions>
                   <Button negative onClick={handleCloseModalEdit}>
-                  {language === LANGUAGES.VI
+                    {language === LANGUAGES.VI
                       ? languageDataVi.content.userManagement.cancel
                       : languageDataEn.content.userManagement.cancel}
                   </Button>
                   <Button positive onClick={handleSaveEditUser}>
-                  {language === LANGUAGES.VI
+                    {language === LANGUAGES.VI
                       ? languageDataVi.content.userManagement.save
                       : languageDataEn.content.userManagement.save}
                   </Button>
@@ -893,79 +894,72 @@ const UserManagement = () => {
                         options={[
                           {
                             key: 1,
-                            text: `1 ${
-                              language === LANGUAGES.VI
-                                ? languageDataVi.content.userManagement
-                                    .recordPage
-                                : languageDataEn.content.userManagement
-                                    .recordPage
-                            }`,
+                            text: `1 ${language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement
+                                .recordPage
+                              : languageDataEn.content.userManagement
+                                .recordPage
+                              }`,
                             value: 1,
                           },
                           {
                             key: 5,
-                            text: `5 ${
-                              language === LANGUAGES.VI
-                                ? languageDataVi.content.userManagement
-                                    .recordPage
-                                : languageDataEn.content.userManagement
-                                    .recordPage
-                            }`,
+                            text: `5 ${language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement
+                                .recordPage
+                              : languageDataEn.content.userManagement
+                                .recordPage
+                              }`,
                             value: 5,
                           },
                           {
                             key: 15,
-                            text: `15 ${
-                              language === LANGUAGES.VI
-                                ? languageDataVi.content.userManagement
-                                    .recordPage
-                                : languageDataEn.content.userManagement
-                                    .recordPage
-                            }`,
+                            text: `15 ${language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement
+                                .recordPage
+                              : languageDataEn.content.userManagement
+                                .recordPage
+                              }`,
                             value: 15,
                           },
                           {
                             key: 30,
-                            text: `30 ${
-                              language === LANGUAGES.VI
-                                ? languageDataVi.content.userManagement
-                                    .recordPage
-                                : languageDataEn.content.userManagement
-                                    .recordPage
-                            }`,
+                            text: `30 ${language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement
+                                .recordPage
+                              : languageDataEn.content.userManagement
+                                .recordPage
+                              }`,
                             value: 30,
                           },
                           {
                             key: 50,
-                            text: `50 ${
-                              language === LANGUAGES.VI
-                                ? languageDataVi.content.userManagement
-                                    .recordPage
-                                : languageDataEn.content.userManagement
-                                    .recordPage
-                            }`,
+                            text: `50 ${language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement
+                                .recordPage
+                              : languageDataEn.content.userManagement
+                                .recordPage
+                              }`,
                             value: 50,
                           },
                           {
                             key: 100,
-                            text: `100 ${
-                              language === LANGUAGES.VI
-                                ? languageDataVi.content.userManagement
-                                    .recordPage
-                                : languageDataEn.content.userManagement
-                                    .recordPage
-                            }`,
+                            text: `100 ${language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement
+                                .recordPage
+                              : languageDataEn.content.userManagement
+                                .recordPage
+                              }`,
                             value: 100,
                           },
                           {
                             key: 200,
-                            text: `200 ${
-                              language === LANGUAGES.VI
-                                ? languageDataVi.content.userManagement
-                                    .recordPage
-                                : languageDataEn.content.userManagement
-                                    .recordPage
-                            }`,
+                            text: `200 ${language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement
+                                .recordPage
+                              : languageDataEn.content.userManagement
+                                .recordPage
+                              }`,
                             value: 200,
                           },
                         ]}

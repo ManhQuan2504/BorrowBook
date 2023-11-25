@@ -23,7 +23,7 @@ const getStatusText = (status) => {
       return 'Unknown';
   };
 };
- 
+
 const BorrowManagement = () => {
   const [countPage, setCountPage] = useState(0);
   const [page, setPage] = useState(1)
@@ -185,7 +185,7 @@ const BorrowManagement = () => {
     const selectedDate = new Date(e.target.value);
     const currentDate = new Date();
     currentDate.setDate(currentDate.getDate()); // Ngày hiện tại + 1
-  
+
     if (selectedDate < currentDate) {
       setErrDueDate("Ngày trả phải lớn hơn ngày mượn");
     } else {
@@ -199,7 +199,7 @@ const BorrowManagement = () => {
       setDuaDate(formattedDate);
     }
   }
-  
+
 
   const handleReturnbook = (id) => {
     setSelectedUserId(id);
@@ -241,25 +241,87 @@ const BorrowManagement = () => {
     fetchData();
   }
 
+  const handleExportExcel = async () => {
+    try {
+      const access_token = localStorage.getItem("access_token");
+      await BorrowBook.exportExcel(access_token);
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleRefresh = async () => {
+    try {
+      // setLoading(true); // Set loading to true before making the API call
+      await fetchData(); // Fetch data again
+    } catch (error) {
+      console.error(error);
+    } finally {
+      // setLoading(false); // Set loading back to false after the API call is complete
+    }
+  };
+
   return (
     <Container className='ContainerBookManagement'>
       <Header className='HeaderManagement' as='h1' textAlign='center'>
-      <Icon name="address book"></Icon>  {language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.bookBorrowManagementTitle
-            : languageDataEn.content.bookBorrowManagement.bookBorrowManagementTitle}
+        <Icon name="address book"></Icon>  {language === LANGUAGES.VI
+          ? languageDataVi.content.bookBorrowManagement.bookBorrowManagementTitle
+          : languageDataEn.content.bookBorrowManagement.bookBorrowManagementTitle}
       </Header>
 
-      <Button primary onClick={handleAddBook}>
-      {language === LANGUAGES.VI
+      <div className="header-actions">
+        <Button primary onClick={handleAddBook}>
+          {language === LANGUAGES.VI
             ? languageDataVi.content.bookBorrowManagement.buttonAddBookBorrow
             : languageDataEn.content.bookBorrowManagement.buttonAddBookBorrow}
-      </Button>
+        </Button>
+        <div style={{ display: "flex" }}>
+          {/* {isDeleteButtonVisible && (
+            <Button
+              className="ButtonDeleteSelected"
+              negative
+              onClick={handleDeleteSelected}
+              disabled={!isDeleteButtonVisible}
+            >
+              {selectedCount > 1
+                ? `Xóa ${selectedCount} lựa chọn`
+                : "Xóa 1 lựa chọn"}
+            </Button>
+          )} */}
+          <Button className="ButtonRefresh" icon onClick={handleExportExcel}>
+            <Icon name="cloud download" />
+          </Button>
+          <Button className="ButtonRefresh" icon onClick={handleRefresh}>
+            <Icon name="refresh" />
+          </Button>
+
+          <Search
+            placeholder={
+              language === LANGUAGES.VI
+                ? languageDataVi.content.userManagement.search
+                : languageDataEn.content.userManagement.search
+            }
+            // onSearchChange={handleSearchChange}
+            // onResultSelect={handleSearchResultSelect}
+            // value={searchQuery}
+            // results={searchResults.map((user, index) => ({
+            //   key: index,
+            //   title: user.name,
+            //   description: user.type,
+            //   value: user.value,
+            // }))}
+          />
+        </div>
+      </div>
+
+
 
       <Modal open={modalOpen} onClose={handleCloseModal} size="small">
 
-        <Header content= {language === LANGUAGES.VI
-                        ? languageDataVi.content.bookBorrowManagement.buttonAddBookBorrow
-                        : languageDataEn.content.bookBorrowManagement.buttonAddBookBorrow} />
+        <Header content={language === LANGUAGES.VI
+          ? languageDataVi.content.bookBorrowManagement.buttonAddBookBorrow
+          : languageDataEn.content.bookBorrowManagement.buttonAddBookBorrow} />
 
         <Modal.Content>
           <Form>
@@ -285,8 +347,8 @@ const BorrowManagement = () => {
                       }))}
                     />
                     <label>{language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement.name
-                        : languageDataEn.content.userManagement.name}: {selectedUserName}</label>
+                      ? languageDataVi.content.userManagement.name
+                      : languageDataEn.content.userManagement.name}: {selectedUserName}</label>
                     <label>Email: {selectedUserEmail}</label>
                     {errUsername && (
                       <div className="error-message">{errUsername}</div>
@@ -297,8 +359,8 @@ const BorrowManagement = () => {
                 <Grid.Column>
                   <Form.Field>
                     <label>{language === LANGUAGES.VI
-                        ? languageDataVi.content.bookBorrowManagement.searchBook
-                        : languageDataEn.content.bookBorrowManagement.searchBook}</label>
+                      ? languageDataVi.content.bookBorrowManagement.searchBook
+                      : languageDataEn.content.bookBorrowManagement.searchBook}</label>
                     <Search
                       placeholder={language === LANGUAGES.VI
                         ? languageDataVi.content.userManagement.search
@@ -314,11 +376,11 @@ const BorrowManagement = () => {
                       }))}
                     />
                     <label>{language === LANGUAGES.VI
-                        ? languageDataVi.content.bookManagement.nameBook
-                        : languageDataEn.content.bookManagement.nameBook}: {selectedBookTitle}</label>
+                      ? languageDataVi.content.bookManagement.nameBook
+                      : languageDataEn.content.bookManagement.nameBook}: {selectedBookTitle}</label>
                     <label>{language === LANGUAGES.VI
-                        ? languageDataVi.content.bookManagement.author
-                        : languageDataEn.content.bookManagement.author}: {selectedBookAuthor}</label>
+                      ? languageDataVi.content.bookManagement.author
+                      : languageDataEn.content.bookManagement.author}: {selectedBookAuthor}</label>
                     {errBook && (
                       <div className="error-message">{errBook}</div>
                     )}
@@ -332,8 +394,8 @@ const BorrowManagement = () => {
                 <Grid.Column>
                   <Form.Field>
                     <label>{language === LANGUAGES.VI
-                        ? languageDataVi.content.bookBorrowManagement.borrowedDate
-                        : languageDataEn.content.bookBorrowManagement.borrowedDate}</label>
+                      ? languageDataVi.content.bookBorrowManagement.borrowedDate
+                      : languageDataEn.content.bookBorrowManagement.borrowedDate}</label>
                     <input
                       type="datetime-local"
                       value={borrowDate}
@@ -346,8 +408,8 @@ const BorrowManagement = () => {
                 <Grid.Column>
                   <Form.Field>
                     <label htmlFor="duedate">{language === LANGUAGES.VI
-                        ? languageDataVi.content.bookBorrowManagement.dueDate
-                        : languageDataEn.content.bookBorrowManagement.dueDate}:</label>
+                      ? languageDataVi.content.bookBorrowManagement.dueDate
+                      : languageDataEn.content.bookBorrowManagement.dueDate}:</label>
                     <input
                       type="date"
                       id="duedate"
@@ -367,14 +429,14 @@ const BorrowManagement = () => {
 
         <Modal.Actions>
           <Button negative onClick={handleCloseModal}>
-          {language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement.cancel
-                        : languageDataEn.content.bookManagement.cancel}
+            {language === LANGUAGES.VI
+              ? languageDataVi.content.userManagement.cancel
+              : languageDataEn.content.bookManagement.cancel}
           </Button>
           <Button positive onClick={handleSaveBorrowBook}>
-          {language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement.save
-                        : languageDataEn.content.bookManagement.save}
+            {language === LANGUAGES.VI
+              ? languageDataVi.content.userManagement.save
+              : languageDataEn.content.bookManagement.save}
           </Button>
         </Modal.Actions>
 
@@ -387,26 +449,26 @@ const BorrowManagement = () => {
             <Table.HeaderCell> <Checkbox /></Table.HeaderCell>
             <Table.HeaderCell>ID</Table.HeaderCell>
             <Table.HeaderCell> {language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.borrower
-            : languageDataEn.content.bookBorrowManagement.borrower}</Table.HeaderCell>
+              ? languageDataVi.content.bookBorrowManagement.borrower
+              : languageDataEn.content.bookBorrowManagement.borrower}</Table.HeaderCell>
             <Table.HeaderCell>{language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.borrowedBook
-            : languageDataEn.content.bookBorrowManagement.borrowedBook}</Table.HeaderCell>
+              ? languageDataVi.content.bookBorrowManagement.borrowedBook
+              : languageDataEn.content.bookBorrowManagement.borrowedBook}</Table.HeaderCell>
             <Table.HeaderCell>{language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.borrowedDate
-            : languageDataEn.content.bookBorrowManagement.borrowedDate}</Table.HeaderCell>
+              ? languageDataVi.content.bookBorrowManagement.borrowedDate
+              : languageDataEn.content.bookBorrowManagement.borrowedDate}</Table.HeaderCell>
             <Table.HeaderCell>{language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.dueDate
-            : languageDataEn.content.bookBorrowManagement.dueDate}</Table.HeaderCell>
+              ? languageDataVi.content.bookBorrowManagement.dueDate
+              : languageDataEn.content.bookBorrowManagement.dueDate}</Table.HeaderCell>
             <Table.HeaderCell>{language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.returnDate
-            : languageDataEn.content.bookBorrowManagement.returnDate}</Table.HeaderCell>
+              ? languageDataVi.content.bookBorrowManagement.returnDate
+              : languageDataEn.content.bookBorrowManagement.returnDate}</Table.HeaderCell>
             <Table.HeaderCell>{language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.status
-            : languageDataEn.content.bookBorrowManagement.status}</Table.HeaderCell>
+              ? languageDataVi.content.bookBorrowManagement.status
+              : languageDataEn.content.bookBorrowManagement.status}</Table.HeaderCell>
             <Table.HeaderCell>{language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.action
-            : languageDataEn.content.bookBorrowManagement.action}</Table.HeaderCell>
+              ? languageDataVi.content.bookBorrowManagement.action
+              : languageDataEn.content.bookBorrowManagement.action}</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
@@ -433,25 +495,25 @@ const BorrowManagement = () => {
               // onOpen={() => setOpen(true)}
               >
                 <Header content={language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.returnBook
-            : languageDataEn.content.bookBorrowManagement.returnBook} />
+                  ? languageDataVi.content.bookBorrowManagement.returnBook
+                  : languageDataEn.content.bookBorrowManagement.returnBook} />
                 <Modal.Content>
                   <p>
-                  {language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.areYouSure
-            : languageDataEn.content.bookBorrowManagement.areYouSure}
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.bookBorrowManagement.areYouSure
+                      : languageDataEn.content.bookBorrowManagement.areYouSure}
                   </p>
                 </Modal.Content>
                 <Modal.Actions>
                   <Button color='red' onClick={() => setOpenModalReturnBook(false)}>
                     <Icon name='remove' /> {language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.no
-            : languageDataEn.content.bookBorrowManagement.no}
+                      ? languageDataVi.content.bookBorrowManagement.no
+                      : languageDataEn.content.bookBorrowManagement.no}
                   </Button>
                   <Button color='green' onClick={() => handleReturnBookYes()}>
                     <Icon name='checkmark' /> {language === LANGUAGES.VI
-            ? languageDataVi.content.bookBorrowManagement.yes
-            : languageDataEn.content.bookBorrowManagement.yes}
+                      ? languageDataVi.content.bookBorrowManagement.yes
+                      : languageDataEn.content.bookBorrowManagement.yes}
                   </Button>
                 </Modal.Actions>
               </Modal>

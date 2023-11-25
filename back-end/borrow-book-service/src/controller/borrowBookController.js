@@ -1,6 +1,8 @@
 import Joi from "joi";
 import borrowbookService from "../services/borrowBookService.js"
 import rabbitmqFunc from "../config/rabbitmq.js";
+import borrowBookService from "../services/borrowBookService.js";
+import ExcelJS from "exceljs";
 
 const Schema = Joi.object({
     returnDate: Joi.date().label('returnDate'),
@@ -202,11 +204,57 @@ const deleteManyBorrowBook = async (req, res) => {
     }
 };
 
+const exportExcel = async (req, res) => {
+    try {
+        const response = await borrowBookService.exportExcel();
+        console.log(response);
+        
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Danh sách đơn mượn', { properties: { tabColor: { argb: 'FFC0000' } } });
+        
+        // Sửa: Loại bỏ dấu || ""
+        sheet.columns = [
+            { header: "Mã đơn", key: "id", width: 15 },
+            { header: "Mã khách", key: "idUser", width: 25 },
+            { header: "Mã sách", key: "idBook", width: 15 },
+            { header: "Ngày mượn", key: "borrowDate", width: 15 },
+            { header: "Ngày hẹn trả", key: "dueDate", width: 15 },
+            { header: "Ngày trả", key: "returnDate", width: 15 },
+            { header: "Trạng thái đơn", key: "statusLabel", width: 15 },
+        ];
+        
+        sheet.addRows(response);
+        
+        const buffer = await workbook.xlsx.writeBuffer();
+        
+        // Set header Content-Disposition
+        res.setHeader('Content-Disposition', 'attachment; filename=userData123.xlsx');
+        // Set content type
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        
+        res.send(buffer);
+        
+
+        // Không cần return trước khi gửi phản hồi
+        // res.status(200).json({
+        //     status: "OK",
+        //     data: response
+        // });
+    } catch (error) {
+        console.error(error); 
+        res.status(500).json({
+            status: "ERR",
+            error: error.message // Truyền thông điệp lỗi trong phản hồi
+        });
+    }
+};
+
 export default {
     getBorrowBook,
     searchBorrowBook,
     createBorrowBook,
     updateBorrowBook,
     deleteBorrowBook,
-    deleteManyBorrowBook
+    deleteManyBorrowBook,
+    exportExcel
 };

@@ -52,6 +52,26 @@ export const updateBook = async ({ id, title, category, countInStock, publishYea
   }
 };
 
+export const exportExcel = async (accessToken) => {
+  try {
+    const response = await AxiosSchema.get(BASE_URL + `book/export`, {
+      headers: {
+        token: `Bearer ${accessToken}`,
+      },
+      responseType: 'arraybuffer', // Đặt kiểu dữ liệu trả về là arraybuffer
+    });
+    // console.log(response);
+    const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.setAttribute('download', 'UserData.xlsx'); // Bạn có thể đặt tên file tùy ý ở đây
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 // export const detailUserLogin = async (id, accessToken) => {
 //   return await AxiosSchema
