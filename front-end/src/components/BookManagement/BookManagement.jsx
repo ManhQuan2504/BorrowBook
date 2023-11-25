@@ -132,7 +132,7 @@ const BookManagement = () => {
       const result = await BookServices.createBook({ title, category, countInStock, publishYear, authorBook });
 
       console.log(result);
-      if (result.status === "OK") {
+      if (result.status === "success") {
         Notification("Thêm mới thành công", "", "success");
       } else {
         Notification("Thêm mới thất bại", "", "error");
@@ -183,7 +183,7 @@ const BookManagement = () => {
         authorBook: authorBook
       });
 
-      if (result.status === "OK") {
+      if (result.status === "success") {
         Notification("Sửa thành công", "", "success");
         fetchData();
         setModalUpdateOpen(false);
@@ -212,7 +212,7 @@ const BookManagement = () => {
     // Thực hiện logic xóa sách ở đây
     const result = await BookServices.deleteBook({ id: bookId });
 
-    if (result.status === "OK") {
+    if (result.status === "success") {
       Notification("Xoá thành công", "", "success");
     } else {
       Notification("Xoá thất bại", "", "error");

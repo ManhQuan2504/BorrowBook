@@ -2,6 +2,7 @@ import Joi from "joi";
 import BookService from "../services/BookServices.js"
 import shortid from "shortid";
 import ExcelJS from "exceljs"
+import message from "../message/index.js";
 
 const Schema = Joi.object({
     title: Joi.string().label('title'),
@@ -19,20 +20,10 @@ const getBook = async (req, res) => {
         page = Math.max(page, 1);
 
         const response = await BookService.getBook({ perPage, page });
-        return res.status(200).json(
-            {
-                status: "OK",
-                data: response
-            }
-        )
 
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -44,20 +35,10 @@ const searchBook = async (req, res) => {
         page = Math.max(page, 1);
 
         const response = await BookService.searchBook({ perPage, keyword, page });
-        return res.status(200).json(
-            {
-                status: "OK",
-                data: response
-            }
-        )
-
+        
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 }
 
@@ -74,24 +55,12 @@ const createBook = async (req, res) => {
         }
 
         const idBook = shortid.generate();
-        console.log(idBook, title, category, countInStock, publishYear, authorBook);
 
         const response = await BookService.createBook({ idBook, title, category, countInStock, publishYear, authorBook })
 
-        return res.status(200).json(
-            {
-                status: "OK",
-                data: response
-            }
-        )
-
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -110,20 +79,9 @@ const updateBook = async (req, res) => {
 
         const response = await BookService.updateBook({ idBook, title, category, countInStock, publishYear, authorBook });
 
-        return res.status(200).json(
-            {
-                status: "OK",
-                data: response
-            }
-        )
-
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -136,19 +94,9 @@ const deleteBook = async (req, res) => {
 
         const response = await BookService.deleteBook({ idBook });
 
-        return res.status(200).json(
-            {
-                status: "OK",
-                data: response
-            }
-        )
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -168,17 +116,12 @@ const deleteManyBook = async (req, res) => {
 const borrowBook = async (message) => {
     try {
         const id = message.idBook;
-        console.log({ id });
+
         const response = await BookService.borrowBook({ id });
-        return {
-            status: "OK",
-            data: response
-        }
+
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return {
-            status: "ERR",
-            error: error.message,
-        }
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -186,16 +129,12 @@ const returnBook = async (req, res) => {
     try {
         const id = message.idBook;
         console.log({ id });
+
         const response = await BookService.returnBook({ id });
-        return {
-            status: "OK",
-            data: response
-        }
+
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return {
-            status: "ERR",
-            error: error.message,
-        }
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -204,9 +143,9 @@ const exportExcel = async (req, res) => {
         const response = await BookService.exportExcel();
 
         const workbook = new ExcelJS.Workbook();
+
         const sheet = workbook.addWorksheet('My Sheet', { properties: { tabColor: { argb: 'FFC0000' } } });
 
-        // Chỉnh sửa tên biến từ "worksheet" thành "sheet"
         sheet.columns = [
             { header: "Id", key: "id", width: 15 } || "",
             { header: "Tên sách", key: "title", width: 25 } || "",
@@ -216,29 +155,18 @@ const exportExcel = async (req, res) => {
             { header: "Tác giả", key: "authorBook", width: 15 } || "",
         ];
 
-        // Chỉnh sửa từ "worksheet" thành "sheet"
         sheet.addRows(response);
 
         const buffer = await workbook.xlsx.writeBuffer();
 
-        // Set header Content-Disposition
+        // Set content type, Set header Content-Disposition, 
         res.setHeader('Content-Disposition', 'attachment; filename=userData123.xlsx');
-        // Set content type
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
         res.send(buffer);
 
-        // Không cần return trước khi gửi phản hồi
-        // res.status(200).json({
-        //     status: "OK",
-        //     data: response
-        // });
     } catch (error) {
-        console.error(error); // Log lỗi để dễ dàng theo dõi
-        res.status(500).json({
-            status: "ERR",
-            error: error.message // Truyền thông điệp lỗi trong phản hồi
-        });
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
