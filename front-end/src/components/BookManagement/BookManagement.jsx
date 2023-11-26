@@ -13,7 +13,7 @@ const BookManagement = () => {
   const [page, setPage] = useState(1)
   const [datas, setDatas] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false); // nút delete
-
+  const [totalRecords, setTotalRecords] = useState("");
   const [recordsPerPage, setRecordsPerPage] = useState(5);
 
 
@@ -51,7 +51,7 @@ const BookManagement = () => {
       const result = await BookServices.getBooks({ page, perPage: recordsPerPage });
       setDatas(result.data.data);
       setTotalPages(result.data.countPage || 1);
-
+      setTotalRecords(result.data.count || 0);
       setCountPage(result.data.countPage)
     } catch (error) {
       console.error('ERR: , error');
@@ -595,11 +595,11 @@ const BookManagement = () => {
         <Table.Footer className="TableFooter">
           <Table.Row>
             <Table.HeaderCell colSpan="8">
-              {/* <Menu className="MenuHeader" floated="left">
+            <Menu className="MenuHeader" floated="left">
                       <Header size="small">
                         Tìm thấy {totalRecords} bản ghi
                       </Header>
-                    </Menu> */}
+                    </Menu>
               <Menu floated="right" pagination>
                 <Menu.Item
                   as="a"

@@ -7,28 +7,29 @@
       color: #2185d0 !important;
       padding-top: 20px;
    }
-}
-
-.header-actions {
-   display: flex;
-   justify-content: space-between;
-}
-
-.ButtonHandleAddBook {
-   margin-bottom: 30px;
-}
-
-.ButtonRefresh {
-   padding: 10px !important;
-   height: 30px;
-   background-color: #2185d0;
-   color: #fff;
-   font-size: .78571429rem;
-   margin-top: 4px;
-
-   &:hover {
-      background-color: #1678c2;
+   .ButtonRefresh {
+      padding: 10px !important;
+      height: 30px;
+      background-color: #2185d0;
       color: #fff;
-      text-shadow: none;
+      font-size: .78571429rem;
+      margin-top: 4px;
+   
+      &:hover {
+         background-color: #1678c2;
+         color: #fff;
+         text-shadow: none;
+      }
+   }
+   .header-actions {
+      display: flex;
+      justify-content: space-between;
+   }
+   
+   .ButtonHandleAddBook {
+      margin-bottom: 30px;
    }
 }
+
+
+

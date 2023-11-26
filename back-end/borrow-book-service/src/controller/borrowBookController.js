@@ -13,7 +13,8 @@ const Schema = Joi.object({
 
 const getBorrowBook = async (req, res) => {
     try {
-        const perPage = 3;
+        let perPage = parseInt(req.query.perpage) || 3;
+        // perPage = Math.max(perPage, 3);
         let page = parseInt(req.query.page) || 1;
         page = Math.max(page, 1);
 
