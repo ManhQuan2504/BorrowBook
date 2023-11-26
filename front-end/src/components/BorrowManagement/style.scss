@@ -29,4 +29,14 @@
    .ButtonHandleAddBook {
       margin-bottom: 30px;
    }
+   .MenuHeader {
+      min-height: 0 !important;
+      border-color: #fff;
+    }
+    .DropdownLimitPage {
+      width: 200px;
+      font-size: 14px;
+      z-index: 10 !important;
+    }
+  
 }

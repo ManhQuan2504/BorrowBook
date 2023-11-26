@@ -7,6 +7,16 @@
       color: #2185d0 !important;
       padding-top: 20px;
    }
+   .MenuHeader {
+      min-height: 0 !important;
+      border-color: #fff;
+    }
+    .DropdownLimitPage {
+      width: 200px;
+      font-size: 14px;
+      z-index: 10 !important;
+    }
+  
    .ButtonRefresh {
       padding: 10px !important;
       height: 30px;
