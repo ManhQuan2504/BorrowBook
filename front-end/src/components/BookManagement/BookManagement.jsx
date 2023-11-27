@@ -279,22 +279,7 @@ const BookManagement = () => {
             <Icon name="refresh" />
           </Button>
 
-          <Search
-            placeholder={
-              language === LANGUAGES.VI
-                ? languageDataVi.content.userManagement.search
-                : languageDataEn.content.userManagement.search
-            }
-            // onSearchChange={handleSearchChange}
-            // onResultSelect={handleSearchResultSelect}
-            // value={searchQuery}
-            // results={searchResults.map((user, index) => ({
-            //   key: index,
-            //   title: user.name,
-            //   description: user.type,
-            //   value: user.value,
-            // }))}
-          />
+       
         </div>
       </div>
 

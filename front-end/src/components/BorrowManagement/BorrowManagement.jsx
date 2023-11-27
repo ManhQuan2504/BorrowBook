@@ -1,31 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { Icon, Table, Header, Container, Menu, Checkbox, Button, Modal, Grid, Form, Search, Dropdown } from 'semantic-ui-react';
-import './style.scss';
-import * as BorrowBook from '../../services/BorrowBookService';
-import * as UserService from '../../services/UserService';
-import * as BookServices from '../../services/BookService';
+import React, { useState, useEffect } from "react";
+import {
+  Icon,
+  Table,
+  Header,
+  Container,
+  Menu,
+  Checkbox,
+  Button,
+  Modal,
+  Grid,
+  Form,
+  Search,
+  Dropdown,
+} from "semantic-ui-react";
+import "./style.scss";
+import * as BorrowBook from "../../services/BorrowBookService";
+import * as UserService from "../../services/UserService";
+import * as BookServices from "../../services/BookService";
 import { Notification } from "../../components/Notification/Notification";
 import languageDataEn from "../../translations/en.json";
 import languageDataVi from "../../translations/vi.json";
 import { LANGUAGES } from "../../contants/path";
-import moment from 'moment';
-import { useSelector } from 'react-redux';
+import moment from "moment";
+import { useSelector } from "react-redux";
 
 const getStatusText = (status) => {
   switch (status) {
     case 1:
-      return 'Đang mượn';
+      return "Đang mượn";
     case 2:
-      return 'Đã trả';
+      return "Đã trả";
     case 3:
-      return 'Mất';
+      return "Mất";
     default:
-      return 'Unknown';
-  };
+      return "Unknown";
+  }
 };
 
 const BorrowManagement = () => {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(1);
   const [datas, setDatas] = useState([]);
   const language = useSelector((state) => state.borrowBookReducer.language);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
@@ -33,11 +46,11 @@ const BorrowManagement = () => {
   const [totalRecords, setTotalRecords] = useState("");
 
   const [modalOpen, setModalOpen] = useState(false); //modal add
-  const [openModalReturnBook, setOpenModalReturnBook] = React.useState(false) //modall trả sách
-  const [openModalDetailBorrow, setOpenModalDetailBorrow] = React.useState(false) //modall detail borow
-  const [detailBook, setDetailBook] = useState({})
-  const [detailUser, setDetailUser] = useState({})
-
+  const [openModalReturnBook, setOpenModalReturnBook] = React.useState(false); //modall trả sách
+  const [openModalDetailBorrow, setOpenModalDetailBorrow] =
+    React.useState(false); //modall detail borow
+  const [detailBook, setDetailBook] = useState({});
+  const [detailUser, setDetailUser] = useState({});
 
   //state lưu thông tin modal thêm
   const [searchUser, setSearchUser] = useState("");
@@ -66,22 +79,23 @@ const BorrowManagement = () => {
     setErrBook("");
     setErrUsername("");
     setErrDueDate("");
-  }
+  };
 
   const fetchData = async () => {
     try {
-      const result = await BorrowBook.getBorrowBooks({ page, perPage: recordsPerPage });
+      const result = await BorrowBook.getBorrowBooks({
+        page,
+        perPage: recordsPerPage,
+      });
       setDatas(result.data.data);
-      console.log('result.data.data', result.data.data);
+      console.log("result.data.data", result.data.data);
       setTotalPages(result.data.countPage || 1);
       setTotalRecords(result.data.count || 0);
-
-
-
-      const dataBook = await BookServices.getBooks({ page: 1, perPage: 1000 });
-      setDataAllBook(dataBook.data.data);
     } catch (error) {
-      console.error(`ERR: http://localhost:1234/api/borrowbook/get?page=${page}\n`, error);
+      console.error(
+        `ERR: http://localhost:1234/api/borrowbook/get?page=${page}\n`,
+        error
+      );
     }
   };
 
@@ -92,10 +106,17 @@ const BorrowManagement = () => {
   // Hàm mở modal add
   const handleAddBook = async () => {
     const access_token = localStorage.getItem("access_token");
-    const dataUser = await UserService.getAllUser(access_token, recordsPerPage, currentPage);
+    const dataUser = await UserService.getAllUser(
+      access_token,
+      1000,
+      currentPage
+    );
+
+    const dataBook = await BookServices.getBooks({ page: 1, perPage: 1000 });
+    setDataAllBook(dataBook.data.data);
     setdataAllUser(dataUser.data);
     setModalOpen(true);
-  }
+  };
 
   // Hàm đóng modal add
   const handleCloseModal = () => {
@@ -106,7 +127,6 @@ const BorrowManagement = () => {
   // Hàm xử lý khi thêm mới
   const handleSaveBorrowBook = async () => {
     try {
-
       if (!selectedUserId) return setErrUsername("Select User");
       if (!selectedBookId) return setErrBook("Select Book");
       if (!dueDate) return setErrDueDate("Select Date return");
@@ -116,7 +136,7 @@ const BorrowManagement = () => {
         email: selectedUserEmail,
         idBook: selectedBookId,
         borrowDate: borrowDate,
-        dueDate: dueDate
+        dueDate: dueDate,
       });
 
       if (result.status === "success") {
@@ -135,7 +155,7 @@ const BorrowManagement = () => {
 
   const handleUserSearchChange = async (e, { value }) => {
     setSearchUser(value);
-
+    console.log("dataAllUser", dataAllUser);
     const filteredResults = dataAllUser.filter((user) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
@@ -164,10 +184,9 @@ const BorrowManagement = () => {
     } else {
       setErrBook(""); // Xóa thông báo lỗi nếu giá trị không trống
     }
-    setSelectedBookId(result.id)
+    setSelectedBookId(result.id);
     setSelectedBookTitle(result.title);
     setSelectedBookAuthor(result.description);
-
   };
   const handlePageChange = (page) => {
     // Fetch data for the selected page
@@ -177,13 +196,14 @@ const BorrowManagement = () => {
   };
 
   const handleUserResultSelect = (e, { result }) => {
+    console.log("result", result);
     // Access additional properties from the selected result
     if (!result) {
       setErrUsername("Please select a username");
     } else {
       setErrUsername(""); // Xóa thông báo lỗi nếu giá trị không trống
     }
-    setSelectedUserId(result.id)
+    setSelectedUserId(result.id);
     setSelectedUserName(result.title);
     setSelectedUserEmail(result.description);
   };
@@ -192,10 +212,10 @@ const BorrowManagement = () => {
   function getCurrentDateTime() {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
     const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
     return formattedDate;
   }
@@ -209,27 +229,26 @@ const BorrowManagement = () => {
       setErrDueDate("Ngày trả phải lớn hơn ngày mượn");
     } else {
       setErrDueDate("");
-      const day = selectedDate.getDate().toString().padStart(2, '0');
-      const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+      const day = selectedDate.getDate().toString().padStart(2, "0");
+      const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
       const year = selectedDate.getFullYear();
-      const hours = String(selectedDate.getHours()).padStart(2, '0');
-      const minutes = String(selectedDate.getMinutes()).padStart(2, '0');
+      const hours = String(selectedDate.getHours()).padStart(2, "0");
+      const minutes = String(selectedDate.getMinutes()).padStart(2, "0");
       const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
       setDuaDate(formattedDate);
     }
   }
-
 
   const handleReturnbook = (id) => {
     setSelectedUserId(id);
     console.log(id);
     console.log(selectedUserId);
     handleOpenModalReturnBook();
-  }
+  };
 
   const handleOpenModalReturnBook = () => {
-    setOpenModalReturnBook(true)
-  }
+    setOpenModalReturnBook(true);
+  };
 
   const handleDetailBorrow = async (idUser, idBook) => {
     // console.log(idUser);
@@ -238,35 +257,35 @@ const BorrowManagement = () => {
     const resultBook = await BookServices.getDetailBook({
       idBook: idBook,
     });
-    setDetailBook(resultBook)
+    setDetailBook(resultBook);
 
     const access_token = localStorage.getItem("access_token");
     const resultUser = await UserService.getDetailUser({
       accessToken: access_token,
       idUser: idUser,
     });
-    setDetailUser(resultUser)
+    setDetailUser(resultUser);
 
     handleOpenDetailBorrow();
-  }
+  };
 
   const handleOpenDetailBorrow = () => {
-    setOpenModalDetailBorrow(true)
-  }
+    setOpenModalDetailBorrow(true);
+  };
 
   const handleCloseModalReturnBook = () => {
-    setOpenModalReturnBook(false)
-  }
+    setOpenModalReturnBook(false);
+  };
   //trả sách
   const handleReturnBookYes = async () => {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
     const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
-    console.log("ID: ", selectedUserId, "   Time: ", formattedDate)
+    console.log("ID: ", selectedUserId, "   Time: ", formattedDate);
     const result = await BorrowBook.updateBorrowBooks({
       id: selectedUserId,
       returnDate: formattedDate,
@@ -281,17 +300,16 @@ const BorrowManagement = () => {
     setErrDefault();
     handleCloseModalReturnBook();
     fetchData();
-  }
+  };
 
   const handleExportExcel = async () => {
     try {
       const access_token = localStorage.getItem("access_token");
       await BorrowBook.exportExcel(access_token);
-
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleRefresh = async () => {
     try {
@@ -305,11 +323,14 @@ const BorrowManagement = () => {
   };
 
   return (
-    <Container className='ContainerBookManagement'>
-      <Header className='HeaderManagement' as='h1' textAlign='center'>
-        <Icon name="address book"></Icon>  {language === LANGUAGES.VI
-          ? languageDataVi.content.bookBorrowManagement.bookBorrowManagementTitle
-          : languageDataEn.content.bookBorrowManagement.bookBorrowManagementTitle}
+    <Container className="ContainerBookManagement">
+      <Header className="HeaderManagement" as="h1" textAlign="center">
+        <Icon name="address book"></Icon>{" "}
+        {language === LANGUAGES.VI
+          ? languageDataVi.content.bookBorrowManagement
+              .bookBorrowManagementTitle
+          : languageDataEn.content.bookBorrowManagement
+              .bookBorrowManagementTitle}
       </Header>
 
       <div className="header-actions">
@@ -338,32 +359,18 @@ const BorrowManagement = () => {
             <Icon name="refresh" />
           </Button>
 
-          <Search
-            placeholder={
-              language === LANGUAGES.VI
-                ? languageDataVi.content.userManagement.search
-                : languageDataEn.content.userManagement.search
-            }
-          // onSearchChange={handleSearchChange}
-          // onResultSelect={handleSearchResultSelect}
-          // value={searchQuery}
-          // results={searchResults.map((user, index) => ({
-          //   key: index,
-          //   title: user.name,
-          //   description: user.type,
-          //   value: user.value,
-          // }))}
-          />
+         
         </div>
       </div>
 
-
-
       <Modal open={modalOpen} onClose={handleCloseModal} size="small">
-
-        <Header content={language === LANGUAGES.VI
-          ? languageDataVi.content.bookBorrowManagement.buttonAddBookBorrow
-          : languageDataEn.content.bookBorrowManagement.buttonAddBookBorrow} />
+        <Header
+          content={
+            language === LANGUAGES.VI
+              ? languageDataVi.content.bookBorrowManagement.buttonAddBookBorrow
+              : languageDataEn.content.bookBorrowManagement.buttonAddBookBorrow
+          }
+        />
 
         <Modal.Content>
           <Form>
@@ -371,13 +378,18 @@ const BorrowManagement = () => {
               <Grid.Row columns={2}>
                 <Grid.Column>
                   <Form.Field>
-                    <label>{language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.searchUser
-                      : languageDataEn.content.bookBorrowManagement.searchUser}</label>
+                    <label>
+                      {language === LANGUAGES.VI
+                        ? languageDataVi.content.bookBorrowManagement.searchUser
+                        : languageDataEn.content.bookBorrowManagement
+                            .searchUser}
+                    </label>
                     <Search
-                      placeholder={language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement.search
-                        : languageDataEn.content.userManagement.search}
+                      placeholder={
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.search
+                          : languageDataEn.content.userManagement.search
+                      }
                       onSearchChange={handleUserSearchChange}
                       onResultSelect={handleUserResultSelect}
                       value={searchUser}
@@ -385,12 +397,15 @@ const BorrowManagement = () => {
                         key: index,
                         title: user.name,
                         description: user.email, // You can customize the description as needed
-                        id: user._id
+                        id: user._id,
                       }))}
                     />
-                    <label>{language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.name
-                      : languageDataEn.content.userManagement.name}: {selectedUserName}</label>
+                    <label>
+                      {language === LANGUAGES.VI
+                        ? languageDataVi.content.userManagement.name
+                        : languageDataEn.content.userManagement.name}
+                      : {selectedUserName}
+                    </label>
                     <label>Email: {selectedUserEmail}</label>
                     {errUsername && (
                       <div className="error-message">{errUsername}</div>
@@ -400,13 +415,18 @@ const BorrowManagement = () => {
 
                 <Grid.Column>
                   <Form.Field>
-                    <label>{language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.searchBook
-                      : languageDataEn.content.bookBorrowManagement.searchBook}</label>
+                    <label>
+                      {language === LANGUAGES.VI
+                        ? languageDataVi.content.bookBorrowManagement.searchBook
+                        : languageDataEn.content.bookBorrowManagement
+                            .searchBook}
+                    </label>
                     <Search
-                      placeholder={language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement.search
-                        : languageDataEn.content.userManagement.search}
+                      placeholder={
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.search
+                          : languageDataEn.content.userManagement.search
+                      }
                       onSearchChange={handleBookSearchChange}
                       onResultSelect={handleBookResultSelect}
                       value={searchBook}
@@ -417,27 +437,33 @@ const BorrowManagement = () => {
                         id: book.id,
                       }))}
                     />
-                    <label>{language === LANGUAGES.VI
-                      ? languageDataVi.content.bookManagement.nameBook
-                      : languageDataEn.content.bookManagement.nameBook}: {selectedBookTitle}</label>
-                    <label>{language === LANGUAGES.VI
-                      ? languageDataVi.content.bookManagement.author
-                      : languageDataEn.content.bookManagement.author}: {selectedBookAuthor}</label>
-                    {errBook && (
-                      <div className="error-message">{errBook}</div>
-                    )}
+                    <label>
+                      {language === LANGUAGES.VI
+                        ? languageDataVi.content.bookManagement.nameBook
+                        : languageDataEn.content.bookManagement.nameBook}
+                      : {selectedBookTitle}
+                    </label>
+                    <label>
+                      {language === LANGUAGES.VI
+                        ? languageDataVi.content.bookManagement.author
+                        : languageDataEn.content.bookManagement.author}
+                      : {selectedBookAuthor}
+                    </label>
+                    {errBook && <div className="error-message">{errBook}</div>}
                   </Form.Field>
                 </Grid.Column>
-
               </Grid.Row>
 
               <Grid.Row columns={2}>
-
                 <Grid.Column>
                   <Form.Field>
-                    <label>{language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.borrowedDate
-                      : languageDataEn.content.bookBorrowManagement.borrowedDate}</label>
+                    <label>
+                      {language === LANGUAGES.VI
+                        ? languageDataVi.content.bookBorrowManagement
+                            .borrowedDate
+                        : languageDataEn.content.bookBorrowManagement
+                            .borrowedDate}
+                    </label>
                     <input
                       type="datetime-local"
                       value={borrowDate}
@@ -449,9 +475,12 @@ const BorrowManagement = () => {
 
                 <Grid.Column>
                   <Form.Field>
-                    <label htmlFor="duedate">{language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.dueDate
-                      : languageDataEn.content.bookBorrowManagement.dueDate}:</label>
+                    <label htmlFor="duedate">
+                      {language === LANGUAGES.VI
+                        ? languageDataVi.content.bookBorrowManagement.dueDate
+                        : languageDataEn.content.bookBorrowManagement.dueDate}
+                      :
+                    </label>
                     <input
                       type="date"
                       id="duedate"
@@ -463,7 +492,6 @@ const BorrowManagement = () => {
                     )}
                   </Form.Field>
                 </Grid.Column>
-
               </Grid.Row>
             </Grid>
           </Form>
@@ -481,18 +509,21 @@ const BorrowManagement = () => {
               : languageDataEn.content.userManagement.save}
           </Button>
         </Modal.Actions>
-
       </Modal>
 
       <Table celled>
-
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell style={{
-              width: "20px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}> <Checkbox /></Table.HeaderCell>
+            <Table.HeaderCell
+              style={{
+                width: "20px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {" "}
+              <Checkbox />
+            </Table.HeaderCell>
             <Table.HeaderCell
               style={{
                 width: "50px",
@@ -504,79 +535,126 @@ const BorrowManagement = () => {
                 ? languageDataVi.content.userManagement.stt
                 : languageDataEn.content.userManagement.stt}
             </Table.HeaderCell>
-            <Table.HeaderCell style={{
-              width: "200px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}>ID</Table.HeaderCell>
-            <Table.HeaderCell style={{
-              width: "200px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}> {language === LANGUAGES.VI
-              ? languageDataVi.content.bookBorrowManagement.borrower
-              : languageDataEn.content.bookBorrowManagement.borrower}</Table.HeaderCell>
-            <Table.HeaderCell style={{
-              width: "140px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookBorrowManagement.borrowedBook
-              : languageDataEn.content.bookBorrowManagement.borrowedBook}</Table.HeaderCell>
-            <Table.HeaderCell style={{
-              width: "150px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookBorrowManagement.borrowedDate
-              : languageDataEn.content.bookBorrowManagement.borrowedDate}</Table.HeaderCell>
-            <Table.HeaderCell style={{
-              width: "110px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookBorrowManagement.dueDate
-              : languageDataEn.content.bookBorrowManagement.dueDate}</Table.HeaderCell>
-            <Table.HeaderCell style={{
-              width: "200px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookBorrowManagement.returnDate
-              : languageDataEn.content.bookBorrowManagement.returnDate}</Table.HeaderCell>
-            <Table.HeaderCell style={{
-              width: "100px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookBorrowManagement.status
-              : languageDataEn.content.bookBorrowManagement.status}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookBorrowManagement.action
-              : languageDataEn.content.bookBorrowManagement.action}</Table.HeaderCell>
+            <Table.HeaderCell
+              style={{
+                width: "200px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              ID
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              style={{
+                width: "200px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {" "}
+              {language === LANGUAGES.VI
+                ? languageDataVi.content.bookBorrowManagement.borrower
+                : languageDataEn.content.bookBorrowManagement.borrower}
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              style={{
+                width: "140px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {language === LANGUAGES.VI
+                ? languageDataVi.content.bookBorrowManagement.borrowedBook
+                : languageDataEn.content.bookBorrowManagement.borrowedBook}
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              style={{
+                width: "150px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {language === LANGUAGES.VI
+                ? languageDataVi.content.bookBorrowManagement.borrowedDate
+                : languageDataEn.content.bookBorrowManagement.borrowedDate}
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              style={{
+                width: "110px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {language === LANGUAGES.VI
+                ? languageDataVi.content.bookBorrowManagement.dueDate
+                : languageDataEn.content.bookBorrowManagement.dueDate}
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              style={{
+                width: "200px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {language === LANGUAGES.VI
+                ? languageDataVi.content.bookBorrowManagement.returnDate
+                : languageDataEn.content.bookBorrowManagement.returnDate}
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              style={{
+                width: "100px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {language === LANGUAGES.VI
+                ? languageDataVi.content.bookBorrowManagement.status
+                : languageDataEn.content.bookBorrowManagement.status}
+            </Table.HeaderCell>
+            <Table.HeaderCell>
+              {language === LANGUAGES.VI
+                ? languageDataVi.content.bookBorrowManagement.action
+                : languageDataEn.content.bookBorrowManagement.action}
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
         <Table.Body>
           {datas.map((data, index) => (
-            <Table.Row key={index}>
+            <Table.Row key={index} style={{ cursor: "pointer" }}  >
               <Table.Cell>
                 <Checkbox />
               </Table.Cell>
-              <Table.Cell>{index + 1}</Table.Cell>
+              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{index + 1}</Table.Cell>
 
-              <Table.Cell>{data._id}</Table.Cell>
-              <Table.Cell>{data.idUser}</Table.Cell>
-              <Table.Cell>{data.idBook}</Table.Cell>
-              <Table.Cell>{moment(data.borrowDate).format('DD/MM/YYYY HH:mm')}</Table.Cell>
-              <Table.Cell>{moment(data.dueDate).format('DD/MM/YYYY')}</Table.Cell>
-              <Table.Cell>
-                {data.returnDate ? moment(data.returnDate).format('DD/MM/YYYY HH:mm') : "-----"}
+              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data._id}</Table.Cell>
+              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idUser}</Table.Cell>
+              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idBook}</Table.Cell>
+              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                {moment(data.borrowDate).format("DD/MM/YYYY HH:mm")}
               </Table.Cell>
-              <Table.Cell>{getStatusText(data.status)}</Table.Cell>
+              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                {moment(data.dueDate).format("DD/MM/YYYY")}
+              </Table.Cell>
+              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                {data.returnDate
+                  ? moment(data.returnDate).format("DD/MM/YYYY HH:mm")
+                  : "-----"}
+              </Table.Cell>
+              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{getStatusText(data.status)}</Table.Cell>
               <Table.Cell>
-                <Icon size="big" name="table" onClick={() => handleDetailBorrow(data.idUser, data.idBook)} />
-                <Icon size="big" name="edit" onClick={() => handleReturnbook(data._id)} />
+                {/* <Icon
+                  size="big"
+                  name="table"
+                  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}
+                /> */}
+                <Icon
+                  size="big"
+                  name="undo alternate"
+                  onClick={() => handleReturnbook(data._id)}
+             
+
+                />
               </Table.Cell>
 
               <Modal
@@ -586,53 +664,101 @@ const BorrowManagement = () => {
                 <Header
                   content={
                     language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.returnBook
-                      : languageDataEn.content.bookBorrowManagement.returnBook
+                      ? languageDataVi.content.bookBorrowManagement.detailBorrow
+                      : languageDataEn.content.bookBorrowManagement.detailBorrow
                   }
                 />
-                <Modal.Content>
-                  {detailBook && detailBook.data && (
-                    <div>
-                      <p>ID: {detailBook.data.data.id}</p>
-                      <p>Title: {detailBook.data.data.title}</p>
-                      <p>Category: {detailBook.data.data.category}</p>
-                      <p>Count in Stock: {detailBook.data.data.countInStock}</p>
-                      <p>Publish Year: {detailBook.data.data.publishYear}</p>
-                      <p>Author: {detailBook.data.data.authorBook}</p>
-                      <p>Created At: {detailBook.data.data.createdAt}</p>
-                      <p>Updated At: {detailBook.data.data.updatedAt}</p>
-                    </div>
-                  )}
+                <Modal.Content style={{ display: "flex" }}>
+                  <div style={{ flex: "50%", paddingRight: "20px", backgroundColor: "rgb(255 114 114)",borderRadius: "6%" }}>
+                    <h3 style={{marginLeft: "30%", paddingTop: "10px"}}>{
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.bookBorrowManagement.informationBook
+                      : languageDataEn.content.bookBorrowManagement.informationBook
+                  }</h3>
+                    {detailBook && detailBook.data && (
+                      <div>
+                        <p  style={{marginLeft: "6%"}}>ID: {detailBook.data.data.id}</p>
+                        <p  style={{marginLeft: "6%"}}> {
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.bookManagement.nameBook
+                      : languageDataEn.content.bookManagement.nameBook
+                  }: {detailBook.data.data.title}</p>
+                        <p  style={{marginLeft: "6%"}}>{
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.bookManagement.category
+                      : languageDataEn.content.bookManagement.category
+                  }: {detailBook.data.data.category}</p>
+                        
+                        <p  style={{marginLeft: "6%"}}>{
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.bookManagement.yearPublication
+                      : languageDataEn.content.bookManagement.yearPublication
+                  }: {detailBook.data.data.publishYear}</p>
+                        <p  style={{marginLeft: "6%"}}>{
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.bookManagement.author
+                      : languageDataEn.content.bookManagement.author
+                  }: {detailBook.data.data.authorBook}</p>
+                      </div>
+                    )}
+                  </div>
 
-                  {detailUser && detailUser.data && (
-                    <div>
-                      <p>ID: {detailUser.data._id}</p>
-                      <p>Title: {detailUser.data.email}</p>
-                      <p>Category: {detailUser.data.email}</p>
-                      <p>Count in Stock: {detailUser.data.phone}</p>
-                      <p>Publish Year: {detailUser.data.address}</p>
-                    </div>
-                  )}
+                  <div style={{ flex: "50%", paddingLeft: "20px",backgroundColor: "aqua",borderRadius: "6%", marginLeft: "20px"  }}>
+                    <h3 style={{marginLeft: "30%",paddingTop: "10px"}}>{
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.bookBorrowManagement.informationUser
+                      : languageDataEn.content.bookBorrowManagement.informationUser
+                  }</h3>
+                    {detailUser && detailUser.data && (
+                      <div>
+                        <p style={{marginLeft: "1%"}}>ID: {detailUser.data._id}</p>
+                        <p style={{marginLeft: "1%"}}>{
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.name
+                      : languageDataEn.content.userManagement.name
+                  }: {detailUser.data.name}</p>
+                        <p style={{marginLeft: "1%"}}>{
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.email
+                      : languageDataEn.content.userManagement.email
+                  }: {detailUser.data.email}</p>
+                        <p style={{marginLeft: "1%"}}>{
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.phone
+                      : languageDataEn.content.userManagement.phone
+                  }: {detailUser.data.phone}</p>
+                        <p style={{marginLeft: "1%", marginBottom: "10px"}}>{
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.address
+                      : languageDataEn.content.userManagement.address
+                  }: {detailUser.data.address}</p>
+                      </div>
+                    )}
+                  </div>
                 </Modal.Content>
                 <Modal.Actions>
-                  <Button color="green" onClick={() => setOpenModalDetailBorrow(false)}>
-                    <Icon name="checkmark" />{" "}
-                    {language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.no
-                      : languageDataEn.content.bookBorrowManagement.no}
+                  <Button
+                    color="green"
+                    onClick={() => setOpenModalDetailBorrow(false)}
+                  >
+                    <Icon name="checkmark" />
+                    OK
                   </Button>
                 </Modal.Actions>
               </Modal>
 
-
               <Modal
                 open={openModalReturnBook}
                 onClose={() => setOpenModalReturnBook(false)}
-              // onOpen={() => setOpen(true)}
+                // onOpen={() => setOpen(true)}
               >
-                <Header content={language === LANGUAGES.VI
-                  ? languageDataVi.content.bookBorrowManagement.returnBook
-                  : languageDataEn.content.bookBorrowManagement.returnBook} />
+                <Header
+                  content={
+                    language === LANGUAGES.VI
+                      ? languageDataVi.content.bookBorrowManagement.returnBook
+                      : languageDataEn.content.bookBorrowManagement.returnBook
+                  }
+                />
                 <Modal.Content>
                   <p>
                     {language === LANGUAGES.VI
@@ -641,13 +767,18 @@ const BorrowManagement = () => {
                   </p>
                 </Modal.Content>
                 <Modal.Actions>
-                  <Button color='red' onClick={() => setOpenModalReturnBook(false)}>
-                    <Icon name='remove' /> {language === LANGUAGES.VI
+                  <Button
+                    color="red"
+                    onClick={() => setOpenModalReturnBook(false)}
+                  >
+                    <Icon name="remove" />{" "}
+                    {language === LANGUAGES.VI
                       ? languageDataVi.content.bookBorrowManagement.no
                       : languageDataEn.content.bookBorrowManagement.no}
                   </Button>
-                  <Button color='green' onClick={() => handleReturnBookYes()}>
-                    <Icon name='checkmark' /> {language === LANGUAGES.VI
+                  <Button color="green" onClick={() => handleReturnBookYes()}>
+                    <Icon name="checkmark" />{" "}
+                    {language === LANGUAGES.VI
                       ? languageDataVi.content.bookBorrowManagement.yes
                       : languageDataEn.content.bookBorrowManagement.yes}
                   </Button>
@@ -657,15 +788,11 @@ const BorrowManagement = () => {
           ))}
         </Table.Body>
 
-
-
         <Table.Footer className="TableFooter">
           <Table.Row>
             <Table.HeaderCell colSpan="10">
               <Menu className="MenuHeader" floated="left">
-                <Header size="small">
-                  Tìm thấy {totalRecords} bản ghi
-                </Header>
+                <Header size="small">Tìm thấy {totalRecords} bản ghi</Header>
               </Menu>
               <Menu floated="right" pagination>
                 <Menu.Item
@@ -700,10 +827,7 @@ const BorrowManagement = () => {
                   }
 
                   // Show ellipsis for omitted pages
-                  if (
-                    pageChange === page - 3 ||
-                    pageChange === page + 3
-                  ) {
+                  if (pageChange === page - 3 || pageChange === page + 3) {
                     return (
                       <Menu.Item key={pageChange} disabled>
                         ...
@@ -730,72 +854,65 @@ const BorrowManagement = () => {
                   options={[
                     {
                       key: 1,
-                      text: `1 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
+                      text: `1 ${
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
+                      }`,
                       value: 1,
                     },
                     {
                       key: 5,
-                      text: `5 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
+                      text: `5 ${
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
+                      }`,
                       value: 5,
                     },
                     {
                       key: 15,
-                      text: `15 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
+                      text: `15 ${
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
+                      }`,
                       value: 15,
                     },
                     {
                       key: 30,
-                      text: `30 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
+                      text: `30 ${
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
+                      }`,
                       value: 30,
                     },
                     {
                       key: 50,
-                      text: `50 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
+                      text: `50 ${
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
+                      }`,
                       value: 50,
                     },
                     {
                       key: 100,
-                      text: `100 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
+                      text: `100 ${
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
+                      }`,
                       value: 100,
                     },
                     {
                       key: 200,
-                      text: `200 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
+                      text: `200 ${
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
+                      }`,
                       value: 200,
                     },
                   ]}
@@ -806,9 +923,8 @@ const BorrowManagement = () => {
             </Table.HeaderCell>
           </Table.Row>
         </Table.Footer>
-
       </Table>
-    </Container >
+    </Container>
   );
 };
 

@@ -11,7 +11,8 @@ const getBorrowBook = async ({ perPage, page }) => {
             .skip((page - 1) * perPage);
 
         if (!count || !data.length) {
-            throw new Error("Can't get BorrowBook");
+            const result = {count: 0,countPage: 1,data:[] };
+        return result;
         }
 
         const result = { count, countPage, data };
