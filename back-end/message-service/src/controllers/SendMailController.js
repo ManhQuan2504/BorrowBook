@@ -9,14 +9,9 @@ const SendMail_register = async (message) => {
         `;
         await mailer(message.email, subject, html); // Sửa email thành message.email
 
-        return {
-            status: "OK"
-        }
+        return message.MESSAGE_SUCCESS(res, 'OK', null);
     } catch (error) {
-        return {
-            status: "ERR",
-            error: error.message,
-        }
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -31,14 +26,9 @@ const SendMail_borrowBook = async (message) => {
 
         await mailer(message.email, subject, html); // Sửa email thành message.email
 
-        return {
-            status: "OK"
-        }
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return {
-            status: "ERR",
-            error: error.message,
-        }
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 }
 
@@ -53,18 +43,11 @@ const SendMail_return = async (message) => {
 
         await mailer(message.email, subject, html); // Sửa email thành message.email
 
-        return {
-            status: "OK"
-        }
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return {
-            status: "ERR",
-            error: error.message,
-        }
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 }
-
-
 
 export default {
     SendMail_register,

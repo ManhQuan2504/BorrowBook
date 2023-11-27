@@ -3,6 +3,7 @@ import borrowbookService from "../services/borrowBookService.js"
 import rabbitmqFunc from "../config/rabbitmq.js";
 import borrowBookService from "../services/borrowBookService.js";
 import ExcelJS from "exceljs";
+import message from "../message/index.js";
 
 const Schema = Joi.object({
     returnDate: Joi.date().label('returnDate'),
@@ -19,20 +20,10 @@ const getBorrowBook = async (req, res) => {
         page = Math.max(page, 1);
 
         const response = await borrowbookService.getBorrowBook({ perPage, page });
-        return res.status(200).json(
-            {
-                status: "OK",
-                data: response
-            }
-        )
 
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -44,20 +35,10 @@ const searchBorrowBook = async (req, res) => {
         page = Math.max(page, 1);
 
         const response = await borrowbookService.searchBorrowBook({ perPage, status, page });
-        return res.status(200).json(
-            {
-                status: "OK",
-                data: response
-            }
-        )
 
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 }
 
@@ -86,19 +67,10 @@ const createBorrowBook = async (req, res) => {
 
             console.log(`Sent message: ${JSON.stringify(messageData)}`);
         }
-        return res.status(200).json(
-            {
-                status: "OK",
-                data: response
-            }
-        )
+        
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -109,29 +81,9 @@ const updateBorrowBook = async (req, res) => {
 
         const response = await borrowbookService.updateBorrowBook({ idBorrowBook, returnDate });
 
-        // if (response && response != undefined) {
-        //     const messageData = {
-        //         type: 'return',
-        //         email: email,
-        //         idBook: idBook
-        //     };
-        //     rabbitmqFunc.send_msg(messageData)
-        //     console.log(`Sent message: ${JSON.stringify(messageData)}`);
-        // }
-        return res.status(200).json(
-            {
-                status: "OK",
-                data: response
-            }
-        )
-
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -176,19 +128,9 @@ const deleteBorrowBook = async (req, res) => {
 
         const response = await borrowbookService.deleteBorrowBook({ idBorrowBook });
 
-        return res.status(200).json(
-            {
-                status: "OK",
-                data: response
-            }
-        )
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -196,12 +138,7 @@ const deleteManyBorrowBook = async (req, res) => {
     try {
 
     } catch (error) {
-        return res.status(400).json(
-            {
-                status: "ERR",
-                error: error.message
-            }
-        )
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 
@@ -242,11 +179,7 @@ const exportExcel = async (req, res) => {
         //     data: response
         // });
     } catch (error) {
-        console.error(error); 
-        res.status(500).json({
-            status: "ERR",
-            error: error.message // Truyền thông điệp lỗi trong phản hồi
-        });
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
 

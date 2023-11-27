@@ -115,7 +115,7 @@ const BorrowManagement = () => {
         dueDate: dueDate
       });
 
-      if (result.status === "OK") {
+      if (result.status === "success") {
         Notification("Thêm mới thành công", "", "success");
       } else {
         Notification("Thêm mới thất bại", "", "error");
@@ -245,7 +245,7 @@ const BorrowManagement = () => {
       returnDate: formattedDate,
     });
 
-    if (result.status === "OK") {
+    if (result.status === "success") {
       Notification("Trả sách thành công", "", "success");
     } else {
       Notification("Trả sách thất bại", "", "error");
