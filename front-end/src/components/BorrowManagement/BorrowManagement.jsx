@@ -69,6 +69,7 @@ const BorrowManagement = () => {
     try {
       const result = await BorrowBook.getBorrowBooks({ page, perPage: recordsPerPage });
       setDatas(result.data.data);
+      console.log('result.data.data',result.data.data)
       setCountPage(result.data.countPage)
       setTotalPages(result.data.countPage || 1);
       setTotalRecords(result.data.count || 0);
@@ -461,24 +462,67 @@ const BorrowManagement = () => {
 
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell> <Checkbox /></Table.HeaderCell>
-            <Table.HeaderCell>ID</Table.HeaderCell>
-            <Table.HeaderCell> {language === LANGUAGES.VI
+            <Table.HeaderCell style={{
+                      width: "20px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}> <Checkbox /></Table.HeaderCell>
+            <Table.HeaderCell
+                    style={{
+                      width: "50px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.stt
+                      : languageDataEn.content.userManagement.stt}
+                  </Table.HeaderCell>
+            <Table.HeaderCell style={{
+                      width: "200px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}>ID</Table.HeaderCell>
+            <Table.HeaderCell style={{
+                      width: "200px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}> {language === LANGUAGES.VI
               ? languageDataVi.content.bookBorrowManagement.borrower
               : languageDataEn.content.bookBorrowManagement.borrower}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
+            <Table.HeaderCell style={{
+                      width: "140px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}>{language === LANGUAGES.VI
               ? languageDataVi.content.bookBorrowManagement.borrowedBook
               : languageDataEn.content.bookBorrowManagement.borrowedBook}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
+            <Table.HeaderCell style={{
+                      width: "150px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}>{language === LANGUAGES.VI
               ? languageDataVi.content.bookBorrowManagement.borrowedDate
               : languageDataEn.content.bookBorrowManagement.borrowedDate}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
+            <Table.HeaderCell style={{
+                      width: "110px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}>{language === LANGUAGES.VI
               ? languageDataVi.content.bookBorrowManagement.dueDate
               : languageDataEn.content.bookBorrowManagement.dueDate}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
+            <Table.HeaderCell style={{
+                      width: "200px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}>{language === LANGUAGES.VI
               ? languageDataVi.content.bookBorrowManagement.returnDate
               : languageDataEn.content.bookBorrowManagement.returnDate}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
+            <Table.HeaderCell style={{
+                      width: "100px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}>{language === LANGUAGES.VI
               ? languageDataVi.content.bookBorrowManagement.status
               : languageDataEn.content.bookBorrowManagement.status}</Table.HeaderCell>
             <Table.HeaderCell>{language === LANGUAGES.VI
@@ -488,18 +532,20 @@ const BorrowManagement = () => {
         </Table.Header>
 
         <Table.Body>
-          {datas.map((data) => (
-            <Table.Row key={data._id}>
+          {datas.map((data,index) => (
+            <Table.Row key={index}>
               <Table.Cell>
                 <Checkbox />
               </Table.Cell>
+              <Table.Cell>{index + 1}</Table.Cell>
+             
               <Table.Cell>{data._id}</Table.Cell>
               <Table.Cell>{data.idUser}</Table.Cell>
               <Table.Cell>{data.idBook}</Table.Cell>
               <Table.Cell>{moment(data.borrowDate).format('DD/MM/YYYY HH:mm')}</Table.Cell>
               <Table.Cell>{moment(data.dueDate).format('DD/MM/YYYY')}</Table.Cell>
               <Table.Cell>
-                {data.dueDate ? moment(data.returnDate).format('DD/MM/YYYY HH:mm') : "-----"}
+              {data.returnDate ? moment(data.returnDate).format('DD/MM/YYYY HH:mm') : "-----"}
               </Table.Cell>
               <Table.Cell>{getStatusText(data.status)}</Table.Cell>
               <Table.Cell><Icon size="big" name="edit" onClick={() => handleReturnbook(data._id)} /></Table.Cell>
@@ -540,7 +586,7 @@ const BorrowManagement = () => {
       
         <Table.Footer className="TableFooter">
           <Table.Row>
-            <Table.HeaderCell colSpan="9">
+            <Table.HeaderCell colSpan="10">
             <Menu className="MenuHeader" floated="left">
                       <Header size="small">
                         Tìm thấy {totalRecords} bản ghi

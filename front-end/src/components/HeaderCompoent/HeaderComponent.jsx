@@ -17,7 +17,8 @@ import languageDataVi from '../../translations/vi.json';
 
 
 const HeaderComponent = () => {
-  const [activeItem, setActiveItem] = useState("tms");
+  // const [activeItem, setActiveItem] = useState("tms");
+  const [activeItem, setActiveItem] = useState(localStorage.getItem('activeItem') || "tms");
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -40,7 +41,19 @@ const HeaderComponent = () => {
       setActiveItem(storedActiveItem);
     }
   }, []);
-  
+  useEffect(() => {
+   
+    if (window.location.pathname === '/') {
+      setActiveItem('tms');
+      localStorage.setItem('activeItem', 'tms');
+    } else {
+      // Nếu không phải trang chính, thì lấy giá trị từ localStorage
+      const storedActiveItem = localStorage.getItem('activeItem');
+      if (storedActiveItem) {
+        setActiveItem(storedActiveItem);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     // After login, return user detail
