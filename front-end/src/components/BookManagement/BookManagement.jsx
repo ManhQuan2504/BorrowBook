@@ -9,7 +9,6 @@ import { LANGUAGES } from "../../contants/path";
 import { useSelector } from 'react-redux';
 
 const BookManagement = () => {
-  const [countPage, setCountPage] = useState(0);
   const [page, setPage] = useState(1)
   const [datas, setDatas] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false); // nút delete
@@ -52,7 +51,6 @@ const BookManagement = () => {
       setDatas(result.data.data);
       setTotalPages(result.data.countPage || 1);
       setTotalRecords(result.data.count || 0);
-      setCountPage(result.data.countPage)
     } catch (error) {
       console.error('ERR: , error');
     }

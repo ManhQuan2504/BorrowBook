@@ -8,7 +8,7 @@ const UserRouter = require('./UserRouter')
 // const PaymentRouter = require('./PaymentRouter')
 
 const routes = (app) => {
-    app.use('/api/user', UserRouter)
+    app.use('/v1/api/user', UserRouter)
    
     // app.use('/api/category', CategoryRouter)
     // app.use('/api/product', ProductRouter)
