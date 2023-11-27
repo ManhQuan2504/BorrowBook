@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Header, Image } from "semantic-ui-react";
+import { Image } from "semantic-ui-react";
 import { Menu, Segment, Dropdown } from "semantic-ui-react";
 import "./style.scss";
 import { useDispatch, useSelector } from 'react-redux';

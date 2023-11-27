@@ -35,7 +35,7 @@ const searchBook = async (req, res) => {
         page = Math.max(page, 1);
 
         const response = await BookService.searchBook({ perPage, keyword, page });
-        
+
         return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
         return message.MESSAGE_ERROR(res, 'ERR', error.message)
@@ -119,9 +119,19 @@ const borrowBook = async (message) => {
 
         const response = await BookService.borrowBook({ id });
 
-        return message.MESSAGE_SUCCESS(res, 'OK', response);
+        return res.status(200).json(
+            {
+                status: "OK",
+                data: response
+            }
+        )
     } catch (error) {
-        return message.MESSAGE_ERROR(res, 'ERR', error.message)
+        return res.status(250).json(
+            {
+                status: "ERR",
+                message: error.message
+            }
+        )
     }
 };
 

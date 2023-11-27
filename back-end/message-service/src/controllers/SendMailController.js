@@ -24,7 +24,6 @@ const SendMail_borrowBook = async (message) => {
     try {
         console.log("123:", message.email);
         const subject = "Hello ✔";
-
         const html = `Hello ${message.email},
         Borrow Success!
         `;
