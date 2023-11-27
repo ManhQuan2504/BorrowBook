@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import { Image, List, Input, Form,Button, Divider} from 'semantic-ui-react';
 import logoUser from '../../assets/images/logo-user.jpg'; // Đảm bảo import đúng đường dẫn của hình ảnh
 import './style.scss';
-import { useDispatch, useSelector  } from 'react-redux';
+import { useSelector  } from 'react-redux';
 import * as UserService from '../../services/UserService';
 import { Notification } from "../../components/Notification/Notification";
 import languageDataEn from "../../translations/en.json";

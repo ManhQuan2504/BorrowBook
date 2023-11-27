@@ -165,14 +165,12 @@ const exportExcel = async (req, res) => {
         
         const buffer = await workbook.xlsx.writeBuffer();
         
-        // Set header Content-Disposition
+        // Set content type, Set header Content-Disposition
         res.setHeader('Content-Disposition', 'attachment; filename=userData123.xlsx');
-        // Set content type
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         
         res.send(buffer);
         
-
         // Không cần return trước khi gửi phản hồi
         // res.status(200).json({
         //     status: "OK",

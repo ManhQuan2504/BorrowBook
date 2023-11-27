@@ -9,9 +9,14 @@ const SendMail_register = async (message) => {
         `;
         await mailer(message.email, subject, html); // Sửa email thành message.email
 
-        return message.MESSAGE_SUCCESS(res, 'OK', null);
+        return {
+            status: "OK"
+        }
     } catch (error) {
-        return message.MESSAGE_ERROR(res, 'ERR', error.message)
+        return {
+            status: "ERR",
+            error: error.message,
+        }
     }
 };
 
@@ -19,16 +24,20 @@ const SendMail_borrowBook = async (message) => {
     try {
         console.log("123:", message.email);
         const subject = "Hello ✔";
-
         const html = `Hello ${message.email},
         Borrow Success!
         `;
 
         await mailer(message.email, subject, html); // Sửa email thành message.email
 
-        return message.MESSAGE_SUCCESS(res, 'OK', response);
+        return {
+            status: "OK"
+        }
     } catch (error) {
-        return message.MESSAGE_ERROR(res, 'ERR', error.message)
+        return {
+            status: "ERR",
+            error: error.message,
+        }
     }
 }
 
@@ -43,11 +52,18 @@ const SendMail_return = async (message) => {
 
         await mailer(message.email, subject, html); // Sửa email thành message.email
 
-        return message.MESSAGE_SUCCESS(res, 'OK', response);
+        return {
+            status: "OK"
+        }
     } catch (error) {
-        return message.MESSAGE_ERROR(res, 'ERR', error.message)
+        return {
+            status: "ERR",
+            error: error.message,
+        }
     }
 }
+
+
 
 export default {
     SendMail_register,

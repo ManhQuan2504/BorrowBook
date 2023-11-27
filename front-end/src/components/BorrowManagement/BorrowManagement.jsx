@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Icon, Table, Header, Container, Menu, Checkbox, Button, Modal, Input, Grid, Form, Search, Dropdown } from 'semantic-ui-react';
+import { Icon, Table, Header, Container, Menu, Checkbox, Button, Modal, Grid, Form, Search, Dropdown } from 'semantic-ui-react';
 import './style.scss';
 import * as BorrowBook from '../../services/BorrowBookService';
 import * as UserService from '../../services/UserService';
@@ -25,7 +25,6 @@ const getStatusText = (status) => {
 };
 
 const BorrowManagement = () => {
-  const [countPage, setCountPage] = useState(0);
   const [page, setPage] = useState(1)
   const [datas, setDatas] = useState([]);
   const language = useSelector((state) => state.borrowBookReducer.language);
@@ -69,17 +68,16 @@ const BorrowManagement = () => {
     try {
       const result = await BorrowBook.getBorrowBooks({ page, perPage: recordsPerPage });
       setDatas(result.data.data);
-      console.log('result.data.data',result.data.data)
-      setCountPage(result.data.countPage)
+      console.log('result.data.data',result.data.data);
       setTotalPages(result.data.countPage || 1);
       setTotalRecords(result.data.count || 0);
 
       const access_token = localStorage.getItem("access_token");
       const dataUser = await UserService.getAllUser(access_token, recordsPerPage, currentPage);
-      setdataAllUser(dataUser.data)
+      setdataAllUser(dataUser.data);
 
       const dataBook = await BookServices.getBooks({ page: 1, perPage: 1000 });
-      setDataAllBook(dataBook.data.data)
+      setDataAllBook(dataBook.data.data);
     } catch (error) {
       console.error(`ERR: http://localhost:1234/api/borrowbook/get?page=${page}\n`, error);
     }
