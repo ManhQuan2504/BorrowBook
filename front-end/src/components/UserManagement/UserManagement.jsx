@@ -51,7 +51,6 @@ const UserManagement = () => {
   const [errPassword, setErrPassword] = useState("");
   const [errAddress, setErrAddress] = useState("");
   // ============= Error Msg End here ===================
-  const [successMsg, setSuccessMsg] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
   const [selectedUser, setSelectedUser] = useState(null);
@@ -164,6 +163,9 @@ const UserManagement = () => {
       // Handle the response as needed
       if (res.code === 200) {
         await fetchData();
+        Notification("Sửa thành công", res.message, "success");
+      } else {
+        Notification("Sửa thất bại", res.message, "error");
       }
     } catch (error) {
       console.error("Error editing user", error);
@@ -197,7 +199,6 @@ const UserManagement = () => {
       const dataSignUp = res?.response?.data;
       console.log("dataSignUp", dataSignUp);
       if (res?.code === 200) {
-        setSuccessMsg(res.message);
         setClientName("");
         setEmail("");
         setPhone("");
@@ -214,6 +215,7 @@ const UserManagement = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     setSelectedCount(selectedCheckboxes.length);
   }, [selectedCheckboxes]);
@@ -239,10 +241,7 @@ const UserManagement = () => {
   const handleSearchResultSelect = async (e, { result }) => {
     setSearchQuery(result.value);
 
-    // Determine the search type based on the selected result
     const searchType = result.description;
-
-    // Make an API call to search for users based on the selected type and keyword
 
     try {
       const access_token = localStorage.getItem("access_token");
@@ -342,6 +341,7 @@ const UserManagement = () => {
 
     setModalOpenEdit(true);
   };
+
   const handleDeleteSelected = async () => {
     try {
       const access_token = localStorage.getItem("access_token");

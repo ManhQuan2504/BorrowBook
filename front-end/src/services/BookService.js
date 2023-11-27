@@ -13,6 +13,16 @@ export const getBooks = async ({ page, perPage }) => {
   }
 };
 
+export const getDetailBook = async ({ idBook }) => {
+  try {
+    // console.log('Page: ', page);
+    const response = await AxiosSchema.get(BASE_URL + `book/detail/${idBook}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createBook = async ({ title, category, countInStock, publishYear, authorBook }) => {
   try {
     const response = await AxiosSchema.post(BASE_URL + `book/create`, {

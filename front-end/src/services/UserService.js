@@ -163,6 +163,18 @@ export const getAllUser = async (accessToken, limit, page) => {
     .catch((err) => err);
 };
 
+export const getDetailUser = async ({ accessToken, idUser }) => {
+  console.log();
+  return await apiService
+    .get(`/user/get-detail-user/${idUser}`, {
+      headers: {
+        token: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => err);
+};
+
 export const getAllUserSearch = async (accessToken, limit, page, type, key) => {
   console.log(type, key);
   return await apiService
