@@ -8,7 +8,7 @@ const path = require('path');
 const createUser = async (req, res) => {
     try {
 
-        const { name, email, password, phone } = req.body
+        const { name, email, password, phone,language } = req.body
 
         const regEmail = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
 
@@ -64,6 +64,7 @@ const createUser = async (req, res) => {
                 type: 'register',
                 _id: response?.data?.createdUser?._id,
                 email: response?.data?.createdUser?.email,
+                language: language
             };
 
             rabbitmqFunc.send_msg(messageData)

@@ -193,7 +193,8 @@ const UserManagement = () => {
         email,
         password,
         phone,
-        address
+        address,
+        language
       );
       console.log("res", res);
       const dataSignUp = res?.response?.data;

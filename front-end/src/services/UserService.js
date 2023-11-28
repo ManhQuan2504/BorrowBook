@@ -135,7 +135,7 @@ export const deleteManyUser = async (access_token, userIds) => {
   }
 };
 
-export const signUpAccount = async (name, email, password, phone, address) =>
+export const signUpAccount = async (name, email, password, phone, address, language) =>
   await axios
     .post(BASE_URL + '/user/sign-up', {
       name,
@@ -143,6 +143,7 @@ export const signUpAccount = async (name, email, password, phone, address) =>
       password,
       phone,
       address,
+      language
     })
     .then((res) => res.data)
     .catch((err) => err)
