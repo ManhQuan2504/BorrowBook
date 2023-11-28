@@ -2,26 +2,32 @@ const User = require("../models/UserModel")
 const UserVerification = require("../models/UserVerification")
 const bcrypt = require("bcrypt")
 const { generalAccessToken, generalRefreshToken } = require("./JwtService")
-// const EmailService = require("../services/EmailService")
-const amqplib = require('amqplib');
 const UserResetPassword = require("../models/UserResetPassword")
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
+
         const { name, email, password, phone, address } = newUser
+
         try {
+
             const checkUser = await User.findOne({
                 email: email
             })
+
             if (checkUser !== null) {
+
                 resolve({
                     code: 404,
                     success: false,
                     message: 'Email này đã tồn tại, vui lòng đăng ký bằng Email khác!',
                     data: []
                 })
+
             }
+
             const hash = bcrypt.hashSync(password, 10)
+
             const createdUser = await User.create({
                 name,
                 email,
@@ -30,43 +36,49 @@ const createUser = (newUser) => {
                 verified: false,
                 address
             })
+
             resolve({
                 code: 200,
                 success: true,
                 message: 'Đăng ký thành công!',
                 data: { createdUser }
             })
+
         } catch (e) {
             reject(e)
         }
     })
 }
-
 const loginUser = (userLogin) => {
 
     return new Promise(async (resolve, reject) => {
+
         const { email, password } = userLogin
+
         try {
             const checkUser = await User.findOne({
                 email: email
             })
 
-
             if (checkUser === null) {
+
                 resolve({
                     code: 404,
                     success: false,
                     message: 'Email này không tồn tại, vui lòng đăng ký!'
                 })
+
             } else {
 
-                // if (!checkUser.verified) {
-                //     resolve({
-                //         code: 404,
-                //         success: false,
-                //         message: 'Người dùng chưa được xác minh vui lòng vào Email để xác nhận trước!'
-                //     })
-                // }
+                if (!checkUser.isAdmin) {
+
+                    resolve({
+                        code: 404,
+                        success: false,
+                        message: 'Bạn không có quyền để login!'
+                    })
+                }
+               
                 const comparePassword = bcrypt.compareSync(password, checkUser.password)
 
                 if (!comparePassword) {
@@ -76,6 +88,7 @@ const loginUser = (userLogin) => {
                         message: 'Sai mật khẩu. Vui lòng thử lại!'
                     })
                 }
+
                 const access_token = await generalAccessToken({
                     id: checkUser.id,
                     isAdmin: checkUser.isAdmin
@@ -85,6 +98,7 @@ const loginUser = (userLogin) => {
                     id: checkUser.id,
                     isAdmin: checkUser.isAdmin
                 })
+
                 resolve({
                     code: 200,
                     success: true,
@@ -94,20 +108,19 @@ const loginUser = (userLogin) => {
                         refresh_token
                     }
                 })
-
             }
-
-
 
         } catch (e) {
             reject(e)
         }
     })
 }
-
 const updateUser = (id, data) => {
+
     return new Promise(async (resolve, reject) => {
+
         try {
+
             const checkUser = await User.findOne({
                 _id: id
             })
@@ -122,7 +135,6 @@ const updateUser = (id, data) => {
 
             const updatedUser = await User.findByIdAndUpdate(id, { ...data }, { new: true },)
 
-
             resolve({
                 code: 200,
                 success: true,
@@ -130,26 +142,20 @@ const updateUser = (id, data) => {
                 data: updatedUser
             })
 
-
-
-
-
-
-
-
-
         } catch (e) {
             reject(e)
         }
     })
 }
-
 const deleteUser = (id) => {
     return new Promise(async (resolve, reject) => {
+
         try {
+
             const checkUser = await User.findOne({
                 _id: id
             })
+
             if (checkUser === null) {
                 resolve({
                     code: 404,
@@ -159,48 +165,55 @@ const deleteUser = (id) => {
             }
 
             await User.findByIdAndDelete(id)
+
             resolve({
                 code: 200,
                 success: true,
                 message: 'Xóa thành công!'
             })
+
         } catch (e) {
             reject(e)
         }
     })
 }
-
 const deleteManyUser = async (ids) => {
     try {
+
         const result = await User.deleteMany({ _id: { $in: ids } });
+
         return {
             code: 200,
             success: true,
             message: 'Delete user success',
             result: result
         };
+
     } catch (e) {
         throw new Error('Error deleting users: ' + e.message);
     }
 };
-
-
 const getAllUser = (limit, page) => {
+
     return new Promise(async (resolve, reject) => {
+
         try {
+
             const totalUser = await User.count();
+
             let allUser = [];
 
             if (!limit) {
                 allUser = await User.find()
-
                     .select('-image -password');
+
             } else {
+
                 const skip = (page - 1) * limit;
+
                 allUser = await User.find()
                     .limit(limit)
                     .skip(skip)
-
             }
 
             resolve({
@@ -212,6 +225,7 @@ const getAllUser = (limit, page) => {
                 pageCurrent: Number(page),
                 totalPage: limit ? Math.ceil(totalUser / limit) : 1,
             });
+
         } catch (e) {
             reject(e);
         }
@@ -220,17 +234,23 @@ const getAllUser = (limit, page) => {
 const getAllUserSearch = (limit, page, type, key) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let query = {};
 
+            let query = {};
             // Sử dụng biểu thức chính quy để tạo điều kiện tìm kiếm gần đúng
             query[`${type}`] = { $regex: key, $options: 'i' };
+
             console.log('query', query)
+
             let allUser = [];
 
             if (!limit) {
+
                 allUser = await User.find(query).select('-image -password');
+
             } else {
+
                 const skip = (page - 1) * limit;
+
                 allUser = await User.find(query).limit(limit).skip(skip);
             }
 
@@ -243,21 +263,23 @@ const getAllUserSearch = (limit, page, type, key) => {
                 pageCurrent: Number(page),
                 totalPage: limit ? Math.ceil(allUser.length / limit) : 1,
             });
+
         } catch (e) {
             reject(e);
         }
     });
 };
-
-
-
 const getDetailsUser = (id) => {
     return new Promise(async (resolve, reject) => {
+
         try {
+
             const user = await User.findOne({
                 _id: id
             }).select('-password');
+
             if (user === null) {
+                
                 resolve({
                     code: 404,
                     success: false,
@@ -271,239 +293,20 @@ const getDetailsUser = (id) => {
                 message: 'Lấy thông tin người dùng thành công!',
                 data: user
             })
-        } catch (e) {
-            reject(e)
-        }
-    })
-}
-const verifyEmailSignUpService = (data) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const result = await UserVerification.find({
-                userId: data.userId
-            })
-            if (!result) {
-                resolve({
-                    code: 404,
-                    success: false,
-                    message: 'Bản ghi tài khoản không tòn tại hoặc đã được xác minh!'
-                })
-            } else {
-                if (result.length > 0) {
-                    const { expiresAt } = result[0]
-                    const hashedUniqueString = result[0].uniqueString
-                    if (expiresAt < Date.now()) {
-                        UserVerification.deleteOne({ userId: data.userId })
-                            .then(() => {
-                                resolve({
-                                    code: 401,
-                                    success: false,
-                                    message: 'Đã hết hạn, yêu cầu đăng ký lại để nhận xác nhận mới từ Email!'
-
-                                })
-                            })
-                            .catch(
-                                (error) => {
-                                    console.log('Đã xảy ra lỗi khi UserVerification.deleteOne', error)
-                                    resolve({
-                                        code: 500,
-                                        success: false,
-                                        message: 'Đã xảy ra lỗi khi UserVerification.deleteOne'
-
-                                    })
-                                })
-                    } else {
-                        bcrypt.compare(data.uniqueString, hashedUniqueString)
-                            .then(() => {
-                                User.updateOne({ _id: data.userId }, { verified: true })
-                                    .then(() => {
-                                        UserVerification.deleteOne({ userId: data.userId })
-                                            .then(() => {
-                                                resolve({
-                                                    code: 200,
-                                                    success: true,
-                                                    message: 'Hoàn tất kiểm tra, bạn đã đăng ký thành công!'
-
-                                                })
-                                            })
-                                            .catch(
-                                                (error) => {
-                                                    console.log('Đã xảy ra lỗi khi UserVerification.deleteOne', error)
-                                                    resolve({
-                                                        code: 500,
-                                                        success: false,
-                                                        message: 'Đã xảy ra lỗi khi UserVerification.deleteOne'
-
-                                                    })
-                                                })
-                                    })
-                                    .catch((error) => {
-                                        console.log('Đã xảy ra lỗi khi User.updateOne', error)
-                                        resolve({
-                                            code: 500,
-                                            success: false,
-                                            message: 'Đã xảy ra lỗi khi User.updateOne!'
-
-                                        })
-                                    })
-                            })
-                            .catch((error) => {
-                                console.log('Đã xảy ra lỗi khi giải mã dữ liệu uniqueString!', error)
-                                resolve({
-                                    code: 500,
-                                    success: false,
-                                    message: 'Đã xảy ra lỗi khi giải mã dữ liệu uniqueString!'
-
-                                })
-                            })
-                    }
-                } else {
-                    resolve({
-                        code: 401,
-                        success: false,
-                        message: 'Bản ghi tài khoản không tồn tại hoặc đã được xác minh!'
-                    })
-                }
-
-
-
-            }
 
         } catch (e) {
             reject(e)
-
-            // resolve({
-            //     status: 'OK',
-            //     message: 'SUCCESS',
-            //     data: user
-            // })
-        }
-    })
-}
-const resetPasswordService = (email) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-
-            const user = await User.findOne({
-                email: email
-            })
-            if (user === null) {
-                resolve({
-                    code: 404,
-                    success: false,
-                    message: 'Email không tồn tại trong hệ thống, vui lòng đăng ký!'
-                })
-            }
-            else {
-                // let responseSendEmailResetPassword = await EmailService.sendEmailResetPassword(user._id, user.email)
-
-                // resolve({
-                //     code: responseSendEmailResetPassword.code,
-                //     success: responseSendEmailResetPassword.success,
-                //     message: responseSendEmailResetPassword.message
-                // })
-            }
-
-        } catch (e) {
-            reject(e)
-        }
-    })
-}
-const verifyResetPasswordService = (data) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-
-            const result = await UserResetPassword.find({
-                userId: data.userId
-
-            })
-            if (!result) {
-                resolve({
-                    code: 404,
-                    success: false,
-                    message: 'Bản ghi tài khoản không tồn tại hoặc đã được xác minh!'
-                })
-            } else {
-                if (result.length > 0) {
-                    const { expiresAt } = result[0]
-                    const hashedResetString = result[0].resetString
-                    if (expiresAt < Date.now()) {
-                        UserResetPassword.deleteOne({ userId: data.userId })
-                            .then(() => {
-                                resolve({
-                                    code: 401,
-                                    success: false,
-                                    message: 'Đã hết hạn, bạn hãy reset lại mật khẩu và nhận link mới từ Email!'
-
-                                })
-                            })
-                            .catch(
-                                (error) => {
-                                    console.log('Đã xảy ra lỗi khi UserResetPassword.deleteOne', error)
-                                    resolve({
-                                        code: 500,
-                                        success: false,
-                                        message: 'Đã xảy ra lỗi khi UserResetPassword.deleteOne'
-
-                                    })
-                                })
-                    } else {
-                        bcrypt.compare(data.resetString, hashedResetString)
-                            .then(() => {
-                                UserResetPassword.deleteOne({ userId: data.userId })
-                                    .then(() => {
-                                        resolve({
-                                            code: 200,
-                                            success: true,
-                                            message: 'Bạn có thể hiện form cập nhật mật khẩu mới!',
-                                            data: { userId: data.userId }
-                                        })
-                                    })
-                                    .catch(
-                                        (error) => {
-                                            console.log('Đã xảy ra lỗi khi UserVerification.deleteOne', error)
-                                            resolve({
-                                                code: 500,
-                                                success: false,
-                                                message: 'Đã xảy ra lỗi khi UserVerification.deleteOne'
-                                            })
-                                        })
-
-
-                            })
-                            .catch((error) => {
-                                console.log('Đã xảy ra lỗi khi giải mã dữ liệu resetString!', error)
-                                resolve({
-                                    code: 500,
-                                    success: false,
-                                    message: 'Đã xảy ra lỗi khi giải mã dữ liệu resetString!'
-
-                                })
-                            })
-                    }
-                } else {
-                    resolve({
-                        code: 404,
-                        success: false,
-                        message: 'Bản ghi tài khoản không tồn tại hoặc đã được xác minh!'
-
-                    })
-                }
-
-
-            }
-
-        } catch (e) {
-            reject(e)
-
-
         }
     })
 }
 const updatePasswordService = (userId, data) => {
+
     return new Promise(async (resolve, reject) => {
+
         try {
+
             const user = await User.findOne({ _id: userId });
+
             if (!user) {
 
                 resolve({
@@ -512,6 +315,7 @@ const updatePasswordService = (userId, data) => {
                     message: 'Người dùng không tồn tại'
                 })
             }
+
             const isCurrentPassword = await bcrypt.compare(data.newPassword, user.password);
 
             if (isCurrentPassword) {
@@ -521,10 +325,11 @@ const updatePasswordService = (userId, data) => {
                     success: false,
                     message: 'Mật khẩu mới không được giống mật khẩu hiện tại!'
                 })
+
             } else {
                 const saltRounds = 10
-                let hashedNewPassword = await bcrypt.hash(data.newPassword, saltRounds)
 
+                let hashedNewPassword = await bcrypt.hash(data.newPassword, saltRounds)
 
                 const updatePassword = User.updateOne({ _id: userId }, { password: hashedNewPassword }).then().catch((error) => {
                     console.log('Có lỗi khi update mật khẩu mới!', error)
@@ -535,33 +340,37 @@ const updatePasswordService = (userId, data) => {
                     })
                 })
                 if (updatePassword) {
+
                     resolve({
                         code: 200,
                         success: true,
                         message: 'Đổi mật khẩu thành công!'
                     })
+
                 } else {
+
                     resolve({
                         code: 500,
                         success: false,
                         message: 'Có lỗi khi update mật khẩu mới!'
                     })
+
                 }
             }
-
-
-
         } catch (e) {
             reject(e)
         }
     })
 }
-
 const exportExcel = () => {
     return new Promise(async (resolve, reject) => {
+
         try {
+
             const totalUser = await User.count();
+
             let allUser = [];
+
             allUser = await User.find();
 
             resolve({
@@ -571,12 +380,12 @@ const exportExcel = () => {
                 data: allUser,
                 total: totalUser,
             });
+
         } catch (e) {
             reject(e);
         }
     });
 };
-
 module.exports = {
     createUser,
     loginUser,
@@ -585,9 +394,6 @@ module.exports = {
     getAllUser,
     getDetailsUser,
     deleteManyUser,
-    verifyEmailSignUpService,
-    resetPasswordService,
-    verifyResetPasswordService,
     updatePasswordService,
     getAllUserSearch,
     exportExcel

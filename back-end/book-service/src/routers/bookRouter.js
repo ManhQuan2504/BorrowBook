@@ -5,6 +5,8 @@ const router = express.Router(); // Sử dụng `express.Router()` thay vì `Exp
 
 router.get('/get', bookController.getBook);
 
+router.get('/detail/:id', bookController.getDetailBook);
+
 router.get('/search', bookController.searchBook);
 
 router.post('/create', bookController.createBook);

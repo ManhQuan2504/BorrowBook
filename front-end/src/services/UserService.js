@@ -1,7 +1,7 @@
 import axios from "axios"
 
 
-export const BASE_URL = 'http://localhost:3333/api'
+export const BASE_URL = 'http://localhost:3333/api/v1'
 export const apiService = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -135,7 +135,7 @@ export const deleteManyUser = async (access_token, userIds) => {
   }
 };
 
-export const signUpAccount = async (name, email, password, phone, address) =>
+export const signUpAccount = async (name, email, password, phone, address, language) =>
   await axios
     .post(BASE_URL + '/user/sign-up', {
       name,
@@ -143,6 +143,7 @@ export const signUpAccount = async (name, email, password, phone, address) =>
       password,
       phone,
       address,
+      language
     })
     .then((res) => res.data)
     .catch((err) => err)
@@ -157,6 +158,18 @@ export const getAllUser = async (accessToken, limit, page) => {
       params: {
         limit,
         page,
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => err);
+};
+
+export const getDetailUser = async ({ accessToken, idUser }) => {
+  console.log();
+  return await apiService
+    .get(`/user/get-detail-user/${idUser}`, {
+      headers: {
+        token: `Bearer ${accessToken}`,
       },
     })
     .then((res) => res.data)

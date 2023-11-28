@@ -3,6 +3,7 @@ import BorrowBookModel from "../models/borrowBookModel.js";
 const getBorrowBook = async ({ perPage, page }) => {
     try {
         const count = await BorrowBookModel.countDocuments();
+    
         const countPage = Math.ceil(count / perPage); // Sử dụng hàm Math.ceil để làm tròn lên
         const data = await BorrowBookModel
             .find()
@@ -10,7 +11,8 @@ const getBorrowBook = async ({ perPage, page }) => {
             .skip((page - 1) * perPage);
 
         if (!count || !data.length) {
-            throw new Error("Can't get BorrowBook");
+            const result = {count: 0,countPage: 1,data:[] };
+        return result;
         }
 
         const result = { count, countPage, data };

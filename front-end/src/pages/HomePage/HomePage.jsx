@@ -1,6 +1,5 @@
 import React from 'react'
 import book2 from '../../assets/images/book3.jpg'
-import {Image} from 'semantic-ui-react'
 import './style.scss'
 const HomePage = () => {
   return (

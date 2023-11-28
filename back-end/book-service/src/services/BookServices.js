@@ -23,6 +23,23 @@ const getBook = async ({ perPage, page }) => {
     }
 };
 
+const getDetailBook = async ({ idBook }) => {
+    try {
+        console.log(idBook);
+        const data = await bookModel.findByPk(idBook.id);
+
+        if (!data) {
+            throw new Error("Can't get Book");
+        }
+
+        const result = { data };
+        return result;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 
 const searchBook = async ({ perPage, keyword, page }) => {
     const getKeyword = {
@@ -149,6 +166,7 @@ const exportExcel = async () => {
 
 export default {
     getBook,
+    getDetailBook,
     searchBook,
     createBook,
     updateBook,

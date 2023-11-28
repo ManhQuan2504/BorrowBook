@@ -64,7 +64,10 @@
             "returnBook":"Return Book",
             "areYouSure":"Are you sure you want to return this book?",
             "no":"No",
-            "yes":"Yes"
+            "yes":"Yes",
+            "informationBook":"Borrowed book information",
+            "informationUser":"Borrower information",
+            "detailBorrow":"Details Borrow Books"
 
 
         },

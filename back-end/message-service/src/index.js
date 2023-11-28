@@ -48,21 +48,28 @@ async function startReceiver() {
 
 async function startReceiverForExchange(channel, queueName, messageHandler) {
     await channel.consume(queueName, (msg) => {
+        
         const message = JSON.parse(msg.content.toString());
+        console.log('Received message||||:', message);
         messageHandler(message);
     }, { noAck: true });
     console.log(`Receiver for ${queueName} is waiting for messages.`);
 }
 
 async function handleBorrowExchangeMessage(message) {
+    console.log('message',message)
     if (message.type === 'borrow') {
         SendMailController.SendMail_borrowBook(message);
     } else if (message.type === 'return') {
         SendMailController.SendMail_return(message);
     }
+    
 }
 
-app.listen(port, () => {
-    console.log('Server is running in port: ' + port);
-    startReceiver();
-});
+
+await Promise.all([
+    app.listen(port, () => {
+        console.log('Server is running in port: ' + port);
+        startReceiver();
+    })
+]);

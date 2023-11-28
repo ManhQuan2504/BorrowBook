@@ -32,6 +32,10 @@
             "confirmUserDeletion":"Xác nhận xóa người dùng",
             "areYouSure":"Bạn có chắc chắn muốn xóa người dùng này?",
             "confirm":"Xác Nhận"
+           
+           
+            
+            
         },
         "bookManagement":{
             "bookManagementTitle":"Quản Lý Sách",
@@ -64,7 +68,10 @@
             "returnBook":"Trả sách",
             "areYouSure":"Bạn có chắc chắn muốn trả sách này?",
             "no":"Không",
-            "yes":"Có"
+            "yes":"Có",
+            "informationBook":"Thông tin sách mượn",
+            "informationUser":"Thông tin người mượn",
+            "detailBorrow":"Chi tiết đơn mượn"
         },
         "profile":{
             "userName":"Tên người dùng",

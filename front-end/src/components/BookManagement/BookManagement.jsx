@@ -9,11 +9,10 @@ import { LANGUAGES } from "../../contants/path";
 import { useSelector } from 'react-redux';
 
 const BookManagement = () => {
-  const [countPage, setCountPage] = useState(0);
   const [page, setPage] = useState(1)
   const [datas, setDatas] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false); // nút delete
-
+  const [totalRecords, setTotalRecords] = useState("");
   const [recordsPerPage, setRecordsPerPage] = useState(5);
 
 
@@ -51,8 +50,7 @@ const BookManagement = () => {
       const result = await BookServices.getBooks({ page, perPage: recordsPerPage });
       setDatas(result.data.data);
       setTotalPages(result.data.countPage || 1);
-
-      setCountPage(result.data.countPage)
+      setTotalRecords(result.data.count || 0);
     } catch (error) {
       console.error('ERR: , error');
     }
@@ -281,22 +279,7 @@ const BookManagement = () => {
             <Icon name="refresh" />
           </Button>
 
-          <Search
-            placeholder={
-              language === LANGUAGES.VI
-                ? languageDataVi.content.userManagement.search
-                : languageDataEn.content.userManagement.search
-            }
-            // onSearchChange={handleSearchChange}
-            // onResultSelect={handleSearchResultSelect}
-            // value={searchQuery}
-            // results={searchResults.map((user, index) => ({
-            //   key: index,
-            //   title: user.name,
-            //   description: user.type,
-            //   value: user.value,
-            // }))}
-          />
+       
         </div>
       </div>
 
@@ -417,18 +400,53 @@ const BookManagement = () => {
 
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell> <Checkbox /></Table.HeaderCell>
-            <Table.HeaderCell>ID</Table.HeaderCell>
-            <Table.HeaderCell> {language === LANGUAGES.VI
+            <Table.HeaderCell style={{
+                      width: "20px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}> <Checkbox /></Table.HeaderCell>
+            <Table.HeaderCell
+                    style={{
+                      width: "50px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.stt
+                      : languageDataEn.content.userManagement.stt}
+                  </Table.HeaderCell>
+            <Table.HeaderCell style={{
+                      width: "150px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}>ID</Table.HeaderCell>
+            <Table.HeaderCell style={{
+                      width: "300px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}> {language === LANGUAGES.VI
               ? languageDataVi.content.bookManagement.nameBook
               : languageDataEn.content.bookManagement.nameBook}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
+            <Table.HeaderCell style={{
+                      width: "200px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}>{language === LANGUAGES.VI
               ? languageDataVi.content.bookManagement.category
               : languageDataEn.content.bookManagement.category}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
+            <Table.HeaderCell style={{
+                      width: "100px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}>{language === LANGUAGES.VI
               ? languageDataVi.content.bookManagement.quantity
               : languageDataEn.content.bookManagement.quantity}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
+            <Table.HeaderCell style={{
+                      width: "200px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}>{language === LANGUAGES.VI
               ? languageDataVi.content.bookManagement.yearPublication
               : languageDataEn.content.bookManagement.yearPublication}</Table.HeaderCell>
             <Table.HeaderCell>{language === LANGUAGES.VI
@@ -441,11 +459,12 @@ const BookManagement = () => {
         </Table.Header>
 
         <Table.Body>
-          {datas.map((data) => (
+          {datas.map((data,index) => (
             <Table.Row key={data.id}>
               <Table.Cell>
                 <Checkbox />
               </Table.Cell>
+              <Table.Cell>{index + 1}</Table.Cell>
               <Table.Cell>{data.id}</Table.Cell>
               <Table.Cell>{data.title}</Table.Cell>
               <Table.Cell>{data.category}</Table.Cell>
@@ -594,12 +613,12 @@ const BookManagement = () => {
 
         <Table.Footer className="TableFooter">
           <Table.Row>
-            <Table.HeaderCell colSpan="8">
-              {/* <Menu className="MenuHeader" floated="left">
+            <Table.HeaderCell colSpan="9">
+            <Menu className="MenuHeader" floated="left">
                       <Header size="small">
                         Tìm thấy {totalRecords} bản ghi
                       </Header>
-                    </Menu> */}
+                    </Menu>
               <Menu floated="right" pagination>
                 <Menu.Item
                   as="a"

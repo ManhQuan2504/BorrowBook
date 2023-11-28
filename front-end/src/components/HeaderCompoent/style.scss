@@ -2,7 +2,11 @@
 
 .headerComponent_container{
    padding-top: 0 !important;
- 
+   position: fixed !important;
+   top: 0 !important;
+   width: 100% !important;
+   z-index: 1000 !important;
+//    margin-bottom: 50px !important;
   
 .Menu-border{
    border-color: #2185d0 !important;

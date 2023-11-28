@@ -27,6 +27,18 @@ const getBook = async (req, res) => {
     }
 };
 
+const getDetailBook = async (req, res) => {
+    try {
+        const idBook = req.params;
+
+        const response = await BookService.getDetailBook({ idBook });
+
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
+    } catch (error) {
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
+    }
+};
+
 const searchBook = async (req, res) => {
     try {
         const perPage = 2;
@@ -35,7 +47,7 @@ const searchBook = async (req, res) => {
         page = Math.max(page, 1);
 
         const response = await BookService.searchBook({ perPage, keyword, page });
-        
+
         return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
         return message.MESSAGE_ERROR(res, 'ERR', error.message)
@@ -119,9 +131,15 @@ const borrowBook = async (message) => {
 
         const response = await BookService.borrowBook({ id });
 
-        return message.MESSAGE_SUCCESS(res, 'OK', response);
+        return ({
+            status: "OK",
+            data: response
+        })
     } catch (error) {
-        return message.MESSAGE_ERROR(res, 'ERR', error.message)
+        return ({
+            status: "ERR",
+            message: error.message
+        })
     }
 };
 
@@ -173,6 +191,7 @@ const exportExcel = async (req, res) => {
 
 export default {
     getBook,
+    getDetailBook,
     searchBook,
     createBook,
     updateBook,
