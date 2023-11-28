@@ -1,1 +1,2 @@
 anh hoang dep trai
+amqps://bknmnbmu:XxQ0ItsjeMZkNusWl6RyQGTQnpujg-aG@armadillo.rmq.cloudamqp.com/bknmnbmu

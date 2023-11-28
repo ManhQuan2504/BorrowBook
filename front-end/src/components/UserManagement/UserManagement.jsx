@@ -183,15 +183,15 @@ const UserManagement = () => {
       if (!EmailValidation(email))
         return setErrEmail("Kiểm tra định dạng Email!");
       if (!phone) return setErrPhone("Enter your phone number");
-      if (!password) return setErrPassword("Create a password");
-      if (password.length < 6)
-        return setErrPassword("Passwords must be at least 6 characters");
+      // if (!password) return setErrPassword("Create a password");
+      // if (password.length < 6)
+      //   return setErrPassword("Passwords must be at least 6 characters");
       if (!address) return setErrAddress("Enter your address");
 
       const res = await UserService.signUpAccount(
         clientName,
         email,
-        password,
+        '123456',
         phone,
         address,
         language
@@ -451,31 +451,6 @@ const UserManagement = () => {
                     <Form.Field>
                       <label>{
                         language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.password
-                          : languageDataEn.content.userManagement.password
-                      }</label>
-                      <input
-                        onChange={handlePassword}
-                        value={password}
-                        minLength={6}
-                        type="password"
-                        placeholder={
-                          language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.password
-                            : languageDataEn.content.userManagement.password
-                        }
-                      />
-                      {errPassword && (
-                        <div className="error-message">{errPassword}</div>
-                      )}
-                    </Form.Field>
-                  </Grid.Column>
-                </Grid.Row>
-                <Grid.Row columns={2}>
-                  <Grid.Column>
-                    <Form.Field>
-                      <label>{
-                        language === LANGUAGES.VI
                           ? languageDataVi.content.userManagement.name
                           : languageDataEn.content.userManagement.name
                       }</label>
@@ -490,6 +465,33 @@ const UserManagement = () => {
                       )}
                     </Form.Field>
                   </Grid.Column>
+                  <Grid.Column>
+                    <Form.Field hidden>
+                      <label>{
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.password
+                          : languageDataEn.content.userManagement.password
+                      }</label>
+                      <input
+                        onChange={handlePassword}
+                        value='123456'
+                        minLength={6}
+                        type="password"
+                        placeholder={
+                          language === LANGUAGES.VI
+                            ? languageDataVi.content.userManagement.password
+                            : languageDataEn.content.userManagement.password
+                        }
+                        
+                      />
+                      {errPassword && (
+                        <div className="error-message">{errPassword}</div>
+                      )}
+                    </Form.Field>
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={2}>
+                 
                   <Grid.Column>
                     <Form.Field>
                       <label>{
@@ -508,8 +510,6 @@ const UserManagement = () => {
                       )}
                     </Form.Field>
                   </Grid.Column>
-                </Grid.Row>
-                <Grid.Row columns={2}>
                   <Grid.Column>
                     <Form.Field>
                       <label>{
@@ -528,6 +528,9 @@ const UserManagement = () => {
                       )}
                     </Form.Field>
                   </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={2}>
+                  
                 </Grid.Row>
               </Grid>
             </Form>
