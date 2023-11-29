@@ -328,9 +328,9 @@ const BorrowManagement = () => {
         <Icon name="address book"></Icon>{" "}
         {language === LANGUAGES.VI
           ? languageDataVi.content.bookBorrowManagement
-              .bookBorrowManagementTitle
+            .bookBorrowManagementTitle
           : languageDataEn.content.bookBorrowManagement
-              .bookBorrowManagementTitle}
+            .bookBorrowManagementTitle}
       </Header>
 
       <div className="header-actions">
@@ -359,7 +359,7 @@ const BorrowManagement = () => {
             <Icon name="refresh" />
           </Button>
 
-         
+
         </div>
       </div>
 
@@ -382,7 +382,7 @@ const BorrowManagement = () => {
                       {language === LANGUAGES.VI
                         ? languageDataVi.content.bookBorrowManagement.searchUser
                         : languageDataEn.content.bookBorrowManagement
-                            .searchUser}
+                          .searchUser}
                     </label>
                     <Search
                       placeholder={
@@ -419,7 +419,7 @@ const BorrowManagement = () => {
                       {language === LANGUAGES.VI
                         ? languageDataVi.content.bookBorrowManagement.searchBook
                         : languageDataEn.content.bookBorrowManagement
-                            .searchBook}
+                          .searchBook}
                     </label>
                     <Search
                       placeholder={
@@ -460,9 +460,9 @@ const BorrowManagement = () => {
                     <label>
                       {language === LANGUAGES.VI
                         ? languageDataVi.content.bookBorrowManagement
-                            .borrowedDate
+                          .borrowedDate
                         : languageDataEn.content.bookBorrowManagement
-                            .borrowedDate}
+                          .borrowedDate}
                     </label>
                     <input
                       type="datetime-local"
@@ -511,434 +511,427 @@ const BorrowManagement = () => {
         </Modal.Actions>
       </Modal>
       <div className="table-container">
-      <Table celled  className="table-content" >
-   
-        <Table.Header className="sticky-header">
-          <Table.Row>
-            <Table.HeaderCell
-              style={{
-                width: "20px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {" "}
-              <Checkbox />
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              style={{
-                width: "50px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {language === LANGUAGES.VI
-                ? languageDataVi.content.userManagement.stt
-                : languageDataEn.content.userManagement.stt}
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              style={{
-                width: "200px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              ID
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              style={{
-                width: "200px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {" "}
-              {language === LANGUAGES.VI
-                ? languageDataVi.content.bookBorrowManagement.borrower
-                : languageDataEn.content.bookBorrowManagement.borrower}
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              style={{
-                width: "140px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {language === LANGUAGES.VI
-                ? languageDataVi.content.bookBorrowManagement.borrowedBook
-                : languageDataEn.content.bookBorrowManagement.borrowedBook}
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              style={{
-                width: "150px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                textAlign: "center",
-              }}
-            >
-              {language === LANGUAGES.VI
-                ? languageDataVi.content.bookBorrowManagement.borrowedDate
-                : languageDataEn.content.bookBorrowManagement.borrowedDate}
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              style={{
-                width: "110px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                textAlign: "center",
-              }}
-            >
-              {language === LANGUAGES.VI
-                ? languageDataVi.content.bookBorrowManagement.dueDate
-                : languageDataEn.content.bookBorrowManagement.dueDate}
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              style={{
-                width: "200px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                textAlign: "center",  
-              }}
-            >
-              {language === LANGUAGES.VI
-                ? languageDataVi.content.bookBorrowManagement.returnDate
-                : languageDataEn.content.bookBorrowManagement.returnDate}
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              style={{
-                width: "200px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {language === LANGUAGES.VI
-                ? languageDataVi.content.bookBorrowManagement.status
-                : languageDataEn.content.bookBorrowManagement.status}
-            </Table.HeaderCell>
-            <Table.HeaderCell style={{ textAlign: "center" }}>
-              {language === LANGUAGES.VI
-                ? languageDataVi.content.bookBorrowManagement.action
-                : languageDataEn.content.bookBorrowManagement.action}
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-      
-        <Table.Body>
-          {datas.map((data, index) => (
-            <Table.Row key={index} style={{ cursor: "pointer" }}  >
-              <Table.Cell>
+        <Table celled className="table-content" >
+
+          <Table.Header className="sticky-header">
+            <Table.Row>
+              <Table.HeaderCell
+                style={{
+                  width: "20px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {" "}
                 <Checkbox />
-              </Table.Cell>
-              <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
-  {(page - 1) * recordsPerPage + index + 1}
-</Table.Cell>
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{
+                  width: "50px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.stt
+                  : languageDataEn.content.userManagement.stt}
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{
+                  width: "200px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                ID
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{
+                  width: "200px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {" "}
+                {language === LANGUAGES.VI
+                  ? languageDataVi.content.bookBorrowManagement.borrower
+                  : languageDataEn.content.bookBorrowManagement.borrower}
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{
+                  width: "140px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {language === LANGUAGES.VI
+                  ? languageDataVi.content.bookBorrowManagement.borrowedBook
+                  : languageDataEn.content.bookBorrowManagement.borrowedBook}
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{
+                  width: "150px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  textAlign: "center",
+                }}
+              >
+                {language === LANGUAGES.VI
+                  ? languageDataVi.content.bookBorrowManagement.borrowedDate
+                  : languageDataEn.content.bookBorrowManagement.borrowedDate}
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{
+                  width: "110px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  textAlign: "center",
+                }}
+              >
+                {language === LANGUAGES.VI
+                  ? languageDataVi.content.bookBorrowManagement.dueDate
+                  : languageDataEn.content.bookBorrowManagement.dueDate}
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{
+                  width: "200px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  textAlign: "center",
+                }}
+              >
+                {language === LANGUAGES.VI
+                  ? languageDataVi.content.bookBorrowManagement.returnDate
+                  : languageDataEn.content.bookBorrowManagement.returnDate}
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                style={{
+                  width: "200px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {language === LANGUAGES.VI
+                  ? languageDataVi.content.bookBorrowManagement.status
+                  : languageDataEn.content.bookBorrowManagement.status}
+              </Table.HeaderCell>
+              <Table.HeaderCell style={{ textAlign: "center" }}>
+                {language === LANGUAGES.VI
+                  ? languageDataVi.content.bookBorrowManagement.action
+                  : languageDataEn.content.bookBorrowManagement.action}
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+
+          <Table.Body>
+            {datas.map((data, index) => (
+              <Table.Row key={index} style={{ cursor: "pointer" }}  >
+                <Table.Cell>
+                  <Checkbox />
+                </Table.Cell>
+                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                  {(page - 1) * recordsPerPage + index + 1}
+                </Table.Cell>
 
 
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data._id}</Table.Cell>
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idUser}</Table.Cell>
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idBook}</Table.Cell>
-              <Table.Cell style={{ textAlign: "center" }}  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
-                {moment(data.borrowDate).format("DD/MM/YYYY HH:mm")}
-              </Table.Cell>
-              <Table.Cell  style={{ textAlign: "center" }}  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
-                {moment(data.dueDate).format("DD/MM/YYYY")}
-              </Table.Cell>
-              <Table.Cell style={{ textAlign: "center" }}   onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
-                {data.returnDate
-                  ? moment(data.returnDate).format("DD/MM/YYYY HH:mm")
-                  : "-----"}
-              </Table.Cell>
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{getStatusText(data.status)}</Table.Cell>
-              <Table.Cell style={{ textAlign: "center" }}>
-                {/* <Icon
+                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data._id}</Table.Cell>
+                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idUser}</Table.Cell>
+                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idBook}</Table.Cell>
+                <Table.Cell style={{ textAlign: "center" }} onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                  {moment(data.borrowDate).format("DD/MM/YYYY HH:mm")}
+                </Table.Cell>
+                <Table.Cell style={{ textAlign: "center" }} onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                  {moment(data.dueDate).format("DD/MM/YYYY")}
+                </Table.Cell>
+                <Table.Cell style={{ textAlign: "center" }} onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                  {data.returnDate
+                    ? moment(data.returnDate).format("DD/MM/YYYY HH:mm")
+                    : "-----"}
+                </Table.Cell>
+                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{getStatusText(data.status)}</Table.Cell>
+                <Table.Cell style={{ textAlign: "center" }}>
+                  {/* <Icon
                   size="big"
                   name="table"
                   onClick={() => handleDetailBorrow(data.idUser, data.idBook)}
                 /> */}
-                <Icon
-                  size="big"
-                  name="undo alternate"
-                  onClick={() => handleReturnbook(data._id)}
-             
+                  <Icon
+                    size="big"
+                    name="undo alternate"
+                    onClick={() => handleReturnbook(data._id)}
 
-                />
-              </Table.Cell>
 
-              <Modal
-                open={openModalDetailBorrow}
-                onClose={() => setOpenModalDetailBorrow(false)}
-              >
-                <Header
-                  content={
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.detailBorrow
-                      : languageDataEn.content.bookBorrowManagement.detailBorrow
-                  }
-                />
-                <Modal.Content style={{ display: "flex" }}>
-                  <div style={{ flex: "50%", paddingRight: "20px", backgroundColor: "rgb(255 114 114)",borderRadius: "6%" }}>
-                    <h3 style={{marginLeft: "30%", paddingTop: "10px"}}>{
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.informationBook
-                      : languageDataEn.content.bookBorrowManagement.informationBook
-                  }</h3>
-                    {detailBook && detailBook.data && (
-                      <div>
-                        <p  style={{marginLeft: "6%"}}>ID: {detailBook.data.data.id}</p>
-                        <p  style={{marginLeft: "6%"}}> {
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.bookManagement.nameBook
-                      : languageDataEn.content.bookManagement.nameBook
-                  }: {detailBook.data.data.title}</p>
-                        <p  style={{marginLeft: "6%"}}>{
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.bookManagement.category
-                      : languageDataEn.content.bookManagement.category
-                  }: {detailBook.data.data.category}</p>
-                        
-                        <p  style={{marginLeft: "6%"}}>{
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.bookManagement.yearPublication
-                      : languageDataEn.content.bookManagement.yearPublication
-                  }: {detailBook.data.data.publishYear}</p>
-                        <p  style={{marginLeft: "6%"}}>{
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.bookManagement.author
-                      : languageDataEn.content.bookManagement.author
-                  }: {detailBook.data.data.authorBook}</p>
-                      </div>
-                    )}
-                  </div>
+                  />
+                </Table.Cell>
 
-                  <div style={{ flex: "50%", paddingLeft: "20px",backgroundColor: "aqua",borderRadius: "6%", marginLeft: "20px"  }}>
-                    <h3 style={{marginLeft: "30%",paddingTop: "10px"}}>{
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.informationUser
-                      : languageDataEn.content.bookBorrowManagement.informationUser
-                  }</h3>
-                    {detailUser && detailUser.data && (
-                      <div>
-                        <p style={{marginLeft: "1%"}}>ID: {detailUser.data._id}</p>
-                        <p style={{marginLeft: "1%"}}>{
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.name
-                      : languageDataEn.content.userManagement.name
-                  }: {detailUser.data.name}</p>
-                        <p style={{marginLeft: "1%"}}>{
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.email
-                      : languageDataEn.content.userManagement.email
-                  }: {detailUser.data.email}</p>
-                        <p style={{marginLeft: "1%"}}>{
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.phone
-                      : languageDataEn.content.userManagement.phone
-                  }: {detailUser.data.phone}</p>
-                        <p style={{marginLeft: "1%", marginBottom: "10px"}}>{
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.address
-                      : languageDataEn.content.userManagement.address
-                  }: {detailUser.data.address}</p>
-                      </div>
-                    )}
-                  </div>
-                </Modal.Content>
-                <Modal.Actions>
-                  <Button
-                    color="green"
-                    onClick={() => setOpenModalDetailBorrow(false)}
-                  >
-                    <Icon name="checkmark" />
-                    OK
-                  </Button>
-                </Modal.Actions>
-              </Modal>
+                <Modal
+                  open={openModalDetailBorrow}
+                  onClose={() => setOpenModalDetailBorrow(false)}
+                >
+                  <Header
+                    content={
+                      language === LANGUAGES.VI
+                        ? languageDataVi.content.bookBorrowManagement.detailBorrow
+                        : languageDataEn.content.bookBorrowManagement.detailBorrow
+                    }
+                  />
+                  <Modal.Content style={{ display: "flex" }}>
+                    <div style={{ flex: "50%", paddingRight: "20px", backgroundColor: "rgb(255 114 114)", borderRadius: "6%" }}>
+                      <h3 style={{ marginLeft: "30%", paddingTop: "10px" }}>{
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.bookBorrowManagement.informationBook
+                          : languageDataEn.content.bookBorrowManagement.informationBook
+                      }</h3>
+                      {detailBook && detailBook.data && (
+                        <div>
+                          <p style={{ marginLeft: "6%" }}>ID: {detailBook.data.data.id}</p>
+                          <p style={{ marginLeft: "6%" }}> {
+                            language === LANGUAGES.VI
+                              ? languageDataVi.content.bookManagement.nameBook
+                              : languageDataEn.content.bookManagement.nameBook
+                          }: {detailBook.data.data.title}</p>
+                          <p style={{ marginLeft: "6%" }}>{
+                            language === LANGUAGES.VI
+                              ? languageDataVi.content.bookManagement.category
+                              : languageDataEn.content.bookManagement.category
+                          }: {detailBook.data.data.category}</p>
 
-              <Modal
-                open={openModalReturnBook}
-                onClose={() => setOpenModalReturnBook(false)}
+                          <p style={{ marginLeft: "6%" }}>{
+                            language === LANGUAGES.VI
+                              ? languageDataVi.content.bookManagement.yearPublication
+                              : languageDataEn.content.bookManagement.yearPublication
+                          }: {detailBook.data.data.publishYear}</p>
+                          <p style={{ marginLeft: "6%" }}>{
+                            language === LANGUAGES.VI
+                              ? languageDataVi.content.bookManagement.author
+                              : languageDataEn.content.bookManagement.author
+                          }: {detailBook.data.data.authorBook}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div style={{ flex: "50%", paddingLeft: "20px", backgroundColor: "aqua", borderRadius: "6%", marginLeft: "20px" }}>
+                      <h3 style={{ marginLeft: "30%", paddingTop: "10px" }}>{
+                        language === LANGUAGES.VI
+                          ? languageDataVi.content.bookBorrowManagement.informationUser
+                          : languageDataEn.content.bookBorrowManagement.informationUser
+                      }</h3>
+                      {detailUser && detailUser.data && (
+                        <div>
+                          <p style={{ marginLeft: "1%" }}>ID: {detailUser.data._id}</p>
+                          <p style={{ marginLeft: "1%" }}>{
+                            language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement.name
+                              : languageDataEn.content.userManagement.name
+                          }: {detailUser.data.name}</p>
+                          <p style={{ marginLeft: "1%" }}>{
+                            language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement.email
+                              : languageDataEn.content.userManagement.email
+                          }: {detailUser.data.email}</p>
+                          <p style={{ marginLeft: "1%" }}>{
+                            language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement.phone
+                              : languageDataEn.content.userManagement.phone
+                          }: {detailUser.data.phone}</p>
+                          <p style={{ marginLeft: "1%", marginBottom: "10px" }}>{
+                            language === LANGUAGES.VI
+                              ? languageDataVi.content.userManagement.address
+                              : languageDataEn.content.userManagement.address
+                          }: {detailUser.data.address}</p>
+                        </div>
+                      )}
+                    </div>
+                  </Modal.Content>
+                  <Modal.Actions>
+                    <Button
+                      color="green"
+                      onClick={() => setOpenModalDetailBorrow(false)}
+                    >
+                      <Icon name="checkmark" />
+                      OK
+                    </Button>
+                  </Modal.Actions>
+                </Modal>
+
+                <Modal
+                  open={openModalReturnBook}
+                  onClose={() => setOpenModalReturnBook(false)}
                 // onOpen={() => setOpen(true)}
-              >
-                <Header
-                  content={
-                    language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.returnBook
-                      : languageDataEn.content.bookBorrowManagement.returnBook
-                  }
-                />
-                <Modal.Content>
-                  <p>
+                >
+                  <Header
+                    content={
+                      language === LANGUAGES.VI
+                        ? languageDataVi.content.bookBorrowManagement.returnBook
+                        : languageDataEn.content.bookBorrowManagement.returnBook
+                    }
+                  />
+                  <Modal.Content>
+                    <p>
+                      {language === LANGUAGES.VI
+                        ? languageDataVi.content.bookBorrowManagement.areYouSure
+                        : languageDataEn.content.bookBorrowManagement.areYouSure}
+                    </p>
+                  </Modal.Content>
+                  <Modal.Actions>
+                    <Button
+                      color="red"
+                      onClick={() => setOpenModalReturnBook(false)}
+                    >
+                      <Icon name="remove" />{" "}
+                      {language === LANGUAGES.VI
+                        ? languageDataVi.content.bookBorrowManagement.no
+                        : languageDataEn.content.bookBorrowManagement.no}
+                    </Button>
+                    <Button color="green" onClick={() => handleReturnBookYes()}>
+                      <Icon name="checkmark" />{" "}
+                      {language === LANGUAGES.VI
+                        ? languageDataVi.content.bookBorrowManagement.yes
+                        : languageDataEn.content.bookBorrowManagement.yes}
+                    </Button>
+                  </Modal.Actions>
+                </Modal>
+              </Table.Row>
+            ))}
+          </Table.Body>
+
+          <Table.Footer className="TableFooter">
+            <Table.Row>
+              <Table.HeaderCell colSpan="10">
+                <Menu style={{ padding: "11px", marginLeft: "3px", fontSize: "12px" }} className="MenuHeaderBorrow" floated="left">
+                  <Header size="small">
                     {language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.areYouSure
-                      : languageDataEn.content.bookBorrowManagement.areYouSure}
-                  </p>
-                </Modal.Content>
-                <Modal.Actions>
-                  <Button
-                    color="red"
-                    onClick={() => setOpenModalReturnBook(false)}
+                      ? languageDataVi.content.userManagement.found
+                      : languageDataEn.content.userManagement.found}{" "}
+                    {totalRecords}{" "}
+                    {language === LANGUAGES.VI
+                      ? languageDataVi.content.userManagement.records
+                      : languageDataEn.content.userManagement.records}
+                  </Header>
+                </Menu>
+                <Menu floated="right" pagination>
+                  <Menu.Item
+                    as="a"
+                    icon
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page === 1}
                   >
-                    <Icon name="remove" />{" "}
-                    {language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.no
-                      : languageDataEn.content.bookBorrowManagement.no}
-                  </Button>
-                  <Button color="green" onClick={() => handleReturnBookYes()}>
-                    <Icon name="checkmark" />{" "}
-                    {language === LANGUAGES.VI
-                      ? languageDataVi.content.bookBorrowManagement.yes
-                      : languageDataEn.content.bookBorrowManagement.yes}
-                  </Button>
-                </Modal.Actions>
-              </Modal>
+                    <Icon name="chevron left" />
+                  </Menu.Item>
+
+                  {/* Render page numbers dynamically with ellipsis */}
+                  {Array.from({ length: totalPages }, (_, i) => {
+                    const pageChange = i + 1;
+
+                    // Show the current page and some pages around it
+                    if (
+                      pageChange === 1 ||
+                      pageChange === totalPages ||
+                      (pageChange >= page - 2 && pageChange <= page + 2)
+                    ) {
+                      return (
+                        <Menu.Item
+                          key={pageChange}
+                          as="a"
+                          onClick={() => handlePageChange(pageChange)}
+                          active={page === pageChange}
+                        >
+                          {pageChange}
+                        </Menu.Item>
+                      );
+                    }
+
+                    // Show ellipsis for omitted pages
+                    if (pageChange === page - 3 || pageChange === page + 3) {
+                      return (
+                        <Menu.Item key={pageChange} disabled>
+                          ...
+                        </Menu.Item>
+                      );
+                    }
+
+                    return null;
+                  })}
+
+                  <Menu.Item
+                    as="a"
+                    icon
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page === totalPages}
+                  >
+                    <Icon name="chevron right" />
+                  </Menu.Item>
+
+                  <Dropdown
+                    className="DropdownLimitPage"
+                    selection
+                    compact
+                    options={[
+                      {
+                        key: 1,
+                        text: `1 ${language === LANGUAGES.VI
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
+                          }`,
+                        value: 1,
+                      },
+                      {
+                        key: 5,
+                        text: `5 ${language === LANGUAGES.VI
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
+                          }`,
+                        value: 5,
+                      },
+                      {
+                        key: 15,
+                        text: `15 ${language === LANGUAGES.VI
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
+                          }`,
+                        value: 15,
+                      },
+                      {
+                        key: 30,
+                        text: `30 ${language === LANGUAGES.VI
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
+                          }`,
+                        value: 30,
+                      },
+                      {
+                        key: 50,
+                        text: `50 ${language === LANGUAGES.VI
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
+                          }`,
+                        value: 50,
+                      },
+                      {
+                        key: 100,
+                        text: `100 ${language === LANGUAGES.VI
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
+                          }`,
+                        value: 100,
+                      },
+                      {
+                        key: 200,
+                        text: `200 ${language === LANGUAGES.VI
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
+                          }`,
+                        value: 200,
+                      },
+                    ]}
+                    value={recordsPerPage}
+                    onChange={handleRecordsPerPageChange}
+                  />
+                </Menu>
+              </Table.HeaderCell>
             </Table.Row>
-          ))}
-        </Table.Body>
-       
-        <Table.Footer className="TableFooter">
-          <Table.Row>
-            <Table.HeaderCell colSpan="10">
-            <Menu style={{  padding: "11px" , marginLeft: "3px", fontSize: "12px"}} className="MenuHeaderBorrow" floated="left">
-                      <Header size="small">
-                        {language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.found
-                          : languageDataEn.content.userManagement.found}{" "}
-                        {totalRecords}{" "}
-                        {language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.records
-                          : languageDataEn.content.userManagement.records}
-                      </Header>
-                    </Menu>
-              <Menu floated="right" pagination>
-                <Menu.Item
-                  as="a"
-                  icon
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
-                >
-                  <Icon name="chevron left" />
-                </Menu.Item>
-
-                {/* Render page numbers dynamically with ellipsis */}
-                {Array.from({ length: totalPages }, (_, i) => {
-                  const pageChange = i + 1;
-
-                  // Show the current page and some pages around it
-                  if (
-                    pageChange === 1 ||
-                    pageChange === totalPages ||
-                    (pageChange >= page - 2 && pageChange <= page + 2)
-                  ) {
-                    return (
-                      <Menu.Item
-                        key={pageChange}
-                        as="a"
-                        onClick={() => handlePageChange(pageChange)}
-                        active={page === pageChange}
-                      >
-                        {pageChange}
-                      </Menu.Item>
-                    );
-                  }
-
-                  // Show ellipsis for omitted pages
-                  if (pageChange === page - 3 || pageChange === page + 3) {
-                    return (
-                      <Menu.Item key={pageChange} disabled>
-                        ...
-                      </Menu.Item>
-                    );
-                  }
-
-                  return null;
-                })}
-
-                <Menu.Item
-                  as="a"
-                  icon
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={page === totalPages}
-                >
-                  <Icon name="chevron right" />
-                </Menu.Item>
-
-                <Dropdown
-                  className="DropdownLimitPage"
-                  selection
-                  compact
-                  options={[
-                    {
-                      key: 1,
-                      text: `1 ${
-                        language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
-                      }`,
-                      value: 1,
-                    },
-                    {
-                      key: 5,
-                      text: `5 ${
-                        language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
-                      }`,
-                      value: 5,
-                    },
-                    {
-                      key: 15,
-                      text: `15 ${
-                        language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
-                      }`,
-                      value: 15,
-                    },
-                    {
-                      key: 30,
-                      text: `30 ${
-                        language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
-                      }`,
-                      value: 30,
-                    },
-                    {
-                      key: 50,
-                      text: `50 ${
-                        language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
-                      }`,
-                      value: 50,
-                    },
-                    {
-                      key: 100,
-                      text: `100 ${
-                        language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
-                      }`,
-                      value: 100,
-                    },
-                    {
-                      key: 200,
-                      text: `200 ${
-                        language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
-                      }`,
-                      value: 200,
-                    },
-                  ]}
-                  value={recordsPerPage}
-                  onChange={handleRecordsPerPageChange}
-                />
-              </Menu>
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Footer>
-      </Table>
+          </Table.Footer>
+        </Table>
       </div>
     </Container>
   );
