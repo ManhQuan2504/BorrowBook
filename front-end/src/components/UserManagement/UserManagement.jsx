@@ -643,6 +643,7 @@ const UserManagement = () => {
                       width: "100px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                  textAlign: "center" 
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -667,14 +668,14 @@ const UserManagement = () => {
                         onChange={() => handleCheckboxChange(user._id)}
                       />
                     </Table.Cell>
-                    <Table.Cell>{index + 1}</Table.Cell>
-                    <Table.Cell>{user.name}</Table.Cell>
-                    <Table.Cell>{user.email}</Table.Cell>
-                    <Table.Cell>{user.phone}</Table.Cell>
-                    <Table.Cell>
+                    <Table.Cell> {(currentPage - 1) * recordsPerPage + index + 1}</Table.Cell>
+                    <Table.Cell style={{cursor: "pointer"}}  onClick={() => handleEditUser(user)}>{user.name}</Table.Cell>
+                    <Table.Cell style={{cursor: "pointer"}}  onClick={() => handleEditUser(user)}>{user.email}</Table.Cell>
+                    <Table.Cell style={{ textAlign: "right",cursor: "pointer" }}  onClick={() => handleEditUser(user)}>{user.phone}</Table.Cell>
+                    <Table.Cell style={{cursor: "pointer"}}  onClick={() => handleEditUser(user)}>
                       {user.address ? user.address : "chưa bổ sung"}
                     </Table.Cell>
-                    <Table.Cell>
+                    <Table.Cell style={{cursor: "pointer"}} onClick={() => handleEditUser(user)} >
                       {user.isAdmin ? (
                         <Icon name="adn">(admin)</Icon>
                       ) : (
@@ -682,13 +683,8 @@ const UserManagement = () => {
                       )}
                     </Table.Cell>
 
-                    <Table.Cell>
-                      <Icon
-                        className="IconEdit"
-                        size="big"
-                        name="edit"
-                        onClick={() => handleEditUser(user)}
-                      ></Icon>{" "}
+                    <Table.Cell style={{ textAlign: "center" }}>
+                    
                       <Icon
                         className="IconDelete"
                         size="big"
