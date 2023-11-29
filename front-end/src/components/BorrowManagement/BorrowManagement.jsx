@@ -88,7 +88,7 @@ const BorrowManagement = () => {
         perPage: recordsPerPage,
       });
       setDatas(result.data.data);
-      console.log("result.data.data", result.data.data);
+      console.log("result.data.data", result);
       setTotalPages(result.data.countPage || 1);
       setTotalRecords(result.data.count || 0);
     } catch (error) {
@@ -323,7 +323,7 @@ const BorrowManagement = () => {
   };
 
   return (
-    <Container className="ContainerBookManagement">
+    <Container className="ContainerBorrowManagement">
       <Header className="HeaderManagement" as="h1" textAlign="center">
         <Icon name="address book"></Icon>{" "}
         {language === LANGUAGES.VI
@@ -510,9 +510,10 @@ const BorrowManagement = () => {
           </Button>
         </Modal.Actions>
       </Modal>
-
-      <Table celled>
-        <Table.Header>
+      <div className="table-container">
+      <Table celled  className="table-content" >
+   
+        <Table.Header className="sticky-header">
           <Table.Row>
             <Table.HeaderCell
               style={{
@@ -572,6 +573,7 @@ const BorrowManagement = () => {
                 width: "150px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "center",
               }}
             >
               {language === LANGUAGES.VI
@@ -583,6 +585,7 @@ const BorrowManagement = () => {
                 width: "110px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "center",
               }}
             >
               {language === LANGUAGES.VI
@@ -594,6 +597,7 @@ const BorrowManagement = () => {
                 width: "200px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "center",  
               }}
             >
               {language === LANGUAGES.VI
@@ -602,7 +606,7 @@ const BorrowManagement = () => {
             </Table.HeaderCell>
             <Table.HeaderCell
               style={{
-                width: "100px",
+                width: "200px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
               }}
@@ -611,38 +615,41 @@ const BorrowManagement = () => {
                 ? languageDataVi.content.bookBorrowManagement.status
                 : languageDataEn.content.bookBorrowManagement.status}
             </Table.HeaderCell>
-            <Table.HeaderCell>
+            <Table.HeaderCell style={{ textAlign: "center" }}>
               {language === LANGUAGES.VI
                 ? languageDataVi.content.bookBorrowManagement.action
                 : languageDataEn.content.bookBorrowManagement.action}
             </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
-
+      
         <Table.Body>
           {datas.map((data, index) => (
             <Table.Row key={index} style={{ cursor: "pointer" }}  >
               <Table.Cell>
                 <Checkbox />
               </Table.Cell>
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{index + 1}</Table.Cell>
+              <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+  {(page - 1) * recordsPerPage + index + 1}
+</Table.Cell>
+
 
               <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data._id}</Table.Cell>
               <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idUser}</Table.Cell>
               <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idBook}</Table.Cell>
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+              <Table.Cell style={{ textAlign: "center" }}  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
                 {moment(data.borrowDate).format("DD/MM/YYYY HH:mm")}
               </Table.Cell>
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+              <Table.Cell  style={{ textAlign: "center" }}  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
                 {moment(data.dueDate).format("DD/MM/YYYY")}
               </Table.Cell>
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+              <Table.Cell style={{ textAlign: "center" }}   onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
                 {data.returnDate
                   ? moment(data.returnDate).format("DD/MM/YYYY HH:mm")
                   : "-----"}
               </Table.Cell>
               <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{getStatusText(data.status)}</Table.Cell>
-              <Table.Cell>
+              <Table.Cell style={{ textAlign: "center" }}>
                 {/* <Icon
                   size="big"
                   name="table"
@@ -787,13 +794,21 @@ const BorrowManagement = () => {
             </Table.Row>
           ))}
         </Table.Body>
-
+       
         <Table.Footer className="TableFooter">
           <Table.Row>
             <Table.HeaderCell colSpan="10">
-              <Menu className="MenuHeader" floated="left">
-                <Header size="small">Tìm thấy {totalRecords} bản ghi</Header>
-              </Menu>
+            <Menu style={{  padding: "11px" , marginLeft: "3px", fontSize: "12px"}} className="MenuHeaderBorrow" floated="left">
+                      <Header size="small">
+                        {language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.found
+                          : languageDataEn.content.userManagement.found}{" "}
+                        {totalRecords}{" "}
+                        {language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.records
+                          : languageDataEn.content.userManagement.records}
+                      </Header>
+                    </Menu>
               <Menu floated="right" pagination>
                 <Menu.Item
                   as="a"
@@ -924,6 +939,7 @@ const BorrowManagement = () => {
           </Table.Row>
         </Table.Footer>
       </Table>
+      </div>
     </Container>
   );
 };

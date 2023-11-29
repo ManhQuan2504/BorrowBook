@@ -16,8 +16,9 @@
   }
 
   .MenuHeader {
-    min-height: 0 !important;
-    border-color: #fff;
+    padding: 11px !important;
+    margin-left: 3px !important;
+    font-size: 12px !important;
   }
 
   .DropdownLimitPage {
@@ -30,6 +31,10 @@
     max-width: 1557px;
     max-height: 450px;
     overflow: auto;
+    // border: 3px solid #e8e8e9;
+    border-top: 2px solid #e8e8e9;
+    border-bottom: 2px solid #e8e8e9;
+
   }
 
   .TableFooter {
@@ -58,12 +63,12 @@
 
   .ButtonRefresh {
 
-    padding: 10px !important;
-    height: 30px;
+    padding: 11px !important;
+    height: 37px;
     background-color: #2185d0;
     color: #fff;
-    font-size: .78571429rem;
-    margin-top: 4px;
+    font-size: 0.78571429rem;
+    margin-top: 1px;
 
     &:hover {
       background-color: #1678c2;
@@ -73,12 +78,14 @@
   }
 
   .IconEdit {
+    color: #333;
     &:hover {
       cursor: pointer;
     }
   }
 
   .IconDelete {
+    color: #333;
     &:hover {
       cursor: pointer;
     }
