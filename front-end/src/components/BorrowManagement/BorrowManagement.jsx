@@ -667,12 +667,14 @@ const BorrowManagement = () => {
                   name="table"
                   onClick={() => handleDetailBorrow(data.idUser, data.idBook)}
                 /> */}
-                  <Icon
-                    size="big"
-                    name="undo alternate"
-                    onClick={() => handleReturnbook(data._id)}
-                  />
-                </Table.Cell>
+                <Icon
+                  size="big"
+                  name="undo alternate"
+                  onClick={() => handleReturnbook(data._id)}
+             
+
+                />
+              </Table.Cell>
 
                 <Modal
                   open={openModalDetailBorrow}

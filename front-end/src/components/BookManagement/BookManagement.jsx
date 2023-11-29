@@ -251,10 +251,7 @@ const BookManagement = () => {
               : languageDataEn.content.bookManagement.bookManagementTitle}
           </div>
           <div style={{ display: "flex" }}>
-            <Button
-              primary
-              className="ButtonRefresh"
-              onClick={handleAddBook}>
+            <Button className="ButtonRefresh" icon onClick={handleAddBook}>
               <Icon name="add" />
             </Button>
             <Button className="ButtonRefresh" icon onClick={handleExportExcel}>

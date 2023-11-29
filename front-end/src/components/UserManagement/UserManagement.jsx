@@ -678,9 +678,9 @@ const UserManagement = () => {
                     </Table.Cell>
                     <Table.Cell style={{cursor: "pointer"}} onClick={() => handleEditUser(user)} >
                       {user.isAdmin ? (
-                        <Icon name="adn">(admin)</Icon>
+                        <Icon name="adn" color="grey">(admin)</Icon>
                       ) : (
-                        <Icon name="user">(user)</Icon>
+                        <Icon name="user" color="grey">(user)</Icon>
                       )}
                     </Table.Cell>
 
@@ -691,6 +691,7 @@ const UserManagement = () => {
                         size="big"
                         name="delete"
                         onClick={() => handleDeleteUser(user)}
+                        color="grey"
                       ></Icon>
                     </Table.Cell>
                   </Table.Row>
