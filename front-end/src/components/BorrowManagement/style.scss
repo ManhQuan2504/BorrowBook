@@ -11,7 +11,9 @@
       overflow: auto;
       // border: 3px solid #e8e8e9;
       border-top: 2px solid #e8e8e9;
-      border-bottom: 2px solid #e8e8e9;
+      @media (max-height: 499px) {
+         border-bottom: none; /* Ẩn border-bottom khi chiều cao dưới 500px */
+       }
 
    }
 
