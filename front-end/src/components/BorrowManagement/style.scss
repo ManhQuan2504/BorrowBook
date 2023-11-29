@@ -9,15 +9,11 @@
       height: 500px;
       overflow: auto;
       border-top: 2px solid #e8e8e9;
-      margin-top: 20px;
-    }
-    
-    @media (min-height: 501px) {
-      .table-container {
-        border-bottom: 2px solid #e8e8e9;
-      }
-    }
-    
+      @media (max-height: 499px) {
+         border-bottom: none; /* Ẩn border-bottom khi chiều cao dưới 500px */
+       }
+
+   }
 
    .table-content {
       margin: 0 !important;
