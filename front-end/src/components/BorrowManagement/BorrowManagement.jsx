@@ -663,10 +663,11 @@ const getBookTitleById = (bookId) => {
                   name="table"
                   onClick={() => handleDetailBorrow(data.idUser, data.idBook)}
                 /> */}
-                <Icon
+                <Icon 
                   size="big"
                   name="undo alternate"
                   onClick={() => handleReturnbook(data._id)}
+                  color="grey"
              
 
                 />
