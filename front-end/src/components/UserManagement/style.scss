@@ -37,15 +37,19 @@
 
   .table-container {
     max-width: 1557px;
-    max-height: 450px;
+    max-height: 500px;
+    height: 500px;
     overflow: auto;
-    // border: 3px solid #e8e8e9;
     border-top: 2px solid #e8e8e9;
-    border-bottom: 2px solid #e8e8e9;
     margin-top: 20px;
-
   }
-
+  
+  @media (min-height: 501px) {
+    .table-container {
+      border-bottom: 2px solid #e8e8e9;
+    }
+  }
+  
   .TableFooter {
     position: sticky;
     bottom: 0;
