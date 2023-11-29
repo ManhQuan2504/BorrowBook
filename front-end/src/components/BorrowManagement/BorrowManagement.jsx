@@ -548,15 +548,7 @@ const BorrowManagement = () => {
                   ? languageDataVi.content.userManagement.stt
                   : languageDataEn.content.userManagement.stt}
               </Table.HeaderCell>
-              <Table.HeaderCell
-                style={{
-                  width: "200px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                ID
-              </Table.HeaderCell>
+
               <Table.HeaderCell
                 style={{
                   width: "200px",
@@ -627,7 +619,11 @@ const BorrowManagement = () => {
                   ? languageDataVi.content.bookBorrowManagement.status
                   : languageDataEn.content.bookBorrowManagement.status}
               </Table.HeaderCell>
-              <Table.HeaderCell style={{ textAlign: "center" }}>
+              <Table.HeaderCell style={{
+                textAlign: "center", width: "100px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}>
                 {language === LANGUAGES.VI
                   ? languageDataVi.content.bookBorrowManagement.action
                   : languageDataEn.content.bookBorrowManagement.action}
@@ -646,9 +642,13 @@ const BorrowManagement = () => {
                 </Table.Cell>
 
 
-                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data._id}</Table.Cell>
-                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idUser}</Table.Cell>
-                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idBook}</Table.Cell>
+                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                  {getUserNameById(data.idUser)}
+                </Table.Cell>
+                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                  {getBookTitleById(data.idBook)}
+                </Table.Cell>
+
                 <Table.Cell style={{ textAlign: "center" }} onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
                   {moment(data.borrowDate).format("DD/MM/YYYY HH:mm")}
                 </Table.Cell>
@@ -667,14 +667,15 @@ const BorrowManagement = () => {
                   name="table"
                   onClick={() => handleDetailBorrow(data.idUser, data.idBook)}
                 /> */}
-                <Icon
-                  size="big"
-                  name="undo alternate"
-                  onClick={() => handleReturnbook(data._id)}
-             
+                  <Icon
+                    size="big"
+                    name="undo alternate"
+                    onClick={() => handleReturnbook(data._id)}
+                    color="grey"
 
-                />
-              </Table.Cell>
+
+                  />
+                </Table.Cell>
 
                 <Modal
                   open={openModalDetailBorrow}
@@ -821,12 +822,13 @@ const BorrowManagement = () => {
                       : languageDataEn.content.userManagement.records}
                   </Header>
                 </Menu>
-                <Menu floated="right" pagination>
+                <Menu className="MenuHeaderBorrowPagination" floated="right" pagination>
                   <Menu.Item
                     as="a"
                     icon
                     onClick={() => handlePageChange(page - 1)}
                     disabled={page === 1}
+                    size="mini"
                   >
                     <Icon name="chevron left" />
                   </Menu.Item>
@@ -847,6 +849,7 @@ const BorrowManagement = () => {
                           as="a"
                           onClick={() => handlePageChange(pageChange)}
                           active={page === pageChange}
+                          size="mini"
                         >
                           {pageChange}
                         </Menu.Item>
@@ -856,7 +859,7 @@ const BorrowManagement = () => {
                     // Show ellipsis for omitted pages
                     if (pageChange === page - 3 || pageChange === page + 3) {
                       return (
-                        <Menu.Item key={pageChange} disabled>
+                        <Menu.Item key={pageChange} disabled size="mini">
                           ...
                         </Menu.Item>
                       );
@@ -870,6 +873,7 @@ const BorrowManagement = () => {
                     icon
                     onClick={() => handlePageChange(page + 1)}
                     disabled={page === totalPages}
+                    size="mini"
                   >
                     <Icon name="chevron right" />
                   </Menu.Item>
@@ -882,56 +886,56 @@ const BorrowManagement = () => {
                       {
                         key: 1,
                         text: `1 ${language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 1,
                       },
                       {
                         key: 5,
                         text: `5 ${language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 5,
                       },
                       {
                         key: 15,
                         text: `15 ${language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 15,
                       },
                       {
                         key: 30,
                         text: `30 ${language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 30,
                       },
                       {
                         key: 50,
                         text: `50 ${language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 50,
                       },
                       {
                         key: 100,
                         text: `100 ${language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 100,
                       },
                       {
                         key: 200,
                         text: `200 ${language === LANGUAGES.VI
-                          ? languageDataVi.content.userManagement.recordPage
-                          : languageDataEn.content.userManagement.recordPage
+                            ? languageDataVi.content.userManagement.recordPage
+                            : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 200,
                       },
