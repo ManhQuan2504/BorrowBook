@@ -390,12 +390,14 @@ const BookManagement = () => {
                 width: "20px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "center"
               }}> <Checkbox /></Table.HeaderCell>
               <Table.HeaderCell
                 style={{
                   width: "50px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  textAlign: "center"
                 }}
               >
                 {language === LANGUAGES.VI
@@ -403,14 +405,10 @@ const BookManagement = () => {
                   : languageDataEn.content.userManagement.stt}
               </Table.HeaderCell>
               <Table.HeaderCell style={{
-                width: "150px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}>ID</Table.HeaderCell>
-              <Table.HeaderCell style={{
                 width: "300px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "center"
               }}> {language === LANGUAGES.VI
                 ? languageDataVi.content.bookManagement.nameBook
                 : languageDataEn.content.bookManagement.nameBook}</Table.HeaderCell>
@@ -418,6 +416,7 @@ const BookManagement = () => {
                 width: "200px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "center"
               }}>{language === LANGUAGES.VI
                 ? languageDataVi.content.bookManagement.category
                 : languageDataEn.content.bookManagement.category}</Table.HeaderCell>
@@ -425,6 +424,7 @@ const BookManagement = () => {
                 width: "100px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "center"
               }}>{language === LANGUAGES.VI
                 ? languageDataVi.content.bookManagement.quantity
                 : languageDataEn.content.bookManagement.quantity}</Table.HeaderCell>
@@ -432,13 +432,14 @@ const BookManagement = () => {
                 width: "200px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "center"
               }}>{language === LANGUAGES.VI
                 ? languageDataVi.content.bookManagement.yearPublication
                 : languageDataEn.content.bookManagement.yearPublication}</Table.HeaderCell>
-              <Table.HeaderCell>{language === LANGUAGES.VI
+              <Table.HeaderCell style={{ textAlign: "center" }}>{language === LANGUAGES.VI
                 ? languageDataVi.content.bookManagement.author
                 : languageDataEn.content.bookManagement.author}</Table.HeaderCell>
-              <Table.HeaderCell>{language === LANGUAGES.VI
+              <Table.HeaderCell style={{ textAlign: "center" }}>{language === LANGUAGES.VI
                 ? languageDataVi.content.bookManagement.action
                 : languageDataEn.content.bookManagement.action}</Table.HeaderCell>
             </Table.Row>
@@ -450,19 +451,18 @@ const BookManagement = () => {
                 <Table.Cell>
                   <Checkbox />
                 </Table.Cell>
-                <Table.Cell>{index + 1}</Table.Cell>
-                <Table.Cell>{data.id}</Table.Cell>
-                <Table.Cell>{data.title}</Table.Cell>
-                <Table.Cell>{data.category}</Table.Cell>
-                <Table.Cell>{data.countInStock}</Table.Cell>
-                <Table.Cell>{data.publishYear}</Table.Cell>
-                <Table.Cell>{data.authorBook}</Table.Cell>
-                <Table.Cell>
-                  <Icon size="big" name="edit" onClick={() => handleOpenUpdateBook(
+                <Table.Cell style={{ textAlign: "center" }}>{index + 1}</Table.Cell>
+                <Table.Cell style={{ textAlign: "left" }}>{data.title}</Table.Cell>
+                <Table.Cell style={{ textAlign: "left" }}>{data.category}</Table.Cell>
+                <Table.Cell style={{ textAlign: "right" }}>{data.countInStock}</Table.Cell>
+                <Table.Cell style={{ textAlign: "center" }}>{data.publishYear}</Table.Cell>
+                <Table.Cell style={{ textAlign: "left" }}>{data.authorBook}</Table.Cell>
+                <Table.Cell style={{ textAlign: "center" }}>
+                  <Icon size="big" name="edit" color='grey' onClick={() => handleOpenUpdateBook(
                     data.id, data.title, data.category,
                     data.countInStock, data.publishYear, data.authorBook)
                   }></Icon>{" "}
-                  <Icon size="big" name="delete" onClick={() => handleDeleteBook(data.id)} />
+                  <Icon size="big" name="delete" color='grey' onClick={() => handleDeleteBook(data.id)} />
 
                   <Modal open={modalUpdateOpen} onClose={handleCloseUpdateModal} size="small">
                     <Header content={language === LANGUAGES.VI
@@ -599,7 +599,7 @@ const BookManagement = () => {
 
           <Table.Footer className="TableFooter">
             <Table.Row>
-              <Table.HeaderCell colSpan="9">
+              <Table.HeaderCell colSpan="8">
                 <Menu className="MenuHeader" floated="left">
                   <Header size="small">
                     Tìm thấy {totalRecords} bản ghi

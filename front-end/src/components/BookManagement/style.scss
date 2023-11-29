@@ -2,9 +2,6 @@
    margin-left: 100px !important;
    margin-right: 100px !important;
    width: 1419px !important;
-   
-
-
 
    .MenuHeader {
       min-height: 0 !important;
@@ -38,7 +35,7 @@
       margin-bottom: 10px;
       border-color: gray;
       background-color: #F8F8F9;
-      border: 1px solid #8B8C97;
+      border: 1px solid #dededf;
       border-radius: 5px;
 
       .header-actions {
@@ -59,9 +56,6 @@
       }
    }
 
-
-
-
    .tb-book {
       max-width: 1557px;
       max-height: 550px;
@@ -74,6 +68,7 @@
          top: 0;
          z-index: 1;
          background-color: white;
+         
       }
 
       .TableFooter {

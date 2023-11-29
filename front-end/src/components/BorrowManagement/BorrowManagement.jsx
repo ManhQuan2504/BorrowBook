@@ -87,8 +87,18 @@ const BorrowManagement = () => {
         page,
         perPage: recordsPerPage,
       });
+      const access_token = localStorage.getItem("access_token");
+      const dataUser = await UserService.getAllUser(
+        access_token,
+        1000,
+        currentPage
+      );
+
+      const dataBook = await BookServices.getBooks({ page: 1, perPage: 1000 });
+      setDataAllBook(dataBook.data.data);
+      setdataAllUser(dataUser.data);
       setDatas(result.data.data);
-      console.log("result.data.data", result);
+      console.log("setDatas: ", result.data.data, 'setdataAllUser: ', dataUser.data, 'dataBook: ', dataBook.data.data);
       setTotalPages(result.data.countPage || 1);
       setTotalRecords(result.data.count || 0);
     } catch (error) {
@@ -105,16 +115,7 @@ const BorrowManagement = () => {
 
   // Hàm mở modal add
   const handleAddBook = async () => {
-    const access_token = localStorage.getItem("access_token");
-    const dataUser = await UserService.getAllUser(
-      access_token,
-      1000,
-      currentPage
-    );
 
-    const dataBook = await BookServices.getBooks({ page: 1, perPage: 1000 });
-    setDataAllBook(dataBook.data.data);
-    setdataAllUser(dataUser.data);
     setModalOpen(true);
   };
 
@@ -272,6 +273,17 @@ const BorrowManagement = () => {
   const handleOpenDetailBorrow = () => {
     setOpenModalDetailBorrow(true);
   };
+  // Add these helper functions in your component:
+
+  const getUserNameById = (userId) => {
+    const user = dataAllUser.find((user) => user._id === userId);
+    return user ? user.name : "Unknown User";
+  };
+
+  const getBookTitleById = (bookId) => {
+    const book = dataAllBook.find((book) => book.id === bookId);
+    return book ? book.title : "Unknown Book";
+  };
 
   const handleCloseModalReturnBook = () => {
     setOpenModalReturnBook(false);
@@ -334,7 +346,7 @@ const BorrowManagement = () => {
       </Header>
 
       <div className="header-actions">
-        <Button primary onClick={handleAddBook}>
+        <Button primary onClick={handleAddBook} className="ButtonAdd">
           {language === LANGUAGES.VI
             ? languageDataVi.content.bookBorrowManagement.buttonAddBookBorrow
             : languageDataEn.content.bookBorrowManagement.buttonAddBookBorrow}
@@ -659,8 +671,6 @@ const BorrowManagement = () => {
                     size="big"
                     name="undo alternate"
                     onClick={() => handleReturnbook(data._id)}
-
-
                   />
                 </Table.Cell>
 
@@ -870,56 +880,56 @@ const BorrowManagement = () => {
                       {
                         key: 1,
                         text: `1 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 1,
                       },
                       {
                         key: 5,
                         text: `5 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 5,
                       },
                       {
                         key: 15,
                         text: `15 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 15,
                       },
                       {
                         key: 30,
                         text: `30 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 30,
                       },
                       {
                         key: 50,
                         text: `50 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 50,
                       },
                       {
                         key: 100,
                         text: `100 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 100,
                       },
                       {
                         key: 200,
                         text: `200 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 200,
                       },
