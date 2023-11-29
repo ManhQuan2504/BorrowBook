@@ -420,6 +420,7 @@ const UserManagement = () => {
                 description: user.type,
                 value: user.value,
               }))}
+             className="SearchUserManagement"
             />
           </div>
         </div>

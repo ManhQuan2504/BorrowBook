@@ -87,8 +87,18 @@ const BorrowManagement = () => {
         page,
         perPage: recordsPerPage,
       });
+      const access_token = localStorage.getItem("access_token");
+      const dataUser = await UserService.getAllUser(
+        access_token,
+        1000,
+        currentPage
+      );
+  
+      const dataBook = await BookServices.getBooks({ page: 1, perPage: 1000 });
+      setDataAllBook(dataBook.data.data);
+      setdataAllUser(dataUser.data);
       setDatas(result.data.data);
-      console.log("result.data.data", result);
+      console.log("setDatas: ", result.data.data, 'setdataAllUser: ', dataUser.data, 'dataBook: ', dataBook.data.data);
       setTotalPages(result.data.countPage || 1);
       setTotalRecords(result.data.count || 0);
     } catch (error) {
@@ -105,16 +115,7 @@ const BorrowManagement = () => {
 
   // Hàm mở modal add
   const handleAddBook = async () => {
-    const access_token = localStorage.getItem("access_token");
-    const dataUser = await UserService.getAllUser(
-      access_token,
-      1000,
-      currentPage
-    );
-
-    const dataBook = await BookServices.getBooks({ page: 1, perPage: 1000 });
-    setDataAllBook(dataBook.data.data);
-    setdataAllUser(dataUser.data);
+   
     setModalOpen(true);
   };
 
@@ -272,6 +273,17 @@ const BorrowManagement = () => {
   const handleOpenDetailBorrow = () => {
     setOpenModalDetailBorrow(true);
   };
+// Add these helper functions in your component:
+
+const getUserNameById = (userId) => {
+  const user = dataAllUser.find((user) => user._id === userId);
+  return user ? user.name : "Unknown User";
+};
+
+const getBookTitleById = (bookId) => {
+  const book = dataAllBook.find((book) => book.id === bookId);
+  return book ? book.title : "Unknown Book";
+};
 
   const handleCloseModalReturnBook = () => {
     setOpenModalReturnBook(false);
@@ -334,7 +346,7 @@ const BorrowManagement = () => {
       </Header>
 
       <div className="header-actions">
-        <Button primary onClick={handleAddBook}>
+        <Button primary onClick={handleAddBook} className="ButtonAdd">
           {language === LANGUAGES.VI
             ? languageDataVi.content.bookBorrowManagement.buttonAddBookBorrow
             : languageDataEn.content.bookBorrowManagement.buttonAddBookBorrow}
@@ -536,15 +548,7 @@ const BorrowManagement = () => {
                 ? languageDataVi.content.userManagement.stt
                 : languageDataEn.content.userManagement.stt}
             </Table.HeaderCell>
-            <Table.HeaderCell
-              style={{
-                width: "200px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              ID
-            </Table.HeaderCell>
+            
             <Table.HeaderCell
               style={{
                 width: "200px",
@@ -634,9 +638,13 @@ const BorrowManagement = () => {
 </Table.Cell>
 
 
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data._id}</Table.Cell>
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idUser}</Table.Cell>
-              <Table.Cell  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idBook}</Table.Cell>
+<Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+  {getUserNameById(data.idUser)}
+</Table.Cell>
+<Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+  {getBookTitleById(data.idBook)}
+</Table.Cell>
+
               <Table.Cell style={{ textAlign: "center" }}  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
                 {moment(data.borrowDate).format("DD/MM/YYYY HH:mm")}
               </Table.Cell>
@@ -809,12 +817,13 @@ const BorrowManagement = () => {
                           : languageDataEn.content.userManagement.records}
                       </Header>
                     </Menu>
-              <Menu floated="right" pagination>
+              <Menu className="MenuHeaderBorrowPagination" floated="right" pagination>
                 <Menu.Item
                   as="a"
                   icon
                   onClick={() => handlePageChange(page - 1)}
                   disabled={page === 1}
+                  size="mini"
                 >
                   <Icon name="chevron left" />
                 </Menu.Item>
@@ -835,6 +844,7 @@ const BorrowManagement = () => {
                         as="a"
                         onClick={() => handlePageChange(pageChange)}
                         active={page === pageChange}
+                        size="mini"
                       >
                         {pageChange}
                       </Menu.Item>
@@ -844,7 +854,7 @@ const BorrowManagement = () => {
                   // Show ellipsis for omitted pages
                   if (pageChange === page - 3 || pageChange === page + 3) {
                     return (
-                      <Menu.Item key={pageChange} disabled>
+                      <Menu.Item key={pageChange} disabled  size="mini">
                         ...
                       </Menu.Item>
                     );
@@ -858,6 +868,7 @@ const BorrowManagement = () => {
                   icon
                   onClick={() => handlePageChange(page + 1)}
                   disabled={page === totalPages}
+                  size="mini"
                 >
                   <Icon name="chevron right" />
                 </Menu.Item>

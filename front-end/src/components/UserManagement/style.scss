@@ -13,6 +13,14 @@
   .header-actions {
     display: flex;
     justify-content: space-between;
+    height: 28px;
+    // overflow: hidden;
+
+    .ButtonHandleAddUser{
+       padding: 0 15px !important;
+       height: 29px;
+
+    }
   }
 
   .MenuHeader {
@@ -34,6 +42,7 @@
     // border: 3px solid #e8e8e9;
     border-top: 2px solid #e8e8e9;
     border-bottom: 2px solid #e8e8e9;
+    margin-top: 20px;
 
   }
 
@@ -63,8 +72,8 @@
 
   .ButtonRefresh {
 
-    padding: 11px !important;
-    height: 37px;
+    padding: 9px !important;
+    height: 27px;
     background-color: #2185d0;
     color: #fff;
     font-size: 0.78571429rem;
@@ -74,6 +83,13 @@
       background-color: #1678c2;
       color: #fff;
       text-shadow: none;
+    }
+  }
+  .SearchUserManagement{
+    div {
+input{
+  padding: 4.5px !important;
+}
     }
   }
 

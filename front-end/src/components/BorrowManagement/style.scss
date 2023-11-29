@@ -36,8 +36,14 @@
       // color: #fff;
       // font-size: .78571429rem;
       // margin-top: 4px;
-      padding: 12px !important;
-      height: 34px;
+      // padding: 12px !important;
+      // height: 34px;
+      // background-color: #2185d0;
+      // color: #fff;
+      // font-size: 0.78571429rem;
+      // margin-top: 1px;
+      padding: 9px !important;
+      height: 27px;
       background-color: #2185d0;
       color: #fff;
       font-size: 0.78571429rem;
@@ -53,6 +59,14 @@
    .header-actions {
       display: flex;
       justify-content: space-between;
+      height: 28px;
+      overflow: hidden;
+  
+      .ButtonAdd{
+         padding: 0 15px !important;
+         height: 29px;
+
+      }
    }
    
    .ButtonHandleAddBook {
@@ -64,6 +78,9 @@
       background-color: #fff;
       z-index: 1;
       /* Ensure the footer is above the table */
+      .MenuHeaderBorrowPagination{
+         height: 10px;
+      }
     }
     .DropdownLimitPage {
       width: 200px;
