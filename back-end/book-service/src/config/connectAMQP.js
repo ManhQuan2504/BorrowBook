@@ -3,7 +3,7 @@ import bookController from "../controllers/bookController.js";
 
 async function recieveMsg() {
   try {
-      const connection = await amqplib.connect(process.env.AMQP_CLOUD_URL);
+      const connection = await amqplib.connect(process.env.AMQP_CLOUD_URL_HH);
       const channel = await connection.createChannel();
 
       const exchangeName = 'borrow_exchange'; // Chắc chắn cùng một exchange

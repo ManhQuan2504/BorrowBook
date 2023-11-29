@@ -1,9 +1,10 @@
 import amqplib from "amqplib"
-
+import dotenv from "dotenv";
+dotenv.config();
 const send_msg = async (messageData) => {
     try {
         const exchangeName = 'borrow_exchange';
-        const connection = await amqplib.connect('amqps://thoccdtr:IR6Ogo4zDnw3izVujRqFhZb6xIh8Dr7X@octopus.rmq3.cloudamqp.com/thoccdtr');
+        const connection = await amqplib.connect(process.env.AMQP_CLOUD_URL_HH);
         const channel = await connection.createChannel();
 
         // Đảm bảo exchange tồn tại
@@ -23,7 +24,7 @@ const send_msg = async (messageData) => {
 const send_msg_return = async (messageData) => {
     try {
         const exchangeName = 'return_exchange';
-        const connection = await amqplib.connect('amqps://thoccdtr:IR6Ogo4zDnw3izVujRqFhZb6xIh8Dr7X@octopus.rmq3.cloudamqp.com/thoccdtr');
+        const connection = await amqplib.connect(process.env.AMQP_CLOUD_URL_HH);
         const channel = await connection.createChannel();
 
         // Đảm bảo exchange tồn tại

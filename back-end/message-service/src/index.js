@@ -17,7 +17,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 
 async function startReceiver() {
-    const connection = await amqplib.connect('amqps://thoccdtr:IR6Ogo4zDnw3izVujRqFhZb6xIh8Dr7X@octopus.rmq3.cloudamqp.com/thoccdtr');
+    const connection = await amqplib.connect(process.env.AMQP_CLOUD_URL_HH);
     const channel = await connection.createChannel();
 
     const userExchangeName = 'user_exchange';
