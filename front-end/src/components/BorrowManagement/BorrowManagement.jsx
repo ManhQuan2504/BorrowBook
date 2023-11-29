@@ -619,7 +619,9 @@ const getBookTitleById = (bookId) => {
                 ? languageDataVi.content.bookBorrowManagement.status
                 : languageDataEn.content.bookBorrowManagement.status}
             </Table.HeaderCell>
-            <Table.HeaderCell style={{ textAlign: "center" }}>
+            <Table.HeaderCell style={{ textAlign: "center",width: "100px",
+                overflow: "hidden",
+                textOverflow: "ellipsis", }}>
               {language === LANGUAGES.VI
                 ? languageDataVi.content.bookBorrowManagement.action
                 : languageDataEn.content.bookBorrowManagement.action}
