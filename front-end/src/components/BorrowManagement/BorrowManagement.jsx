@@ -662,20 +662,15 @@ const BorrowManagement = () => {
                 </Table.Cell>
                 <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{getStatusText(data.status)}</Table.Cell>
                 <Table.Cell style={{ textAlign: "center" }}>
-                  {/* <Icon
-                  size="big"
-                  name="table"
-                  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}
-                /> */}
-                  <Icon
-                    size="big"
-                    name="undo alternate"
-                    onClick={() => handleReturnbook(data._id)}
-                    color="grey"
-
-
-                  />
-                </Table.Cell>
+  {data.status !== 2 && ( // Render only if status is not "Đã trả" (status 2)
+    <Icon
+      size="big"
+      name="undo alternate"
+      onClick={() => handleReturnbook(data._id)}
+      color="grey"
+    />
+  )}
+</Table.Cell>
 
                 <Modal
                   open={openModalDetailBorrow}
