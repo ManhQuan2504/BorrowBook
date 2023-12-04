@@ -131,6 +131,7 @@ const HeaderComponent = () => {
             <Link className="LinkTMS" onClick={() => handleItemClick("tms")} to={PATHS.HOME}>TMS</Link>
           </Menu.Item>
           <Menu.Item
+          className="menuItem"
             name="User Management"
             active={activeItem === "user"}
 
@@ -138,6 +139,7 @@ const HeaderComponent = () => {
             <Link onClick={() => handleItemClick("user")} to={PATHS.USER}>{language === LANGUAGES.VI ? languageDataVi.header.userManagement : languageDataEn.header.userManagement}</Link>
           </Menu.Item>
           <Menu.Item
+          className="menuItem"
             name="Book Management"
             active={activeItem === "book"}
 
@@ -145,6 +147,7 @@ const HeaderComponent = () => {
             <Link onClick={() => handleItemClick("book")} to={PATHS.BOOK}>{language === LANGUAGES.VI ? languageDataVi.header.bookManagement : languageDataEn.header.bookManagement}</Link>
           </Menu.Item>
           <Menu.Item
+          className="menuItem"
             name="Book Borrow Management"
             active={activeItem === "borrow"}
 
@@ -154,42 +157,28 @@ const HeaderComponent = () => {
           </Menu.Item>
 
         
-          <Menu.Menu position="right">
-         
-        
-          <Menu.Item className="right-content">
-          <div
-        className={`language-vi ${language === LANGUAGES.VI ? 'active' : ''}`}
-        onClick={() => changeLanguage('vi')}
-      >
-        VN
-      </div>
-      <div
-        className={`language-en ${language === LANGUAGES.EN ? 'active' : ''}`}
-        onClick={() => changeLanguage('en')}
-      >
-        EN
-      </div>
-
-          </Menu.Item>
+          <Menu.Menu className="right-menu" position="right">
+            <Menu.Item className="right-content">
+              <div
+                className={`language-vi ${language === LANGUAGES.VI ? 'active' : ''}`}
+                onClick={() => changeLanguage('vi')}
+              >VN</div>
+              <div
+                className={`language-en ${language === LANGUAGES.EN ? 'active' : ''}`}
+                onClick={() => changeLanguage('en')}
+              >EN</div>
+            </Menu.Item>
             <Menu.Item className="MenuItemImage">
               <Image className="imageAvatar" src={bookImage} avatar />
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item className="dropdown">
               <Dropdown text={currentUser?.name || 'user'}>
-
                 <Dropdown.Menu>
                   <Dropdown.Item text={language === LANGUAGES.VI ? languageDataVi.header.myProfile : languageDataEn.header.myProfile} active={activeItem === ""} value={1} onClick={handleCombinedClick} />
                   <Dropdown.Item text={language === LANGUAGES.VI ? languageDataVi.header.logOut : languageDataEn.header.logOut} value={2} onClick={handleDropdownItemClick} />
                 </Dropdown.Menu>
-
-
               </Dropdown>
-              {/* // className="DropdownName"
-                // text="hoangdqh"
-                // options={options}
-                // simple
-                // onChange={handleDropdownItemClick} */}
+
 
 
             </Menu.Item>

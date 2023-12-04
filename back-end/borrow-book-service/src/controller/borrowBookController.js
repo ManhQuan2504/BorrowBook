@@ -1,5 +1,4 @@
 import Joi from "joi";
-import borrowbookService from "../services/borrowBookService.js"
 import rabbitmqFunc from "../config/rabbitmq.js";
 import borrowBookService from "../services/borrowBookService.js";
 import ExcelJS from "exceljs";
@@ -19,7 +18,7 @@ const getBorrowBook = async (req, res) => {
         let page = parseInt(req.query.page) || 1;
         page = Math.max(page, 1);
 
-        const response = await borrowbookService.getBorrowBook({ perPage, page });
+        const response = await borrowBookService.getBorrowBook({ perPage, page });
 
         return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
@@ -35,6 +34,19 @@ const searchBorrowBook = async (req, res) => {
         page = Math.max(page, 1);
 
         const response = await borrowbookService.searchBorrowBook({ perPage, status, page });
+
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
+    } catch (error) {
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
+    }
+}
+
+
+const searchBorrowBookByIdBookIdUser = async (req, res) => {
+    try {
+        const { keyWord } = req.query
+
+        const response = await borrowbookService.searchBorrowBookByIdBookIdUser(keyWord);
 
         return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
@@ -67,7 +79,7 @@ const createBorrowBook = async (req, res) => {
 
             console.log(`Sent message: ${JSON.stringify(messageData)}`);
         }
-        
+
         return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
         return message.MESSAGE_ERROR(res, 'ERR', error.message)
@@ -146,10 +158,10 @@ const exportExcel = async (req, res) => {
     try {
         const response = await borrowBookService.exportExcel();
         console.log(response);
-        
+
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Danh sách đơn mượn', { properties: { tabColor: { argb: 'FFC0000' } } });
-        
+
         // Sửa: Loại bỏ dấu || ""
         sheet.columns = [
             { header: "Mã đơn", key: "id", width: 15 },
@@ -160,17 +172,17 @@ const exportExcel = async (req, res) => {
             { header: "Ngày trả", key: "returnDate", width: 15 },
             { header: "Trạng thái đơn", key: "statusLabel", width: 15 },
         ];
-        
+
         sheet.addRows(response);
-        
+
         const buffer = await workbook.xlsx.writeBuffer();
-        
+
         // Set content type, Set header Content-Disposition
         res.setHeader('Content-Disposition', 'attachment; filename=userData123.xlsx');
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        
+
         res.send(buffer);
-        
+
         // Không cần return trước khi gửi phản hồi
         // res.status(200).json({
         //     status: "OK",
@@ -181,12 +193,34 @@ const exportExcel = async (req, res) => {
     }
 };
 
+const searchBorrowBookByDate = async (req, res) => {
+    try {
+        let startDate = req.query.startdate;
+        let endDate = req.query.enddate;
+        let perPage = parseInt(req.query.perpage) || 3;
+        // perPage = Math.max(perPage, 3);
+        let page = parseInt(req.query.page) || 1;
+        page = Math.max(page, 1);
+
+        if (!startDate || !endDate) {
+            throw new Error("Invalid date range");
+        }
+
+        const response = await borrowBookService.searchBorrowBookByDate({ startDate, endDate, page, perPage });
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
+    } catch (error) {
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
+    }
+}
+
 export default {
     getBorrowBook,
     searchBorrowBook,
+    searchBorrowBookByDate,
     createBorrowBook,
     updateBorrowBook,
     deleteBorrowBook,
     deleteManyBorrowBook,
-    exportExcel
+    exportExcel,
+    searchBorrowBookByIdBookIdUser
 };
