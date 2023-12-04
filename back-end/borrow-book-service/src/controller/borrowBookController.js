@@ -42,6 +42,19 @@ const searchBorrowBook = async (req, res) => {
     }
 }
 
+
+const searchBorrowBookByIdBookIdUser = async (req, res) => {
+    try {
+       const {keyWord} = req.query
+
+        const response = await borrowbookService.searchBorrowBookByIdBookIdUser(keyWord);
+
+        return message.MESSAGE_SUCCESS(res, 'OK', response);
+    } catch (error) {
+        return message.MESSAGE_ERROR(res, 'ERR', error.message)
+    }
+}
+
 const createBorrowBook = async (req, res) => {
     try {
         const { idUser, email, idBook, borrowDate, dueDate } = req.body;
@@ -188,5 +201,6 @@ export default {
     updateBorrowBook,
     deleteBorrowBook,
     deleteManyBorrowBook,
-    exportExcel
+    exportExcel,
+    searchBorrowBookByIdBookIdUser
 };

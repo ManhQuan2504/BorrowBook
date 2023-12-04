@@ -11,6 +11,14 @@ export const getBorrowBooks = async ({ page, perPage }) => {
     throw error;
   }
 };
+export const searchBorrowBookByIdBookIdUser = async (keyWord) => {
+  try {
+    const response = await AxiosSchema.get(BASE_URL + `borrowbook/search-borrow-by-idBook-idUser?keyWord=${keyWord}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 
 export const createBorrowBooks = async ({ idUser, email, idBook, borrowDate, dueDate, }) => {

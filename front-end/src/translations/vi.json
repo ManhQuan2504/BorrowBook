@@ -49,8 +49,8 @@
             "recordPage":"bản ghi/trang",
             "editBook":"Sửa thông tin Sách",
             "areYouSure":"Bạn có chắc chắn muốn xóa sách này?",
-            "no":"Có",
-            "yes":"Không"
+            "no":"Không",
+            "yes":"Có"
         },
         "bookBorrowManagement":{
             "bookBorrowManagementTitle":"Quản Lý Mượn Sách",

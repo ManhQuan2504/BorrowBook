@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import BorrowBookModel from "../models/borrowBookModel.js";
 
 const getBorrowBook = async ({ perPage, page }) => {
@@ -52,6 +53,31 @@ const searchBorrowBook = async ({ perPage, status, page }) => {
     const result = { count, data };
     return result;
 };
+
+
+
+
+const searchBorrowBookByIdBookIdUser = async (keyWord) => {
+    try {
+        let query;
+        if (mongoose.Types.ObjectId.isValid(keyWord)) {
+            // Nếu keyWord là ObjectId, tìm kiếm theo idUser
+            query = { idUser: new mongoose.Types.ObjectId(keyWord) };
+        } else {
+            // Nếu keyWord không phải là ObjectId, tìm kiếm theo idBook
+            query = { idBook: keyWord };
+        }
+
+        const result = await BorrowBookModel.find(query);
+
+        return { data: result };
+    } catch (error) {
+        console.error('Error in searchBorrowBookByIdBookIdUser:', error);
+        return { error: 'An error occurred during the search.' };
+    }
+};
+
+
 
 
 const createBorrowBook = async ({ idUser, idBook, borrowDate, dueDate }) => {
@@ -171,5 +197,6 @@ export default {
     createBorrowBook,
     updateBorrowBook,
     deleteBorrowBook,
-    exportExcel
+    exportExcel,
+    searchBorrowBookByIdBookIdUser
 }

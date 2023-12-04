@@ -7,6 +7,8 @@ router.get('/get', borrowBookController.getBorrowBook);
 
 router.get('/search', borrowBookController.searchBorrowBook);
 
+router.get('/search-borrow-by-idBook-idUser', borrowBookController.searchBorrowBookByIdBookIdUser);
+
 router.post('/create', borrowBookController.createBorrowBook);
 
 router.put('/update/:id', borrowBookController.updateBorrowBook);
