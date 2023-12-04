@@ -554,6 +554,7 @@ const BorrowManagement = () => {
                   width: "200px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  textAlign: "center",
                 }}
               >
                 {" "}
@@ -566,6 +567,7 @@ const BorrowManagement = () => {
                   width: "140px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  textAlign: "center",
                 }}
               >
                 {language === LANGUAGES.VI
@@ -613,6 +615,7 @@ const BorrowManagement = () => {
                   width: "200px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  textAlign: "center",
                 }}
               >
                 {language === LANGUAGES.VI
@@ -623,6 +626,7 @@ const BorrowManagement = () => {
                 textAlign: "center", width: "100px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "center",
               }}>
                 {language === LANGUAGES.VI
                   ? languageDataVi.content.bookBorrowManagement.action

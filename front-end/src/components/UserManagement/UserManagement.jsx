@@ -599,6 +599,7 @@ const UserManagement = () => {
                       width: "250px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      textAlign: "center",
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -610,6 +611,7 @@ const UserManagement = () => {
                       width: "250px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      textAlign: "center",
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -621,6 +623,7 @@ const UserManagement = () => {
                       width: "100px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      textAlign: "center",
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -632,6 +635,7 @@ const UserManagement = () => {
                       width: "300px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      textAlign: "center",
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -643,6 +647,7 @@ const UserManagement = () => {
                       width: "100px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      textAlign: "center",
                     }}
                   >
                     {language === LANGUAGES.VI
