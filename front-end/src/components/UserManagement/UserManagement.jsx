@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import languageDataEn from "../../translations/en.json";
 import languageDataVi from "../../translations/vi.json";
 import { LANGUAGES } from "../../contants/path";
+import * as BorrowBookService from '../../services/BorrowBookService';
 
 const UserManagement = () => {
   const language = useSelector((state) => state.borrowBookReducer.language);
@@ -101,15 +102,24 @@ const UserManagement = () => {
     try {
       const access_token = localStorage.getItem("access_token");
       // Call the API to delete the user using userToDelete._id
-      const res = await UserService.deleteUser(access_token, userToDelete._id);
-      // Handle the response as needed
-      if (res.code === 200) {
-        // User deleted successfully
-        await fetchData(); // Fetch data again after deletion
-        Notification("Xóa thành công", res.message, "success");
-      } else {
-        Notification("Xóa thất bại", res.message, "error");
+      const resultSearch = await BorrowBookService.searchBorrowBookByIdBookIdUser(userToDelete._id);
+      if(!resultSearch.data.data.length>0){
+        const res = await UserService.deleteUser(access_token, userToDelete._id);
+        if (res.code === 200) {
+          // User deleted successfully
+          await fetchData(); // Fetch data again after deletion
+          Notification("Xóa thành công", res.message, "success");
+         
+        } 
+      
+      }else{
+        Notification("Xoá thất bại", "Bản ghi ràng buộc với bảng mượn sách", "error");
+       
+      
       }
+     
+     
+   
     } catch (error) {
       console.error("Error deleting user", error);
     } finally {

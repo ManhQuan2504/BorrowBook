@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Icon, Table, Header, Container, Menu, Checkbox, Button, Modal, Form, Grid, Dropdown, Confirm } from 'semantic-ui-react';
 import './style.scss';
 import * as BookServices from '../../services/BookService';
+import * as BorrowBookService from '../../services/BorrowBookService';
+
 import { Notification } from "../../components/Notification/Notification";
 import languageDataEn from "../../translations/en.json";
 import languageDataVi from "../../translations/vi.json";
@@ -208,16 +210,21 @@ const BookManagement = () => {
   const handleDelete = async () => {
     console.log(`Deleting book with ID: ${bookId}`);
     // Thực hiện logic xóa sách ở đây
-    const result = await BookServices.deleteBook({ id: bookId });
-
-    if (result.status === "success") {
-      Notification("Xoá thành công", "", "success");
-    } else {
-      Notification("Xoá thất bại", "", "error");
+    const resultSearch = await BorrowBookService.searchBorrowBookByIdBookIdUser(bookId);
+    console.log('resultSearch', !resultSearch.data.data.length>0);
+    if(!resultSearch.data.data.length>0){
+      const result = await BookServices.deleteBook({ id: bookId });
+      setConfirmOpen(false); // Đóng Confirm khi đã xử lý xóa
+          Notification("Xoá thành công", "", "success");
+          fetchData();
+    
+    }else{
+      Notification("Xoá thất bại", "Bản ghi ràng buộc với bảng mượn sách", "error");
+      setConfirmOpen(false);
       return false; // Registration failed
     }
-    fetchData();
-    setConfirmOpen(false); // Đóng Confirm khi đã xử lý xóa
+   
+    
   };
 
   const handleExportExcel = async () => {
