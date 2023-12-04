@@ -64,6 +64,13 @@ const BorrowManagement = () => {
   const [borrowDate, setBorrowDate] = useState(getCurrentDateTime());
   const [dueDate, setDuaDate] = useState("");
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [openModalSearch, setOpenModalSearch] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [errStartDate, setErrStartDate] = useState("");
+  const [errEndDate, setErrEndDate] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedUserName, setSelectedUserName] = useState("");
   const [selectedUserEmail, setSelectedUserEmail] = useState("");
@@ -334,6 +341,71 @@ const BorrowManagement = () => {
     }
   };
 
+  const handleSearchChange = async (e, { value }) => {
+    // setSearchQuery(value);
+
+    // const searchResults = [
+    //   { name: `Email : ${value}`, type: "email", value: `${value}` },
+    //   { name: `Name : ${value}`, type: "name", value: `${value}` },
+    //   { name: `Phone : ${value}`, type: "phone", value: `${value}` },
+    //   { name: `Address : ${value}`, type: "address", value: `${value}` },
+    // ];
+
+    // setSearchResults(searchResults);
+  };
+
+  const handleSearchResultSelect = async (e, { result }) => {
+    // setSearchQuery(result.value);
+
+    // const searchType = result.description;
+
+    // try {
+    //   const access_token = localStorage.getItem("access_token");
+    //   const res = await UserService.getAllUserSearch(
+    //     access_token,
+    //     recordsPerPage,
+    //     currentPage,
+    //     searchType,
+    //     result.title.split(":")[1].trim()
+    //   );
+    //   setdataAllUser(res?.data);
+    //   setTotalPages(res?.totalPage || 1);
+    //   setTotalRecords(res?.total || 0);
+    // } catch (error) {
+    //   console.error(error);
+    // }
+  };
+
+
+  const handleOpenModalSearch = () => {
+    setOpenModalSearch(true);
+  }
+
+  const handleModalSearch = async () => {
+    try {
+      console.log("S: ", typeof startDate, "---", startDate);
+      console.log("E: ", typeof endDate, "---", endDate);
+      const result = await BorrowBook.searchBorrowBookByDate({
+        startDate,
+        endDate,
+        page,
+        perPage: recordsPerPage,
+      });
+      setDatas(result.data.data);
+      console.log("setDatas: ", result.data.data);
+      setTotalPages(result.data.countPage || 1);
+      setTotalRecords(result.data.count || 0);
+    } catch (error) {
+      console.error(
+        `ERR: http://localhost:1234/api/borrowbook/searchbydate?page=${page}\n`,
+        error
+      );
+    }
+  
+    setErrDefault();
+    setOpenModalSearch(false);
+  }
+
   return (
     <Container className="ContainerBorrowManagement">
       <Header className="HeaderManagement" as="h1" textAlign="center">
@@ -364,15 +436,95 @@ const BorrowManagement = () => {
                 : "Xóa 1 lựa chọn"}
             </Button>
           )} */}
+
+          <Search
+            className="search"
+            placeholder={
+              language === LANGUAGES.VI
+                ? languageDataVi.content.userManagement.search
+                : languageDataEn.content.userManagement.search
+            }
+            onSearchChange={handleSearchChange}
+            onResultSelect={handleSearchResultSelect}
+            value={searchQuery}
+            results={searchResults.map((user, index) => ({
+              key: index,
+              title: user.name,
+              description: user.type,
+              value: user.value,
+            }))}
+          />
+
+          <Button className="ButtonRefresh" icon onClick={handleOpenModalSearch}>
+            <Icon name="search" />
+          </Button>
           <Button className="ButtonRefresh" icon onClick={handleExportExcel}>
             <Icon name="cloud download" />
           </Button>
           <Button className="ButtonRefresh" icon onClick={handleRefresh}>
             <Icon name="refresh" />
           </Button>
-
-
         </div>
+
+        <Modal open={openModalSearch}>
+          <Header
+            content={
+              language === LANGUAGES.VI
+                ? languageDataVi.content.bookBorrowManagement.search
+                : languageDataEn.content.bookBorrowManagement.search
+            }
+          />
+          <Modal.Content style={{ display: "flex" }}>
+            <div style={{ display: "flex" }}>
+              <div
+                className="ui fluid icon input text-right"
+                style={{
+                  minWidth: "415px",
+                  width: "100%",
+                  marginRight: "27px",
+                }}
+              >
+                <input
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+                {errStartDate && (
+                  <div className="error-message">{errStartDate}</div>
+                )}
+              </div>
+
+              <div
+                className="ui fluid icon input text-right"
+                style={{
+                  minWidth: "415px",
+                  width: "100%",
+                  marginRight: "27px",
+                }}
+              >
+                <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+                {errEndDate && (
+                  <div className="error-message">{errEndDate}</div>
+                )}
+              </div>
+            </div>
+          </Modal.Content>
+
+          <Modal.Actions>
+            <Button color="green" onClick={handleModalSearch}>
+              <Icon name="checkmark" />
+              Tìm kiếm
+            </Button>
+          </Modal.Actions>
+        </Modal>
       </div>
 
       <Modal open={modalOpen} onClose={handleCloseModal} size="small">
@@ -532,6 +684,7 @@ const BorrowManagement = () => {
                   width: "20px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  textAlign: "center",
                 }}
               >
                 {" "}
@@ -542,6 +695,7 @@ const BorrowManagement = () => {
                   width: "50px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  textAlign: "center",
                 }}
               >
                 {language === LANGUAGES.VI
@@ -641,7 +795,7 @@ const BorrowManagement = () => {
                 <Table.Cell>
                   <Checkbox />
                 </Table.Cell>
-                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                <Table.Cell style={{ textAlign: "center" }} onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
                   {(page - 1) * recordsPerPage + index + 1}
                 </Table.Cell>
 
@@ -666,15 +820,15 @@ const BorrowManagement = () => {
                 </Table.Cell>
                 <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{getStatusText(data.status)}</Table.Cell>
                 <Table.Cell style={{ textAlign: "center" }}>
-  {data.status !== 2 && ( // Render only if status is not "Đã trả" (status 2)
-    <Icon
-      size="big"
-      name="undo alternate"
-      onClick={() => handleReturnbook(data._id)}
-      color="grey"
-    />
-  )}
-</Table.Cell>
+                  {data.status !== 2 && ( // Render only if status is not "Đã trả" (status 2)
+                    <Icon
+                      size="big"
+                      name="undo alternate"
+                      onClick={() => handleReturnbook(data._id)}
+                      color="grey"
+                    />
+                  )}
+                </Table.Cell>
 
                 <Modal
                   open={openModalDetailBorrow}
@@ -885,56 +1039,56 @@ const BorrowManagement = () => {
                       {
                         key: 1,
                         text: `1 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 1,
                       },
                       {
                         key: 5,
                         text: `5 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 5,
                       },
                       {
                         key: 15,
                         text: `15 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 15,
                       },
                       {
                         key: 30,
                         text: `30 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 30,
                       },
                       {
                         key: 50,
                         text: `50 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 50,
                       },
                       {
                         key: 100,
                         text: `100 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 100,
                       },
                       {
                         key: 200,
                         text: `200 ${language === LANGUAGES.VI
-                            ? languageDataVi.content.userManagement.recordPage
-                            : languageDataEn.content.userManagement.recordPage
+                          ? languageDataVi.content.userManagement.recordPage
+                          : languageDataEn.content.userManagement.recordPage
                           }`,
                         value: 200,
                       },

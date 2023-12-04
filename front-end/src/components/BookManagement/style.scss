@@ -16,11 +16,16 @@
 
    .ButtonRefresh {
       padding: 10px !important;
-      height: 30px;
+      height: 28px;
+      width: 28px;
       background-color: #2185d0;
       color: #fff;
       font-size: .78571429rem;
       margin-top: 4px;
+
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
 
       &:hover {
          background-color: #1678c2;
@@ -30,7 +35,7 @@
    }
 
    .taskbar {
-      height: 39px;
+      height: 38px;
       margin-top: 10px;
       margin-bottom: 10px;
       border-color: gray;
@@ -39,21 +44,27 @@
       border-radius: 5px;
 
       .header-actions {
+         height: 28px !important;
          display: flex;
          justify-content: space-between;
+
+         .HeaderManagement {
+            color: #2185d0 !important;
+            padding-top: 10px;
+            padding-left: 10px;
+            font-size: large;
+            height: 100% !important;
+         }
+
+         .ButtonHandleAddBook {
+            height: 100% !important;
+            margin-bottom: 30px;
+         }
       }
 
-      .HeaderManagement {
-         color: #2185d0 !important;
-         padding-top: 10px;
-         padding-left: 10px;
-         font-size: large;
-   
-      }
 
-      .ButtonHandleAddBook {
-         margin-bottom: 30px;
-      }
+
+
    }
 
    .tb-book {
@@ -68,7 +79,7 @@
          top: 0;
          z-index: 1;
          background-color: white;
-         
+
       }
 
       .TableFooter {

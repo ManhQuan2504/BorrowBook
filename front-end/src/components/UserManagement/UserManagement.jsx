@@ -414,7 +414,7 @@ const UserManagement = () => {
             <Button className="ButtonRefresh" icon onClick={handleRefresh}>
               <Icon name="refresh" />
             </Button>
-            
+
             <Search
               placeholder={
                 language === LANGUAGES.VI
@@ -430,7 +430,7 @@ const UserManagement = () => {
                 description: user.type,
                 value: user.value,
               }))}
-             className="SearchUserManagement"
+              className="SearchUserManagement"
             />
           </div>
         </div>
@@ -493,7 +493,7 @@ const UserManagement = () => {
                             ? languageDataVi.content.userManagement.password
                             : languageDataEn.content.userManagement.password
                         }
-                        
+
                       />
                       {errPassword && (
                         <div className="error-message">{errPassword}</div>
@@ -502,7 +502,7 @@ const UserManagement = () => {
                   </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={2}>
-                 
+
                   <Grid.Column>
                     <Form.Field>
                       <label>{
@@ -541,7 +541,7 @@ const UserManagement = () => {
                   </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={2}>
-                  
+
                 </Grid.Row>
               </Grid>
             </Form>
@@ -659,7 +659,7 @@ const UserManagement = () => {
                       width: "100px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
-                  textAlign: "center" 
+                      textAlign: "center"
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -684,14 +684,14 @@ const UserManagement = () => {
                         onChange={() => handleCheckboxChange(user._id)}
                       />
                     </Table.Cell>
-                    <Table.Cell> {(currentPage - 1) * recordsPerPage + index + 1}</Table.Cell>
-                    <Table.Cell style={{cursor: "pointer"}}  onClick={() => handleEditUser(user)}>{user.name}</Table.Cell>
-                    <Table.Cell style={{cursor: "pointer"}}  onClick={() => handleEditUser(user)}>{user.email}</Table.Cell>
-                    <Table.Cell style={{ textAlign: "right",cursor: "pointer" }}  onClick={() => handleEditUser(user)}>{user.phone}</Table.Cell>
-                    <Table.Cell style={{cursor: "pointer"}}  onClick={() => handleEditUser(user)}>
+                    <Table.Cell style={{ textAlign: "center" }}> {(currentPage - 1) * recordsPerPage + index + 1}</Table.Cell>
+                    <Table.Cell style={{ cursor: "pointer" }} onClick={() => handleEditUser(user)}>{user.name}</Table.Cell>
+                    <Table.Cell style={{ cursor: "pointer" }} onClick={() => handleEditUser(user)}>{user.email}</Table.Cell>
+                    <Table.Cell style={{ textAlign: "right", cursor: "pointer" }} onClick={() => handleEditUser(user)}>{user.phone}</Table.Cell>
+                    <Table.Cell style={{ cursor: "pointer" }} onClick={() => handleEditUser(user)}>
                       {user.address ? user.address : "chưa bổ sung"}
                     </Table.Cell>
-                    <Table.Cell style={{cursor: "pointer"}} onClick={() => handleEditUser(user)} >
+                    <Table.Cell style={{ cursor: "pointer" }} onClick={() => handleEditUser(user)} >
                       {user.isAdmin ? (
                         <Icon name="adn" color="grey">(admin)</Icon>
                       ) : (
@@ -700,7 +700,7 @@ const UserManagement = () => {
                     </Table.Cell>
 
                     <Table.Cell style={{ textAlign: "center" }}>
-                    
+
                       <Icon
                         className="IconDelete"
                         size="big"
