@@ -1,8 +1,9 @@
-.ContainerBorrowManagement{
+.ContainerBorrowManagement {
    margin-left: 100px !important;
    margin-right: 100px !important;
-   width: 1419px  !important;
+   width: 1419px !important;
    margin-top: 77px;
+
    .table-container {
       margin-top: 30px;
       max-width: 1557px;
@@ -11,25 +12,27 @@
       // border: 3px solid #e8e8e9;
       border-top: 2px solid #e8e8e9;
       border-bottom: 2px solid #e8e8e9;
-  
-    }
-    .table-content {
+
+   }
+
+   .table-content {
       margin: 0 !important;
-  
+
       // border: 2px solid #000;
       .sticky-header {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        background-color: white;
+         position: sticky;
+         top: 0;
+         z-index: 1;
+         background-color: white;
       }
-    }
-  
-    .HeaderManagement{
-      color:#2185d0!important;
+   }
+
+   .HeaderManagement {
+      color: #2185d0 !important;
       padding-top: 20px;
-     }
-     .ButtonRefresh {
+   }
+
+   .ButtonRefresh {
       // padding: 12px !important;
       // height: 34px;
       // background-color: #2185d0;
@@ -42,33 +45,39 @@
       color: #fff;
       font-size: 0.78571429rem;
       margin-top: 1px;
-   
+
       &:hover {
          background-color: #1678c2;
          color: #fff;
          text-shadow: none;
       }
    }
-  
+
    .header-actions {
       display: flex;
       justify-content: space-between;
    }
-   
+
    .ButtonHandleAddBook {
       margin-bottom: 30px;
    }
+
    .TableFooter {
       position: sticky;
       bottom: 0;
       background-color: #fff;
       z-index: 1;
       /* Ensure the footer is above the table */
-    }
-    .DropdownLimitPage {
+   }
+
+   .DropdownLimitPage {
       width: 200px;
       font-size: 14px;
       z-index: 10 !important;
-    }
-  
+   }
+
+   .search {
+      margin-right: 5px;
+   }
+
 }

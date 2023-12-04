@@ -71,7 +71,8 @@
             "yes":"Có",
             "informationBook":"Thông tin sách mượn",
             "informationUser":"Thông tin người mượn",
-            "detailBorrow":"Chi tiết đơn mượn"
+            "detailBorrow":"Chi tiết đơn mượn",
+            "search":"Tìm kiếm"
         },
         "profile":{
             "userName":"Tên người dùng",

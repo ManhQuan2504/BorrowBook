@@ -181,9 +181,19 @@ const exportExcel = async (req, res) => {
     }
 };
 
+const searchBorrowBookByDate = async (req, res) => {
+    try {
+        const {startDate, endDate} = req.body;
+        console.log(startDate, endDate);
+    } catch (error) {
+        return message.MESSAGE_ERROR(res, "ERR", error.message)
+    }
+}
+
 export default {
     getBorrowBook,
     searchBorrowBook,
+    searchBorrowBookByDate,
     createBorrowBook,
     updateBorrowBook,
     deleteBorrowBook,

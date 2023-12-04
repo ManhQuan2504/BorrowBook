@@ -3,16 +3,30 @@ import BorrowBookModel from "../models/borrowBookModel.js";
 const getBorrowBook = async ({ perPage, page }) => {
     try {
         const count = await BorrowBookModel.countDocuments();
-    
+
         const countPage = Math.ceil(count / perPage); // Sử dụng hàm Math.ceil để làm tròn lên
         const data = await BorrowBookModel
             .find()
             .limit(perPage)
-            .skip((page - 1) * perPage);
+            .skip((page - 1) * perPage)
+            .sort({borrowDate : -1})
+
+
+        // const { startDate, endDate } = req.body;
+        // const data = await BorrowBookModel.aggregate([
+        //     {
+        //         $match: {
+        //             borrowDate: {
+        //                 $gte: new Date(startDate),
+        //                 $lte: new Date(endDate),
+        //             }
+        //         }
+        //     }
+        // ]);
 
         if (!count || !data.length) {
-            const result = {count: 0,countPage: 1,data:[] };
-        return result;
+            const result = { count: 0, countPage: 1, data: [] };
+            return result;
         }
 
         const result = { count, countPage, data };

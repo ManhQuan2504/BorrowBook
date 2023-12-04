@@ -67,7 +67,8 @@
             "yes":"Yes",
             "informationBook":"Borrowed book information",
             "informationUser":"Borrower information",
-            "detailBorrow":"Details Borrow Books"
+            "detailBorrow":"Details Borrow Books",
+            "search":"Search"
 
 
         },
