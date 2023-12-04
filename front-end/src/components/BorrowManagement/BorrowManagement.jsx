@@ -780,6 +780,7 @@ const BorrowManagement = () => {
                 textAlign: "center", width: "100px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                textAlign: "center",
               }}>
                 {language === LANGUAGES.VI
                   ? languageDataVi.content.bookBorrowManagement.action
