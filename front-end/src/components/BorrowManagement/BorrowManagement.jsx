@@ -44,13 +44,8 @@ const BorrowManagement = () => {
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchStartDate, setSearchStartDate] = useState("");
-  const [searchEndDate, setSearchEndDate] = useState("");
 
   const [modalOpen, setModalOpen] = useState(false); //modal add
-  const [openModalSearch, setOpenModalSearch] = useState(false);
   const [openModalReturnBook, setOpenModalReturnBook] = React.useState(false); //modall trả sách
   const [openModalDetailBorrow, setOpenModalDetailBorrow] =
     React.useState(false); //modall detail borow
@@ -69,6 +64,13 @@ const BorrowManagement = () => {
   const [borrowDate, setBorrowDate] = useState(getCurrentDateTime());
   const [dueDate, setDuaDate] = useState("");
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [openModalSearch, setOpenModalSearch] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [errStartDate, setErrStartDate] = useState("");
+  const [errEndDate, setErrEndDate] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedUserName, setSelectedUserName] = useState("");
   const [selectedUserEmail, setSelectedUserEmail] = useState("");
@@ -79,8 +81,6 @@ const BorrowManagement = () => {
   const [errBook, setErrBook] = useState("");
   const [errUsername, setErrUsername] = useState("");
   const [errDueDate, setErrDueDate] = useState("");
-  const [errStartDate, setErrStartDate] = useState("");
-  const [errEndDate, setErrEndDate] = useState("");
 
   const setErrDefault = () => {
     setErrBook("");
@@ -94,8 +94,18 @@ const BorrowManagement = () => {
         page,
         perPage: recordsPerPage,
       });
+      const access_token = localStorage.getItem("access_token");
+      const dataUser = await UserService.getAllUser(
+        access_token,
+        1000,
+        currentPage
+      );
+
+      const dataBook = await BookServices.getBooks({ page: 1, perPage: 1000 });
+      setDataAllBook(dataBook.data.data);
+      setdataAllUser(dataUser.data);
       setDatas(result.data.data);
-      console.log("result.data.data", result);
+      console.log("setDatas: ", result.data.data, 'setdataAllUser: ', dataUser.data, 'dataBook: ', dataBook.data.data);
       setTotalPages(result.data.countPage || 1);
       setTotalRecords(result.data.count || 0);
     } catch (error) {
@@ -112,16 +122,7 @@ const BorrowManagement = () => {
 
   // Hàm mở modal add
   const handleAddBook = async () => {
-    const access_token = localStorage.getItem("access_token");
-    const dataUser = await UserService.getAllUser(
-      access_token,
-      1000,
-      currentPage
-    );
 
-    const dataBook = await BookServices.getBooks({ page: 1, perPage: 1000 });
-    setDataAllBook(dataBook.data.data);
-    setdataAllUser(dataUser.data);
     setModalOpen(true);
   };
 
@@ -279,6 +280,17 @@ const BorrowManagement = () => {
   const handleOpenDetailBorrow = () => {
     setOpenModalDetailBorrow(true);
   };
+  // Add these helper functions in your component:
+
+  const getUserNameById = (userId) => {
+    const user = dataAllUser.find((user) => user._id === userId);
+    return user ? user.name : "Unknown User";
+  };
+
+  const getBookTitleById = (bookId) => {
+    const book = dataAllBook.find((book) => book.id === bookId);
+    return book ? book.title : "Unknown Book";
+  };
 
   const handleCloseModalReturnBook = () => {
     setOpenModalReturnBook(false);
@@ -364,53 +376,35 @@ const BorrowManagement = () => {
     // }
   };
 
+
   const handleOpenModalSearch = () => {
     setOpenModalSearch(true);
   }
 
-  const setStartDate = (e) => {
-    const selectedDate = new Date(e.target.value);
-    const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate()); // Ngày hiện tại + 1
-
-    if (selectedDate > currentDate) {
-      setErrStartDate("Phải nhỏ hơn ngày hiện tại");
-    } else {
-      setErrStartDate("");
-      const day = selectedDate.getDate().toString().padStart(2, "0");
-      const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
-      const year = selectedDate.getFullYear();
-      const formattedDate = `${year}-${month}-${day}`;
-      setSearchStartDate(formattedDate);
-      console.log(formattedDate);
+  const handleModalSearch = async () => {
+    try {
+      console.log("S: ", typeof startDate, "---", startDate);
+      console.log("E: ", typeof endDate, "---", endDate);
+      const result = await BorrowBook.searchBorrowBookByDate({
+        startDate,
+        endDate,
+        page,
+        perPage: recordsPerPage,
+      });
+      setDatas(result.data.data);
+      console.log("setDatas: ", result.data.data);
+      setTotalPages(result.data.countPage || 1);
+      setTotalRecords(result.data.count || 0);
+    } catch (error) {
+      console.error(
+        `ERR: http://localhost:1234/api/borrowbook/searchbydate?page=${page}\n`,
+        error
+      );
     }
-  }
-
-  const setEndDate = (e) => {
-    const selectedDate = new Date(e.target.value);
-    const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate()); // Ngày hiện tại + 1
-
-    if (selectedDate > currentDate) {
-      setErrEndDate("Phải nhỏ hơn ngày hiện tại");
-    } else {
-      setErrEndDate("");
-      const day = selectedDate.getDate().toString().padStart(2, "0");
-      const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
-      const year = selectedDate.getFullYear();
-      const formattedDate = `${year}-${month}-${day}`;
-      setSearchEndDate(formattedDate);
-    }
-  }
-
-  const handleModalSearch = () => {
-    console.log("S: ", searchStartDate);
-    console.log("E: ", searchEndDate);
-    
-    
+  
+    setErrDefault();
     setOpenModalSearch(false);
   }
-
 
   return (
     <Container className="ContainerBorrowManagement">
@@ -424,7 +418,7 @@ const BorrowManagement = () => {
       </Header>
 
       <div className="header-actions">
-        <Button primary onClick={handleAddBook}>
+        <Button primary onClick={handleAddBook} className="ButtonAdd">
           {language === LANGUAGES.VI
             ? languageDataVi.content.bookBorrowManagement.buttonAddBookBorrow
             : languageDataEn.content.bookBorrowManagement.buttonAddBookBorrow}
@@ -470,60 +464,67 @@ const BorrowManagement = () => {
           <Button className="ButtonRefresh" icon onClick={handleRefresh}>
             <Icon name="refresh" />
           </Button>
+        </div>
 
-
-          <Modal
-            open={openModalSearch}
-
-          >
-            <Header
-              content={
-                language === LANGUAGES.VI
-                  ? languageDataVi.content.bookBorrowManagement.search
-                  : languageDataEn.content.bookBorrowManagement.search
-              }
-            />
-            <Modal.Content style={{ display: "flex" }}>
-              <div style={{ display: "flex" }}>
-                <div className="ui fluid icon input text-right" style={{ minWidth: "415px", width: "100%", marginRight: "27px" }}>
-                  <input
-                    type="date"
-                    id="duedate"
-                    name="duedate"
-                    onChange={(e) => setStartDate(e)}
-                  />
-                  {errStartDate && (
-                    <div className="error-message">{errStartDate}</div>
-                  )}
-                </div>
-
-                <div className="ui fluid icon input text-right" style={{ minWidth: "415px", width: "100%", marginRight: "27px" }}>
-                  <input
-                    type="date"
-                    id="duedate"
-                    name="duedate"
-                    onChange={(e) => setEndDate(e)}
-                  />
-                  {errEndDate && (
-                    <div className="error-message">{errEndDate}</div>
-                  )}
-                </div>
+        <Modal open={openModalSearch}>
+          <Header
+            content={
+              language === LANGUAGES.VI
+                ? languageDataVi.content.bookBorrowManagement.search
+                : languageDataEn.content.bookBorrowManagement.search
+            }
+          />
+          <Modal.Content style={{ display: "flex" }}>
+            <div style={{ display: "flex" }}>
+              <div
+                className="ui fluid icon input text-right"
+                style={{
+                  minWidth: "415px",
+                  width: "100%",
+                  marginRight: "27px",
+                }}
+              >
+                <input
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+                {errStartDate && (
+                  <div className="error-message">{errStartDate}</div>
+                )}
               </div>
 
-            </Modal.Content>
-
-            <Modal.Actions>
-              <Button
-                color="green"
-                onClick={handleModalSearch}
+              <div
+                className="ui fluid icon input text-right"
+                style={{
+                  minWidth: "415px",
+                  width: "100%",
+                  marginRight: "27px",
+                }}
               >
-                <Icon name="checkmark" />
-                Tìm kiếm
-              </Button>
-            </Modal.Actions>
-          </Modal>
+                <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+                {errEndDate && (
+                  <div className="error-message">{errEndDate}</div>
+                )}
+              </div>
+            </div>
+          </Modal.Content>
 
-        </div>
+          <Modal.Actions>
+            <Button color="green" onClick={handleModalSearch}>
+              <Icon name="checkmark" />
+              Tìm kiếm
+            </Button>
+          </Modal.Actions>
+        </Modal>
       </div>
 
       <Modal open={modalOpen} onClose={handleCloseModal} size="small">
@@ -683,6 +684,7 @@ const BorrowManagement = () => {
                   width: "20px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  textAlign: "center",
                 }}
               >
                 {" "}
@@ -693,26 +695,20 @@ const BorrowManagement = () => {
                   width: "50px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  textAlign: "center",
                 }}
               >
                 {language === LANGUAGES.VI
                   ? languageDataVi.content.userManagement.stt
                   : languageDataEn.content.userManagement.stt}
               </Table.HeaderCell>
+
               <Table.HeaderCell
                 style={{
                   width: "200px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                }}
-              >
-                ID
-              </Table.HeaderCell>
-              <Table.HeaderCell
-                style={{
-                  width: "200px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  textAlign: "center",
                 }}
               >
                 {" "}
@@ -725,6 +721,7 @@ const BorrowManagement = () => {
                   width: "140px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  textAlign: "center",
                 }}
               >
                 {language === LANGUAGES.VI
@@ -772,13 +769,18 @@ const BorrowManagement = () => {
                   width: "200px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  textAlign: "center",
                 }}
               >
                 {language === LANGUAGES.VI
                   ? languageDataVi.content.bookBorrowManagement.status
                   : languageDataEn.content.bookBorrowManagement.status}
               </Table.HeaderCell>
-              <Table.HeaderCell style={{ textAlign: "center" }}>
+              <Table.HeaderCell style={{
+                textAlign: "center", width: "100px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}>
                 {language === LANGUAGES.VI
                   ? languageDataVi.content.bookBorrowManagement.action
                   : languageDataEn.content.bookBorrowManagement.action}
@@ -792,14 +794,18 @@ const BorrowManagement = () => {
                 <Table.Cell>
                   <Checkbox />
                 </Table.Cell>
-                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                <Table.Cell style={{ textAlign: "center" }} onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
                   {(page - 1) * recordsPerPage + index + 1}
                 </Table.Cell>
 
 
-                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data._id}</Table.Cell>
-                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idUser}</Table.Cell>
-                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{data.idBook}</Table.Cell>
+                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                  {getUserNameById(data.idUser)}
+                </Table.Cell>
+                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                  {getBookTitleById(data.idBook)}
+                </Table.Cell>
+
                 <Table.Cell style={{ textAlign: "center" }} onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
                   {moment(data.borrowDate).format("DD/MM/YYYY HH:mm")}
                 </Table.Cell>
@@ -813,18 +819,14 @@ const BorrowManagement = () => {
                 </Table.Cell>
                 <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>{getStatusText(data.status)}</Table.Cell>
                 <Table.Cell style={{ textAlign: "center" }}>
-                  {/* <Icon
-                  size="big"
-                  name="table"
-                  onClick={() => handleDetailBorrow(data.idUser, data.idBook)}
-                /> */}
-                  <Icon
-                    size="big"
-                    name="undo alternate"
-                    onClick={() => handleReturnbook(data._id)}
-
-
-                  />
+                  {data.status !== 2 && ( // Render only if status is not "Đã trả" (status 2)
+                    <Icon
+                      size="big"
+                      name="undo alternate"
+                      onClick={() => handleReturnbook(data._id)}
+                      color="grey"
+                    />
+                  )}
                 </Table.Cell>
 
                 <Modal
@@ -972,12 +974,13 @@ const BorrowManagement = () => {
                       : languageDataEn.content.userManagement.records}
                   </Header>
                 </Menu>
-                <Menu floated="right" pagination>
+                <Menu className="MenuHeaderBorrowPagination" floated="right" pagination>
                   <Menu.Item
                     as="a"
                     icon
                     onClick={() => handlePageChange(page - 1)}
                     disabled={page === 1}
+                    size="mini"
                   >
                     <Icon name="chevron left" />
                   </Menu.Item>
@@ -998,6 +1001,7 @@ const BorrowManagement = () => {
                           as="a"
                           onClick={() => handlePageChange(pageChange)}
                           active={page === pageChange}
+                          size="mini"
                         >
                           {pageChange}
                         </Menu.Item>
@@ -1007,7 +1011,7 @@ const BorrowManagement = () => {
                     // Show ellipsis for omitted pages
                     if (pageChange === page - 3 || pageChange === page + 3) {
                       return (
-                        <Menu.Item key={pageChange} disabled>
+                        <Menu.Item key={pageChange} disabled size="mini">
                           ...
                         </Menu.Item>
                       );
@@ -1021,6 +1025,7 @@ const BorrowManagement = () => {
                     icon
                     onClick={() => handlePageChange(page + 1)}
                     disabled={page === totalPages}
+                    size="mini"
                   >
                     <Icon name="chevron right" />
                   </Menu.Item>
