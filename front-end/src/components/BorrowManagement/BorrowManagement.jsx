@@ -64,6 +64,7 @@ const BorrowManagement = () => {
   const [borrowDate, setBorrowDate] = useState(getCurrentDateTime());
   const [dueDate, setDuaDate] = useState("");
 
+  const [typeDate, setTypeDate] = useState("borrowDate")
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [openModalSearch, setOpenModalSearch] = useState(false);
@@ -383,11 +384,10 @@ const BorrowManagement = () => {
 
   const handleModalSearch = async () => {
     try {
-      console.log("S: ", typeof startDate, "---", startDate);
-      console.log("E: ", typeof endDate, "---", endDate);
       const result = await BorrowBook.searchBorrowBookByDate({
         startDate,
         endDate,
+        typeDate,
         page,
         perPage: recordsPerPage,
       });
@@ -401,7 +401,10 @@ const BorrowManagement = () => {
         error
       );
     }
-  
+
+    setStartDate("");
+    setEndDate("");
+    setTypeDate("borrowDate");
     setErrDefault();
     setOpenModalSearch(false);
   }
@@ -474,7 +477,34 @@ const BorrowManagement = () => {
                 : languageDataEn.content.bookBorrowManagement.search
             }
           />
-          <Modal.Content style={{ display: "flex" }}>
+
+          <div style={{
+            paddingTop: "24px",
+            paddingLeft: "24px",
+            fontSize: "16px",  // Đặt cỡ chữ
+          }}>
+            <select
+              style={{
+                fontSize: "16px",  // Đặt cỡ chữ
+                padding: "8px",    // Đặt kích thước padding,
+              }}
+              onChange={(e) => setTypeDate(e.target.value)}
+            >
+              <option value={"borrowDate"}>Theo ngày mượn</option>
+              <option value={"dueDate"}>Theo ngày hẹn trả</option>
+              <option value={"returnDate"}>Theo ngày trả</option>
+            </select>
+          </div>
+
+
+          <Modal.Content >
+            <div>
+              <label style={{
+                paddingRight: "395px",
+              }}
+              >Từ ngày</label>
+              <label className="lable">Đến ngày</label>
+            </div>
             <div style={{ display: "flex" }}>
               <div
                 className="ui fluid icon input text-right"
@@ -482,6 +512,7 @@ const BorrowManagement = () => {
                   minWidth: "415px",
                   width: "100%",
                   marginRight: "27px",
+                  marginTop: "5px"
                 }}
               >
                 <input
@@ -502,6 +533,8 @@ const BorrowManagement = () => {
                   minWidth: "415px",
                   width: "100%",
                   marginRight: "27px",
+                  marginTop: "5px"
+
                 }}
               >
                 <input
@@ -800,7 +833,7 @@ const BorrowManagement = () => {
                 </Table.Cell>
 
 
-                <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
+                <Table.Cell className="nameInTable" onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
                   {getUserNameById(data.idUser)}
                 </Table.Cell>
                 <Table.Cell onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>

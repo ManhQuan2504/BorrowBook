@@ -13,12 +13,20 @@
          border-bottom: 2px solid #e8e8e9;
 
          border-top: 2px solid #e8e8e9;
-       }
+      }
 
    }
 
+
    .table-content {
       margin: 0 !important;
+
+      .nameInTable {
+
+         color: #2185d0;
+         text-decoration-line: underline;
+
+      }
 
       // border: 2px solid #000;
       .sticky-header {
@@ -102,5 +110,6 @@
          height: 100%;
       }
    }
+
 
 }
