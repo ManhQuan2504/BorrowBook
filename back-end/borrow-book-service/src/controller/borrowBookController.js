@@ -33,7 +33,7 @@ const searchBorrowBook = async (req, res) => {
         let page = parseInt(req.query.page) || 1;
         page = Math.max(page, 1);
 
-        const response = await borrowbookService.searchBorrowBook({ perPage, status, page });
+        const response = await borrowBookService.searchBorrowBook({ perPage, status, page });
 
         return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
@@ -46,7 +46,7 @@ const searchBorrowBookByIdBookIdUser = async (req, res) => {
     try {
         const { keyWord } = req.query
 
-        const response = await borrowbookService.searchBorrowBookByIdBookIdUser(keyWord);
+        const response = await borrowBookService.searchBorrowBookByIdBookIdUser(keyWord);
 
         return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
@@ -66,7 +66,7 @@ const createBorrowBook = async (req, res) => {
             throw new Error(`Dữ liệu không hợp lệ: ${errorMessages.join(', ')}`);
         }
 
-        const response = await borrowbookService.createBorrowBook({ idUser, idBook, borrowDate, dueDate })
+        const response = await borrowBookService.createBorrowBook({ idUser, idBook, borrowDate, dueDate })
 
         if (response && response != undefined) {
             const messageData = {
@@ -91,7 +91,7 @@ const updateBorrowBook = async (req, res) => {
         const idBorrowBook = req.params.id;
         const { returnDate } = req.body;
 
-        const response = await borrowbookService.updateBorrowBook({ idBorrowBook, returnDate });
+        const response = await borrowBookService.updateBorrowBook({ idBorrowBook, returnDate });
 
         return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
@@ -112,7 +112,7 @@ const updateBorrowBook = async (req, res) => {
 //             throw new Error(`Dữ liệu không hợp lệ: ${errorMessages.join(', ')}`);
 //         }
 
-//         const response = await borrowbookService.updateBorrowBook({ idBorrowBook, idUser, idBook, returnDate, borrowDate, dueDate, status });
+//         const response = await borrowBookService.updateBorrowBook({ idBorrowBook, idUser, idBook, returnDate, borrowDate, dueDate, status });
 
 //         return res.status(200).json(
 //             {
@@ -138,7 +138,7 @@ const deleteBorrowBook = async (req, res) => {
             throw new Error('BorowBook ID is required');
         }
 
-        const response = await borrowbookService.deleteBorrowBook({ idBorrowBook });
+        const response = await borrowBookService.deleteBorrowBook({ idBorrowBook });
 
         return message.MESSAGE_SUCCESS(res, 'OK', response);
     } catch (error) {
