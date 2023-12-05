@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Icon, Table, Header, Container, Menu, Checkbox, Button, Modal, Form, Grid, Dropdown, Confirm } from 'semantic-ui-react';
+import { Icon, Table, Header, Container, Menu, Checkbox, Button, Modal, Form, Grid, Dropdown, Confirm ,Search} from 'semantic-ui-react';
 import './style.scss';
 import * as BookServices from '../../services/BookService';
 import * as BorrowBookService from '../../services/BorrowBookService';
@@ -35,6 +35,8 @@ const BookManagement = () => {
   const [errCountInStock, setErrCountInStock] = useState("");
   const [errPublishYear, setErrPublishYear] = useState("");
   const [errAuthorBook, setErrAuthorBook] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const language = useSelector((state) => state.borrowBookReducer.language);
 
@@ -247,7 +249,40 @@ const BookManagement = () => {
       // setLoading(false); // Set loading back to false after the API call is complete
     }
   };
+  const handleSearchChange = async (e, { value }) => {
+    setSearchQuery(value);
 
+    const searchResults = [
+      { name: `Book Name : ${value}`, type: "title", value: `${value}` },
+      { name: `Category : ${value}`, type: "category", value: `${value}` },
+      { name: `Quantity : ${value}`, type: "countInStock", value: `${value}` },
+      { name: `Publish Year : ${value}`, type: "publishYear", value: `${value}` },
+      { name: `Author Book : ${value}`, type: "authorBook", value: `${value}` },
+    ];
+
+    setSearchResults(searchResults);
+  };
+  const handleSearchResultSelect = async (e, { result }) => {
+    setSearchQuery(result.value);
+
+    const searchType = result.description;
+
+    try {
+      
+      const res = await BookServices.getAllBookSearch(
+        
+        recordsPerPage,
+        page,
+        searchType,
+        result.title.split(":")[1].trim()
+      );
+      setDatas(res?.data);
+      setTotalPages(res?.totalPage || 1);
+      setTotalRecords(res?.total || 0);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <Container className='ContainerBookManagement'>
       <div className='taskbar'>
@@ -258,6 +293,23 @@ const BookManagement = () => {
               : languageDataEn.content.bookManagement.bookManagementTitle}
           </div>
           <div style={{ display: "flex" }}>
+          <Search
+              placeholder={
+                language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.search
+                  : languageDataEn.content.userManagement.search
+              }
+              onSearchChange={handleSearchChange}
+              onResultSelect={handleSearchResultSelect}
+              value={searchQuery}
+              results={searchResults.map((user, index) => ({
+                key: index,
+                title: user.name,
+                description: user.type,
+                value: user.value,
+              }))}
+              className="SearchBookManagement"
+            />
             <Button className="ButtonRefresh" icon onClick={handleAddBook}>
               <Icon name="add" />
             </Button>
@@ -267,6 +319,7 @@ const BookManagement = () => {
             <Button className="ButtonRefresh" icon onClick={handleRefresh}>
               <Icon name="refresh" />
             </Button>
+           
           </div>
         </div>
       </div>

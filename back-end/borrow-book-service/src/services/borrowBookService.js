@@ -68,25 +68,28 @@ const searchBorrowBook = async ({ perPage, status, page }) => {
   return result;
 };
 
-const searchBorrowBookByDate = async ({ startDate, endDate, page, perPage }) => {
+const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, page, perPage }) => {
   try {
+    let matchQuery = {};
+    matchQuery[typeDate] = {
+      $gte: new Date(startDate),
+      $lte: new Date(endDate),
+    };
+
+    let typeSort = {};
+    typeSort[typeDate];
+
     const data = await BorrowBookModel.aggregate([
       {
-        $match: {
-          borrowDate: {
-            $gte: new Date(startDate),
-            $lte: new Date(endDate),
-          },
-        },
+        $match: matchQuery,
       },
     ])
-      .sort({ borrowDate: -1 })
+      .sort({ typeSort: -1 })
       .skip((page - 1) * perPage)
       .limit(perPage);
 
     const count = data.length;
 
-    // Kiểm tra xem có dữ liệu trả về hay không
     if (data.length > 0) {
       return { count, data };
     } else {
@@ -95,7 +98,35 @@ const searchBorrowBookByDate = async ({ startDate, endDate, page, perPage }) => 
   } catch (error) {
     throw new Error(`Error searching for borrow books: ${error.message}`);
   }
+
+  // try {
+  //   const data = await BorrowBookModel.aggregate([
+  //     {
+  //       $match: {
+  //         borrowDate: {
+  //           $gte: new Date(startDate),
+  //           $lte: new Date(endDate),
+  //         },
+  //       },
+  //     },
+  //   ])
+  //     .sort({ borrowDate: -1 })
+  //     .skip((page - 1) * perPage)
+  //     .limit(perPage);
+
+  //   const count = data.length;
+
+  //   // Check if there is any data returned
+  //   if (data.length > 0) {
+  //     return { count, data };
+  //   } else {
+  //     throw new Error("No records found");
+  //   }
+  // } catch (error) {
+  //   throw new Error(`Error searching for borrow books: ${error.message}`);
+  // }
 };
+
 
 
 const searchBorrowBookByIdBookIdUser = async (keyWord) => {
