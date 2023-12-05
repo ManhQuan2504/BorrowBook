@@ -440,7 +440,7 @@ const BorrowManagement = () => {
             </Button>
           )} */}
 
-          <Search
+          {/* <Search
             className="search"
             placeholder={
               language === LANGUAGES.VI
@@ -456,7 +456,7 @@ const BorrowManagement = () => {
               description: user.type,
               value: user.value,
             }))}
-          />
+          /> */}
 
           <Button className="ButtonRefresh" icon onClick={handleOpenModalSearch}>
             <Icon name="search" />
