@@ -2,46 +2,110 @@
    margin-left: 100px !important;
    margin-right: 100px !important;
    width: 1419px !important;
-   margin-top: 77px;
-   
 
-   .HeaderManagement {
-      color: #2185d0 !important;
-      padding-top: 20px;
-   }
    .MenuHeader {
       min-height: 0 !important;
       border-color: #fff;
-    }
-    .DropdownLimitPage {
+   }
+
+   .DropdownLimitPage {
       width: 200px;
       font-size: 14px;
       z-index: 10 !important;
-    }
-  
+   }
+
    .ButtonRefresh {
       padding: 10px !important;
-      height: 30px;
+      height: 28px;
+      width: 28px;
       background-color: #2185d0;
       color: #fff;
       font-size: .78571429rem;
       margin-top: 4px;
-   
+
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+
       &:hover {
          background-color: #1678c2;
          color: #fff;
          text-shadow: none;
       }
    }
-   .header-actions {
-      display: flex;
-      justify-content: space-between;
+   .SearchBookManagement{
+      margin-top: 4px;
+      margin-right: 7px;
+      div {
+         input{
+           padding: 4.5px !important;
+         }
+             }
    }
-   
-   .ButtonHandleAddBook {
-      margin-bottom: 30px;
+
+   .taskbar {
+      height: 38px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      border-color: gray;
+      background-color: #F8F8F9;
+      border: 1px solid #dededf;
+      border-radius: 5px;
+
+      .header-actions {
+         height: 28px !important;
+         display: flex;
+         justify-content: space-between;
+
+         .HeaderManagement {
+            color: #2185d0 !important;
+            padding-top: 10px;
+            padding-left: 10px;
+            font-size: large;
+            height: 100% !important;
+         }
+
+         .ButtonHandleAddBook {
+            height: 100% !important;
+            margin-bottom: 30px;
+         }
+      }
+
+
+
+
    }
+
+   .tb-book {
+      max-width: 1557px;
+      max-height: 550px;
+      overflow: auto;
+      border-top: 2px solid #e8e8e9;
+      border-bottom: 2px solid #e8e8e9;
+
+      .sticky-header {
+         position: sticky;
+         top: 0;
+         z-index: 1;
+         background-color: white;
+
+      }
+
+      .TableFooter {
+         position: sticky;
+         bottom: 0;
+         background-color: #fff;
+         z-index: 1;
+         /* Ensure the footer is above the table */
+      }
+
+      .MenuHeader {
+         padding: 11px !important;
+         margin-left: 3px !important;
+         font-size: 12px !important;
+         border: 1px solid #dededf;
+      }
+   }
+
+
 }
-
-
-

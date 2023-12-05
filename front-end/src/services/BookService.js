@@ -46,6 +46,22 @@ export const deleteBook = async ({ id }) => {
     throw error;
   }
 };
+export const getAllBookSearch = async ( limit, page, type, key) => {
+  console.log(type, key);
+  return await AxiosSchema
+    .get(BASE_URL + `book/get-all-book-search`, {
+      
+    
+      params: {
+        limit,
+        page,
+        type,
+        key
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => err);
+};
 
 export const updateBook = async ({ id, title, category, countInStock, publishYear, authorBook }) => {
   try {

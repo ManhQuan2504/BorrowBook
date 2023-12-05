@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import languageDataEn from "../../translations/en.json";
 import languageDataVi from "../../translations/vi.json";
 import { LANGUAGES } from "../../contants/path";
+import * as BorrowBookService from '../../services/BorrowBookService';
 
 const UserManagement = () => {
   const language = useSelector((state) => state.borrowBookReducer.language);
@@ -101,15 +102,24 @@ const UserManagement = () => {
     try {
       const access_token = localStorage.getItem("access_token");
       // Call the API to delete the user using userToDelete._id
-      const res = await UserService.deleteUser(access_token, userToDelete._id);
-      // Handle the response as needed
-      if (res.code === 200) {
-        // User deleted successfully
-        await fetchData(); // Fetch data again after deletion
-        Notification("Xóa thành công", res.message, "success");
-      } else {
-        Notification("Xóa thất bại", res.message, "error");
+      const resultSearch = await BorrowBookService.searchBorrowBookByIdBookIdUser(userToDelete._id);
+      if(!resultSearch.data.data.length>0){
+        const res = await UserService.deleteUser(access_token, userToDelete._id);
+        if (res.code === 200) {
+          // User deleted successfully
+          await fetchData(); // Fetch data again after deletion
+          Notification("Xóa thành công", res.message, "success");
+         
+        } 
+      
+      }else{
+        Notification("Xoá thất bại", "Bản ghi ràng buộc với bảng mượn sách", "error");
+       
+      
       }
+     
+     
+   
     } catch (error) {
       console.error("Error deleting user", error);
     } finally {
@@ -404,7 +414,7 @@ const UserManagement = () => {
             <Button className="ButtonRefresh" icon onClick={handleRefresh}>
               <Icon name="refresh" />
             </Button>
-            
+
             <Search
               placeholder={
                 language === LANGUAGES.VI
@@ -420,6 +430,7 @@ const UserManagement = () => {
                 description: user.type,
                 value: user.value,
               }))}
+              className="SearchUserManagement"
             />
           </div>
         </div>
@@ -482,7 +493,7 @@ const UserManagement = () => {
                             ? languageDataVi.content.userManagement.password
                             : languageDataEn.content.userManagement.password
                         }
-                        
+
                       />
                       {errPassword && (
                         <div className="error-message">{errPassword}</div>
@@ -491,7 +502,7 @@ const UserManagement = () => {
                   </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={2}>
-                 
+
                   <Grid.Column>
                     <Form.Field>
                       <label>{
@@ -530,7 +541,7 @@ const UserManagement = () => {
                   </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={2}>
-                  
+
                 </Grid.Row>
               </Grid>
             </Form>
@@ -588,6 +599,7 @@ const UserManagement = () => {
                       width: "250px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      textAlign: "center",
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -599,6 +611,7 @@ const UserManagement = () => {
                       width: "250px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      textAlign: "center",
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -610,6 +623,7 @@ const UserManagement = () => {
                       width: "100px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      textAlign: "center",
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -621,6 +635,7 @@ const UserManagement = () => {
                       width: "300px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      textAlign: "center",
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -632,6 +647,7 @@ const UserManagement = () => {
                       width: "100px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      textAlign: "center",
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -643,7 +659,7 @@ const UserManagement = () => {
                       width: "100px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
-                  textAlign: "center" 
+                      textAlign: "center"
                     }}
                   >
                     {language === LANGUAGES.VI
@@ -668,28 +684,29 @@ const UserManagement = () => {
                         onChange={() => handleCheckboxChange(user._id)}
                       />
                     </Table.Cell>
-                    <Table.Cell> {(currentPage - 1) * recordsPerPage + index + 1}</Table.Cell>
-                    <Table.Cell style={{cursor: "pointer"}}  onClick={() => handleEditUser(user)}>{user.name}</Table.Cell>
-                    <Table.Cell style={{cursor: "pointer"}}  onClick={() => handleEditUser(user)}>{user.email}</Table.Cell>
-                    <Table.Cell style={{ textAlign: "right",cursor: "pointer" }}  onClick={() => handleEditUser(user)}>{user.phone}</Table.Cell>
-                    <Table.Cell style={{cursor: "pointer"}}  onClick={() => handleEditUser(user)}>
+                    <Table.Cell style={{ textAlign: "center" }}> {(currentPage - 1) * recordsPerPage + index + 1}</Table.Cell>
+                    <Table.Cell style={{ cursor: "pointer" }} onClick={() => handleEditUser(user)}>{user.name}</Table.Cell>
+                    <Table.Cell style={{ cursor: "pointer" }} onClick={() => handleEditUser(user)}>{user.email}</Table.Cell>
+                    <Table.Cell style={{ textAlign: "right", cursor: "pointer" }} onClick={() => handleEditUser(user)}>{user.phone}</Table.Cell>
+                    <Table.Cell style={{ cursor: "pointer" }} onClick={() => handleEditUser(user)}>
                       {user.address ? user.address : "chưa bổ sung"}
                     </Table.Cell>
-                    <Table.Cell style={{cursor: "pointer"}} onClick={() => handleEditUser(user)} >
+                    <Table.Cell style={{ cursor: "pointer" }} onClick={() => handleEditUser(user)} >
                       {user.isAdmin ? (
-                        <Icon name="adn">(admin)</Icon>
+                        <Icon name="adn" color="grey">(admin)</Icon>
                       ) : (
-                        <Icon name="user">(user)</Icon>
+                        <Icon name="user" color="grey">(user)</Icon>
                       )}
                     </Table.Cell>
 
                     <Table.Cell style={{ textAlign: "center" }}>
-                    
+
                       <Icon
                         className="IconDelete"
                         size="big"
                         name="delete"
                         onClick={() => handleDeleteUser(user)}
+                        color="grey"
                       ></Icon>
                     </Table.Cell>
                   </Table.Row>

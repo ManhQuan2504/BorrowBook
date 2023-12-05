@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Icon, Table, Header, Container, Menu, Checkbox, Button, Modal, Form, Grid, Dropdown, Search, Confirm } from 'semantic-ui-react';
+import { Icon, Table, Header, Container, Menu, Checkbox, Button, Modal, Form, Grid, Dropdown, Confirm ,Search} from 'semantic-ui-react';
 import './style.scss';
 import * as BookServices from '../../services/BookService';
+import * as BorrowBookService from '../../services/BorrowBookService';
+
 import { Notification } from "../../components/Notification/Notification";
 import languageDataEn from "../../translations/en.json";
 import languageDataVi from "../../translations/vi.json";
@@ -13,7 +15,7 @@ const BookManagement = () => {
   const [datas, setDatas] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false); // nút delete
   const [totalRecords, setTotalRecords] = useState("");
-  const [recordsPerPage, setRecordsPerPage] = useState(5);
+  const [recordsPerPage, setRecordsPerPage] = useState(15);
 
 
   //set input add
@@ -33,6 +35,8 @@ const BookManagement = () => {
   const [errCountInStock, setErrCountInStock] = useState("");
   const [errPublishYear, setErrPublishYear] = useState("");
   const [errAuthorBook, setErrAuthorBook] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const language = useSelector((state) => state.borrowBookReducer.language);
 
@@ -208,16 +212,21 @@ const BookManagement = () => {
   const handleDelete = async () => {
     console.log(`Deleting book with ID: ${bookId}`);
     // Thực hiện logic xóa sách ở đây
-    const result = await BookServices.deleteBook({ id: bookId });
-
-    if (result.status === "success") {
-      Notification("Xoá thành công", "", "success");
-    } else {
-      Notification("Xoá thất bại", "", "error");
+    const resultSearch = await BorrowBookService.searchBorrowBookByIdBookIdUser(bookId);
+    console.log('resultSearch', !resultSearch.data.data.length>0);
+    if(!resultSearch.data.data.length>0){
+      const result = await BookServices.deleteBook({ id: bookId });
+      setConfirmOpen(false); // Đóng Confirm khi đã xử lý xóa
+          Notification("Xoá thành công", "", "success");
+          fetchData();
+    
+    }else{
+      Notification("Xoá thất bại", "Bản ghi ràng buộc với bảng mượn sách", "error");
+      setConfirmOpen(false);
       return false; // Registration failed
     }
-    fetchData();
-    setConfirmOpen(false); // Đóng Confirm khi đã xử lý xóa
+   
+    
   };
 
   const handleExportExcel = async () => {
@@ -240,48 +249,81 @@ const BookManagement = () => {
       // setLoading(false); // Set loading back to false after the API call is complete
     }
   };
+  const handleSearchChange = async (e, { value }) => {
+    setSearchQuery(value);
 
+    const searchResults = [
+      { name: `Book Name : ${value}`, type: "title", value: `${value}` },
+      { name: `Category : ${value}`, type: "category", value: `${value}` },
+      { name: `Quantity : ${value}`, type: "countInStock", value: `${value}` },
+      { name: `Publish Year : ${value}`, type: "publishYear", value: `${value}` },
+      { name: `Author Book : ${value}`, type: "authorBook", value: `${value}` },
+    ];
+
+    setSearchResults(searchResults);
+  };
+  const handleSearchResultSelect = async (e, { result }) => {
+    setSearchQuery(result.value);
+
+    const searchType = result.description;
+
+    try {
+      
+      const res = await BookServices.getAllBookSearch(
+        
+        recordsPerPage,
+        page,
+        searchType,
+        result.title.split(":")[1].trim()
+      );
+      setDatas(res?.data);
+      setTotalPages(res?.totalPage || 1);
+      setTotalRecords(res?.total || 0);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <Container className='ContainerBookManagement'>
-      <Header className='HeaderManagement' as='h1' textAlign='center'>
-        <Icon name="book"></Icon> {language === LANGUAGES.VI
-          ? languageDataVi.content.bookManagement.bookManagementTitle
-          : languageDataEn.content.bookManagement.bookManagementTitle}
-      </Header>
-
-      <div className="header-actions">
-        <Button 
-        primary 
-        className="ButtonHandleAddBook"
-        onClick={handleAddBook}>
-          {language === LANGUAGES.VI
-            ? languageDataVi.content.bookManagement.buttonAddBook
-            : languageDataEn.content.bookManagement.buttonAddBook}
-        </Button>
-
-        <div style={{ display: "flex" }}>
-          {/* {isDeleteButtonVisible && (
-            <Button
-              className="ButtonDeleteSelected"
-              negative
-              onClick={handleDeleteSelected}
-              disabled={!isDeleteButtonVisible}
-            >
-              {selectedCount > 1
-                ? `Xóa ${selectedCount} lựa chọn`
-                : "Xóa 1 lựa chọn"}
+      <div className='taskbar'>
+        <div className="header-actions">
+          <div className='HeaderManagement' as='h1' textAlign='center'>
+            {language === LANGUAGES.VI
+              ? languageDataVi.content.bookManagement.bookManagementTitle
+              : languageDataEn.content.bookManagement.bookManagementTitle}
+          </div>
+          <div style={{ display: "flex" }}>
+          <Search
+              placeholder={
+                language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.search
+                  : languageDataEn.content.userManagement.search
+              }
+              onSearchChange={handleSearchChange}
+              onResultSelect={handleSearchResultSelect}
+              value={searchQuery}
+              results={searchResults.map((user, index) => ({
+                key: index,
+                title: user.name,
+                description: user.type,
+                value: user.value,
+              }))}
+              className="SearchBookManagement"
+            />
+            <Button className="ButtonRefresh" icon onClick={handleAddBook}>
+              <Icon name="add" />
             </Button>
-          )} */}
-          <Button className="ButtonRefresh" icon onClick={handleExportExcel}>
-            <Icon name="cloud download" />
-          </Button>
-          <Button className="ButtonRefresh" icon onClick={handleRefresh}>
-            <Icon name="refresh" />
-          </Button>
-
-       
+            <Button className="ButtonRefresh" icon onClick={handleExportExcel}>
+              <Icon name="cloud download" />
+            </Button>
+            <Button className="ButtonRefresh" icon onClick={handleRefresh}>
+              <Icon name="refresh" />
+            </Button>
+           
+          </div>
         </div>
       </div>
+
 
 
       <Modal open={modalOpen} onClose={handleCloseModal} size="small">
@@ -396,370 +438,373 @@ const BookManagement = () => {
         </Modal.Actions>
       </Modal>
 
-      <Table celled>
+      <div className='tb-book'>
+        <Table celled>
 
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell style={{
-                      width: "20px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}> <Checkbox /></Table.HeaderCell>
-            <Table.HeaderCell
-                    style={{
-                      width: "50px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {language === LANGUAGES.VI
-                      ? languageDataVi.content.userManagement.stt
-                      : languageDataEn.content.userManagement.stt}
-                  </Table.HeaderCell>
-            <Table.HeaderCell style={{
-                      width: "150px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}>ID</Table.HeaderCell>
-            <Table.HeaderCell style={{
-                      width: "300px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}> {language === LANGUAGES.VI
-              ? languageDataVi.content.bookManagement.nameBook
-              : languageDataEn.content.bookManagement.nameBook}</Table.HeaderCell>
-            <Table.HeaderCell style={{
-                      width: "200px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookManagement.category
-              : languageDataEn.content.bookManagement.category}</Table.HeaderCell>
-            <Table.HeaderCell style={{
-                      width: "100px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookManagement.quantity
-              : languageDataEn.content.bookManagement.quantity}</Table.HeaderCell>
-            <Table.HeaderCell style={{
-                      width: "200px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookManagement.yearPublication
-              : languageDataEn.content.bookManagement.yearPublication}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookManagement.author
-              : languageDataEn.content.bookManagement.author}</Table.HeaderCell>
-            <Table.HeaderCell>{language === LANGUAGES.VI
-              ? languageDataVi.content.bookManagement.action
-              : languageDataEn.content.bookManagement.action}</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          {datas.map((data,index) => (
-            <Table.Row key={data.id}>
-              <Table.Cell>
-                <Checkbox />
-              </Table.Cell>
-              <Table.Cell>{index + 1}</Table.Cell>
-              <Table.Cell>{data.id}</Table.Cell>
-              <Table.Cell>{data.title}</Table.Cell>
-              <Table.Cell>{data.category}</Table.Cell>
-              <Table.Cell>{data.countInStock}</Table.Cell>
-              <Table.Cell>{data.publishYear}</Table.Cell>
-              <Table.Cell>{data.authorBook}</Table.Cell>
-              <Table.Cell>
-                <Icon size="big" name="edit" onClick={() => handleOpenUpdateBook(
-                  data.id, data.title, data.category,
-                  data.countInStock, data.publishYear, data.authorBook)
-                }></Icon>{" "}
-                <Icon size="big" name="delete" onClick={() => handleDeleteBook(data.id)} />
-
-                <Modal open={modalUpdateOpen} onClose={handleCloseUpdateModal} size="small">
-                  <Header content={language === LANGUAGES.VI
-                    ? languageDataVi.content.bookManagement.editBook
-                    : languageDataEn.content.bookManagement.editBook} />
-                  <Modal.Content>
-                    <Form>
-                      <Grid>
-                        <Grid.Row columns={2}>
-                          <Grid.Column>
-                            <Form.Field>
-                              <label>{language === LANGUAGES.VI
-                                ? languageDataVi.content.bookManagement.nameBook
-                                : languageDataEn.content.bookManagement.nameBook}</label>
-                              <input
-                                onChange={handleTitle}
-                                value={title}
-                                type="text"
-                                placeholder="Title"
-                              />
-                              {errTitle && (
-                                <div className="error-message">{errTitle}</div>
-                              )}
-                            </Form.Field>
-                          </Grid.Column>
-                          <Grid.Column>
-                            <Form.Field>
-                              <label>{language === LANGUAGES.VI
-                                ? languageDataVi.content.bookManagement.category
-                                : languageDataEn.content.bookManagement.category}</label>
-                              <input
-                                onChange={handelCategory}
-                                value={category}
-                                minLength={6}
-                                type="text"
-                                placeholder="Category"
-                              />
-                              {errCategory && (
-                                <div className="error-message">{errCategory}</div>
-                              )}
-                            </Form.Field>
-                          </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row columns={2}>
-                          <Grid.Column>
-                            <Form.Field>
-                              <label>{language === LANGUAGES.VI
-                                ? languageDataVi.content.bookManagement.quantity
-                                : languageDataEn.content.bookManagement.quantity}</label>
-                              <input
-                                onChange={handleCountInStock}
-                                value={countInStock}
-                                type="text"
-                                placeholder="Count in stock"
-                              />
-                              {errCountInStock && (
-                                <div className="error-message">{errCountInStock}</div>
-                              )}
-                            </Form.Field>
-                          </Grid.Column>
-                          <Grid.Column>
-                            <Form.Field>
-                              <label>{language === LANGUAGES.VI
-                                ? languageDataVi.content.bookManagement.yearPublication
-                                : languageDataEn.content.bookManagement.yearPublication}</label>
-                              <Dropdown
-                                placeholder="Select Year"
-                                selection
-                                options={years}
-                                onChange={handlePublishYear}
-                                value={publishYear}
-                              />
-                              {errPublishYear && (
-                                <div className="error-message">{errPublishYear}</div>
-                              )}
-                            </Form.Field>
-                          </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row columns={2}>
-                          <Grid.Column>
-                            <Form.Field>
-                              <label>{language === LANGUAGES.VI
-                                ? languageDataVi.content.bookManagement.author
-                                : languageDataEn.content.bookManagement.author}</label>
-                              <input
-                                onChange={handleAuthorBook}
-                                value={authorBook}
-                                type="text"
-                                placeholder="Author Book"
-                              />
-                              {errAuthorBook && (
-                                <div className="error-message">{errAuthorBook}</div>
-                              )}
-                            </Form.Field>
-                          </Grid.Column>
-                        </Grid.Row>
-                      </Grid>
-                    </Form>
-                  </Modal.Content>
-                  <Modal.Actions>
-                    <Button negative onClick={handleCloseUpdateModal}>
-                      {language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement.cancel
-                        : languageDataEn.content.userManagement.cancel}
-                    </Button>
-                    <Button positive onClick={handleSaveUpdateBook}>
-                      {language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement.save
-                        : languageDataEn.content.userManagement.save}
-                    </Button>
-                  </Modal.Actions>
-                </Modal>
-
-                <Confirm
-                  open={confirmOpen}
-                  size='mini'
-                  onCancel={() => setConfirmOpen(false)}
-                  onConfirm={handleDelete}
-                  cancelButton={language === LANGUAGES.VI
-                    ? languageDataVi.content.bookManagement.no
-                    : languageDataEn.content.bookManagement.no}
-                  confirmButton={language === LANGUAGES.VI
-                    ? languageDataVi.content.bookManagement.yes
-                    : languageDataEn.content.bookManagement.yes}
-                  content={language === LANGUAGES.VI
-                    ? languageDataVi.content.bookManagement.areYouSure
-                    : languageDataEn.content.bookManagement.areYouSure}
-                />
-              </Table.Cell>
+          <Table.Header className="sticky-header">
+            <Table.Row>
+              <Table.HeaderCell style={{
+                width: "20px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                textAlign: "center"
+              }}> <Checkbox /></Table.HeaderCell>
+              <Table.HeaderCell
+                style={{
+                  width: "50px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  textAlign: "center"
+                }}
+              >
+                {language === LANGUAGES.VI
+                  ? languageDataVi.content.userManagement.stt
+                  : languageDataEn.content.userManagement.stt}
+              </Table.HeaderCell>
+              <Table.HeaderCell style={{
+                width: "300px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                textAlign: "center"
+              }}> {language === LANGUAGES.VI
+                ? languageDataVi.content.bookManagement.nameBook
+                : languageDataEn.content.bookManagement.nameBook}</Table.HeaderCell>
+              <Table.HeaderCell style={{
+                width: "200px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                textAlign: "center"
+              }}>{language === LANGUAGES.VI
+                ? languageDataVi.content.bookManagement.category
+                : languageDataEn.content.bookManagement.category}</Table.HeaderCell>
+              <Table.HeaderCell style={{
+                width: "100px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                textAlign: "center"
+              }}>{language === LANGUAGES.VI
+                ? languageDataVi.content.bookManagement.quantity
+                : languageDataEn.content.bookManagement.quantity}</Table.HeaderCell>
+              <Table.HeaderCell style={{
+                width: "200px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                textAlign: "center"
+              }}>{language === LANGUAGES.VI
+                ? languageDataVi.content.bookManagement.yearPublication
+                : languageDataEn.content.bookManagement.yearPublication}</Table.HeaderCell>
+              <Table.HeaderCell style={{ textAlign: "center" }}>{language === LANGUAGES.VI
+                ? languageDataVi.content.bookManagement.author
+                : languageDataEn.content.bookManagement.author}</Table.HeaderCell>
+              <Table.HeaderCell style={{ textAlign: "center" }}>{language === LANGUAGES.VI
+                ? languageDataVi.content.bookManagement.action
+                : languageDataEn.content.bookManagement.action}</Table.HeaderCell>
             </Table.Row>
-          ))}
-        </Table.Body>
+          </Table.Header>
+
+          <Table.Body className='tb-body'>
+            {datas.map((data, index) => (
+              <Table.Row key={data.id}>
+                <Table.Cell>
+                  <Checkbox />
+                </Table.Cell>
+                <Table.Cell style={{ textAlign: "center" }}>{index + 1}</Table.Cell>
+                <Table.Cell style={{ textAlign: "left" }}>{data.title}</Table.Cell>
+                <Table.Cell style={{ textAlign: "left" }}>{data.category}</Table.Cell>
+                <Table.Cell style={{ textAlign: "right" }}>{data.countInStock}</Table.Cell>
+                <Table.Cell style={{ textAlign: "center" }}>{data.publishYear}</Table.Cell>
+                <Table.Cell style={{ textAlign: "left" }}>{data.authorBook}</Table.Cell>
+                <Table.Cell style={{ textAlign: "center" }}>
+                  <Icon size="big" name="edit" color='grey' onClick={() => handleOpenUpdateBook(
+                    data.id, data.title, data.category,
+                    data.countInStock, data.publishYear, data.authorBook)
+                  }></Icon>{" "}
+                  <Icon size="big" name="delete" color='grey' onClick={() => handleDeleteBook(data.id)} />
+
+                  <Modal open={modalUpdateOpen} onClose={handleCloseUpdateModal} size="small">
+                    <Header content={language === LANGUAGES.VI
+                      ? languageDataVi.content.bookManagement.editBook
+                      : languageDataEn.content.bookManagement.editBook} />
+                    <Modal.Content>
+                      <Form>
+                        <Grid>
+                          <Grid.Row columns={2}>
+                            <Grid.Column>
+                              <Form.Field>
+                                <label>{language === LANGUAGES.VI
+                                  ? languageDataVi.content.bookManagement.nameBook
+                                  : languageDataEn.content.bookManagement.nameBook}</label>
+                                <input
+                                  onChange={handleTitle}
+                                  value={title}
+                                  type="text"
+                                  placeholder="Title"
+                                />
+                                {errTitle && (
+                                  <div className="error-message">{errTitle}</div>
+                                )}
+                              </Form.Field>
+                            </Grid.Column>
+                            <Grid.Column>
+                              <Form.Field>
+                                <label>{language === LANGUAGES.VI
+                                  ? languageDataVi.content.bookManagement.category
+                                  : languageDataEn.content.bookManagement.category}</label>
+                                <input
+                                  onChange={handelCategory}
+                                  value={category}
+                                  minLength={6}
+                                  type="text"
+                                  placeholder="Category"
+                                />
+                                {errCategory && (
+                                  <div className="error-message">{errCategory}</div>
+                                )}
+                              </Form.Field>
+                            </Grid.Column>
+                          </Grid.Row>
+                          <Grid.Row columns={2}>
+                            <Grid.Column>
+                              <Form.Field>
+                                <label>{language === LANGUAGES.VI
+                                  ? languageDataVi.content.bookManagement.quantity
+                                  : languageDataEn.content.bookManagement.quantity}</label>
+                                <input
+                                  onChange={handleCountInStock}
+                                  value={countInStock}
+                                  type="text"
+                                  placeholder="Count in stock"
+                                />
+                                {errCountInStock && (
+                                  <div className="error-message">{errCountInStock}</div>
+                                )}
+                              </Form.Field>
+                            </Grid.Column>
+                            <Grid.Column>
+                              <Form.Field>
+                                <label>{language === LANGUAGES.VI
+                                  ? languageDataVi.content.bookManagement.yearPublication
+                                  : languageDataEn.content.bookManagement.yearPublication}</label>
+                                <Dropdown
+                                  placeholder="Select Year"
+                                  selection
+                                  options={years}
+                                  onChange={handlePublishYear}
+                                  value={publishYear}
+                                />
+                                {errPublishYear && (
+                                  <div className="error-message">{errPublishYear}</div>
+                                )}
+                              </Form.Field>
+                            </Grid.Column>
+                          </Grid.Row>
+                          <Grid.Row columns={2}>
+                            <Grid.Column>
+                              <Form.Field>
+                                <label>{language === LANGUAGES.VI
+                                  ? languageDataVi.content.bookManagement.author
+                                  : languageDataEn.content.bookManagement.author}</label>
+                                <input
+                                  onChange={handleAuthorBook}
+                                  value={authorBook}
+                                  type="text"
+                                  placeholder="Author Book"
+                                />
+                                {errAuthorBook && (
+                                  <div className="error-message">{errAuthorBook}</div>
+                                )}
+                              </Form.Field>
+                            </Grid.Column>
+                          </Grid.Row>
+                        </Grid>
+                      </Form>
+                    </Modal.Content>
+                    <Modal.Actions>
+                      <Button negative onClick={handleCloseUpdateModal}>
+                        {language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.cancel
+                          : languageDataEn.content.userManagement.cancel}
+                      </Button>
+                      <Button positive onClick={handleSaveUpdateBook}>
+                        {language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement.save
+                          : languageDataEn.content.userManagement.save}
+                      </Button>
+                    </Modal.Actions>
+                  </Modal>
+
+                  <Confirm
+                    open={confirmOpen}
+                    size='mini'
+                    onCancel={() => setConfirmOpen(false)}
+                    onConfirm={handleDelete}
+                    cancelButton={language === LANGUAGES.VI
+                      ? languageDataVi.content.bookManagement.no
+                      : languageDataEn.content.bookManagement.no}
+                    confirmButton={language === LANGUAGES.VI
+                      ? languageDataVi.content.bookManagement.yes
+                      : languageDataEn.content.bookManagement.yes}
+                    content={language === LANGUAGES.VI
+                      ? languageDataVi.content.bookManagement.areYouSure
+                      : languageDataEn.content.bookManagement.areYouSure}
+                  />
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
 
 
-        <Table.Footer className="TableFooter">
-          <Table.Row>
-            <Table.HeaderCell colSpan="9">
-            <Menu className="MenuHeader" floated="left">
-                      <Header size="small">
-                        Tìm thấy {totalRecords} bản ghi
-                      </Header>
-                    </Menu>
-              <Menu floated="right" pagination>
-                <Menu.Item
-                  as="a"
-                  icon
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
-                >
-                  <Icon name="chevron left" />
-                </Menu.Item>
+          <Table.Footer className="TableFooter">
+            <Table.Row>
+              <Table.HeaderCell colSpan="8">
+                <Menu className="MenuHeader" floated="left">
+                  <Header size="small">
+                    Tìm thấy {totalRecords} bản ghi
+                  </Header>
+                </Menu>
+                <Menu floated="right" pagination>
+                  <Menu.Item
+                    as="a"
+                    icon
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page === 1}
+                  >
+                    <Icon name="chevron left" />
+                  </Menu.Item>
 
-                {/* Render page numbers dynamically with ellipsis */}
-                {Array.from({ length: totalPages }, (_, i) => {
-                  const pageChange = i + 1;
+                  {/* Render page numbers dynamically with ellipsis */}
+                  {Array.from({ length: totalPages }, (_, i) => {
+                    const pageChange = i + 1;
 
-                  // Show the current page and some pages around it
-                  if (
-                    pageChange === 1 ||
-                    pageChange === totalPages ||
-                    (pageChange >= page - 2 && pageChange <= page + 2)
-                  ) {
-                    return (
-                      <Menu.Item
-                        key={pageChange}
-                        as="a"
-                        onClick={() => handlePageChange(pageChange)}
-                        active={page === pageChange}
-                      >
-                        {pageChange}
-                      </Menu.Item>
-                    );
-                  }
+                    // Show the current page and some pages around it
+                    if (
+                      pageChange === 1 ||
+                      pageChange === totalPages ||
+                      (pageChange >= page - 2 && pageChange <= page + 2)
+                    ) {
+                      return (
+                        <Menu.Item
+                          key={pageChange}
+                          as="a"
+                          onClick={() => handlePageChange(pageChange)}
+                          active={page === pageChange}
+                        >
+                          {pageChange}
+                        </Menu.Item>
+                      );
+                    }
 
-                  // Show ellipsis for omitted pages
-                  if (
-                    pageChange === page - 3 ||
-                    pageChange === page + 3
-                  ) {
-                    return (
-                      <Menu.Item key={pageChange} disabled>
-                        ...
-                      </Menu.Item>
-                    );
-                  }
+                    // Show ellipsis for omitted pages
+                    if (
+                      pageChange === page - 3 ||
+                      pageChange === page + 3
+                    ) {
+                      return (
+                        <Menu.Item key={pageChange} disabled>
+                          ...
+                        </Menu.Item>
+                      );
+                    }
 
-                  return null;
-                })}
+                    return null;
+                  })}
 
-                <Menu.Item
-                  as="a"
-                  icon
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={page === totalPages}
-                >
-                  <Icon name="chevron right" />
-                </Menu.Item>
+                  <Menu.Item
+                    as="a"
+                    icon
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page === totalPages}
+                  >
+                    <Icon name="chevron right" />
+                  </Menu.Item>
 
-                <Dropdown
-                  className="DropdownLimitPage"
-                  selection
-                  compact
-                  options={[
-                    {
-                      key: 1,
-                      text: `1 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
-                      value: 1,
-                    },
-                    {
-                      key: 5,
-                      text: `5 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
-                      value: 5,
-                    },
-                    {
-                      key: 15,
-                      text: `15 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
-                      value: 15,
-                    },
-                    {
-                      key: 30,
-                      text: `30 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
-                      value: 30,
-                    },
-                    {
-                      key: 50,
-                      text: `50 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
-                      value: 50,
-                    },
-                    {
-                      key: 100,
-                      text: `100 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
-                      value: 100,
-                    },
-                    {
-                      key: 200,
-                      text: `200 ${language === LANGUAGES.VI
-                        ? languageDataVi.content.userManagement
-                          .recordPage
-                        : languageDataEn.content.userManagement
-                          .recordPage
-                        }`,
-                      value: 200,
-                    },
-                  ]}
-                  value={recordsPerPage}
-                  onChange={handleRecordsPerPageChange}
-                />
-              </Menu>
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Footer>
+                  <Dropdown
+                    className="DropdownLimitPage"
+                    selection
+                    compact
+                    options={[
+                      {
+                        key: 1,
+                        text: `1 ${language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement
+                            .recordPage
+                          : languageDataEn.content.userManagement
+                            .recordPage
+                          }`,
+                        value: 1,
+                      },
+                      {
+                        key: 5,
+                        text: `5 ${language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement
+                            .recordPage
+                          : languageDataEn.content.userManagement
+                            .recordPage
+                          }`,
+                        value: 5,
+                      },
+                      {
+                        key: 15,
+                        text: `15 ${language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement
+                            .recordPage
+                          : languageDataEn.content.userManagement
+                            .recordPage
+                          }`,
+                        value: 15,
+                      },
+                      {
+                        key: 30,
+                        text: `30 ${language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement
+                            .recordPage
+                          : languageDataEn.content.userManagement
+                            .recordPage
+                          }`,
+                        value: 30,
+                      },
+                      {
+                        key: 50,
+                        text: `50 ${language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement
+                            .recordPage
+                          : languageDataEn.content.userManagement
+                            .recordPage
+                          }`,
+                        value: 50,
+                      },
+                      {
+                        key: 100,
+                        text: `100 ${language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement
+                            .recordPage
+                          : languageDataEn.content.userManagement
+                            .recordPage
+                          }`,
+                        value: 100,
+                      },
+                      {
+                        key: 200,
+                        text: `200 ${language === LANGUAGES.VI
+                          ? languageDataVi.content.userManagement
+                            .recordPage
+                          : languageDataEn.content.userManagement
+                            .recordPage
+                          }`,
+                        value: 200,
+                      },
+                    ]}
+                    value={recordsPerPage}
+                    onChange={handleRecordsPerPageChange}
+                  />
+                </Menu>
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Footer>
 
-      </Table>
+        </Table>
+      </div>
+
     </Container >
   );
 };

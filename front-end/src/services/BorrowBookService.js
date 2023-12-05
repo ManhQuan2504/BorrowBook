@@ -12,6 +12,29 @@ export const getBorrowBooks = async ({ page, perPage }) => {
   }
 };
 
+export const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, page, perPage }) => {
+  try {
+    console.log("S: ", typeof startDate, "---", startDate);
+    console.log("E: ", typeof endDate, "---", endDate);
+    console.log("T: ", typeDate);
+    const response = await AxiosSchema.get(
+      BASE_URL + `borrowbook/searchbydate?startdate=${startDate}&enddate=${endDate}&typedate=${typeDate}&page=${page}&perpage=${perPage}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const searchBorrowBookByIdBookIdUser = async (keyWord) => {
+  try {
+    const response = await AxiosSchema.get(BASE_URL + `borrowbook/search-borrow-by-idBook-idUser?keyWord=${keyWord}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 export const createBorrowBooks = async ({ idUser, email, idBook, borrowDate, dueDate, }) => {
   try {

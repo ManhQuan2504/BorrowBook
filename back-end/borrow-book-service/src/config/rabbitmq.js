@@ -6,7 +6,7 @@ const send_msg = async (messageData) => {
 
     try {
         const exchangeName = 'borrow_exchange';
-        const connection = await amqplib.connect(process.env.AMQP_CLOUD_URL_HH);
+        const connection = await amqplib.connect(process.env.AMQP_CLOUD_URL);
         const channel = await connection.createChannel();
 
         // Đảm bảo exchange tồn tại
@@ -29,7 +29,8 @@ const send_msg_return = async (messageData) => {
     try {
 
         const exchangeName = 'return_exchange';
-        const connection = await amqplib.connect(process.env.AMQP_CLOUD_URL_HH);
+
+        const connection = await amqplib.connect(process.env.AMQP_CLOUD_URL);
 
         const channel = await connection.createChannel();
 
