@@ -26,6 +26,25 @@ const getBook = async (req, res) => {
         return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 };
+const getAllBookSearch = async (req, res) => {
+    try {
+        const { perPage, page, type, key } = req.query
+
+        const response = await BookService.getAllBookSearch(Number(perPage) || null, Number(page) || 0, String(type) || 'id', String(key) || '')
+
+        return res.status(response.code).json(response)
+
+    } catch (e) {
+
+        console.log('getAllUser err', e)
+
+        return res.status(500).json({
+            code: 500,
+            success: false,
+            message: e + ''
+        })
+    }
+}
 
 const getDetailBook = async (req, res) => {
     try {
@@ -199,5 +218,6 @@ export default {
     deleteManyBook,
     borrowBook,
     returnBook,
-    exportExcel
+    exportExcel,
+    getAllBookSearch
 };
