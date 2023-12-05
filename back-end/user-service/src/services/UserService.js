@@ -251,7 +251,7 @@ const getAllUserSearch = (limit, page, type, key) => {
 
                 const skip = (page - 1) * limit;
 
-                allUser = await User.find(query).limit(limit).skip(skip);
+                allUser = await User.find(query).skip(skip).limit(limit);
             }
 
             resolve({

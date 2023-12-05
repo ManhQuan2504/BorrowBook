@@ -135,7 +135,46 @@ const borrowBook = async ({ id }) => {
         throw new Error(`Lỗi khi mượn sách: ${error.message}`);
     }
 };
+const getAllBookSearch = async (limit, page, type, key) => {
+    try {
+        let whereCondition = {};
 
+        // Tạo điều kiện tìm kiếm gần đúng
+        whereCondition[type] = {
+            [Op.like]: `%${key}%`,
+        };
+
+        console.log('whereCondition', whereCondition);
+
+        let allBooks = [];
+
+        if (!limit) {
+            allBooks = await bookModel.findAll({
+                where: whereCondition,
+                attributes: { exclude: ['image', 'password'] },
+            });
+        } else {
+            const offset = (page - 1) * limit;
+            allBooks = await bookModel.findAll({
+                where: whereCondition,
+                limit,
+                offset,
+            });
+        }
+
+        return {
+            code: 200,
+            success: true,
+            message: 'Lấy danh sách sách thành công!',
+            data: allBooks,
+            total: allBooks.length,
+            pageCurrent: Number(page),
+            totalPage: limit ? Math.ceil(allBooks.length / limit) : 1,
+        };
+    } catch (e) {
+        throw e;
+    }
+};
 
 const returnBook = async ({ id }) => {
     try {
@@ -173,5 +212,6 @@ export default {
     deleteBook,
     borrowBook,
     returnBook,
-    exportExcel
+    exportExcel,
+    getAllBookSearch
 }
