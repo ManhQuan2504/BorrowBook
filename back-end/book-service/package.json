@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/index.js",
+    "build-src": "mkdirp -p build && ncp src build",
+    "build": "node build/index.js"
   },
   "keywords": [],
   "author": "",
@@ -22,5 +24,8 @@
     "nodemon": "^3.0.1",
     "sequelize": "^6.34.0",
     "shortid": "^2.2.16"
+  },
+  "devDependencies": {
+    "ncp": "^2.0.0"
   }
 }

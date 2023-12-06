@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/index.js"
+    "start": "nodemon babel-node src/index.js",
+    "build-src": "babel src -d build --copy-files",
+    "build": "node build/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -36,6 +38,7 @@
     "yaml": "^2.3.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.22.15",
     "@babel/core": "^7.12.10",
     "@babel/node": "^7.12.10",
     "@babel/preset-env": "^7.12.10"
