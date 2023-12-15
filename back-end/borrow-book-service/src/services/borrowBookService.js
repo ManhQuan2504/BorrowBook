@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import BorrowBookModel from "../models/borrowBookModel.js";
+import BorrowBook from "../models/borrowBookModel.js";
+
 
 const getBorrowBook = async ({ perPage, page }) => {
   try {
@@ -262,6 +264,70 @@ const exportExcel = async () => {
     throw error;
   }
 };
+const sumQuantityByDate = async (startDate, endDate) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log('startDate', startDate)
+      console.log('endDate', endDate)
+      const totalBorrowedCount = await BorrowBook.aggregate([
+        {
+          $match: {
+            createAt: {
+              $gte: new Date(startDate),
+              $lte: new Date(endDate),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              year: { $year: "$createAt" },
+              month: { $month: "$createAt" },
+              day: { $dayOfMonth: "$createAt" },
+            },
+            totalQuantity: { $count: {} }, 
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            date: {
+              year: "$_id.year",
+              month: "$_id.month",
+              day: "$_id.day",
+            },
+            totalQuantity: 1,
+          },
+        },
+        {
+          $sort: {
+            "date.year": 1,
+            "date.month": 1,
+            "date.day": 1,
+          },
+        },
+      ]);
+console.log('totalBorrowedCount', totalBorrowedCount)
+      if (totalBorrowedCount.length === 0) {
+        resolve({
+          code: 200,
+          success: true,
+          message: 'Không có sách nào được mượn trong khoảng thời gian đã chọn!',
+          data: [],
+        });
+      }
+
+      resolve({
+        code: 200,
+        success: true,
+        data: totalBorrowedCount,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 
 export default {
   getBorrowBook,
@@ -271,5 +337,6 @@ export default {
   updateBorrowBook,
   deleteBorrowBook,
   exportExcel,
-  searchBorrowBookByIdBookIdUser
+  searchBorrowBookByIdBookIdUser,
+  sumQuantityByDate
 }

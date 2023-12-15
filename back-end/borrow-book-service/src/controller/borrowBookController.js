@@ -213,6 +213,20 @@ const searchBorrowBookByDate = async (req, res) => {
         return message.MESSAGE_ERROR(res, 'ERR', error.message)
     }
 }
+const sumQuantityByDate = async (req, res) => {
+    
+        try {
+            const { startDate, endDate } = req.query
+          
+             const response = await borrowBookService.sumQuantityByDate(startDate, endDate);
+             return res.status(response.code).json(response);
+         } catch (e) {
+             console.log('Có lỗi khi sumQuantityByDate', e);
+             return res.status(500).json({
+                 message: e.message
+             });
+         }
+        }
 
 export default {
     getBorrowBook,
@@ -223,5 +237,6 @@ export default {
     deleteBorrowBook,
     deleteManyBorrowBook,
     exportExcel,
-    searchBorrowBookByIdBookIdUser
+    searchBorrowBookByIdBookIdUser,
+    sumQuantityByDate
 };

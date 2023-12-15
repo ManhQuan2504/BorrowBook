@@ -21,4 +21,6 @@ router.delete('/deletemany/:id', borrowBookController.deleteManyBorrowBook);
 
 router.get('/export', borrowBookController.exportExcel);
 
+router.get('/sum-quantity-by-date', borrowBookController.sumQuantityByDate);
+
 export default router;

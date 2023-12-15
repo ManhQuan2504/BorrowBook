@@ -394,7 +394,7 @@ const exportExcel = async (req, res) => {
         }
 
         const data = response.data;
-
+        console.log('data', data)
         const rows = data.map(user => [
             user.id || '',
             user.name || '',
@@ -402,6 +402,7 @@ const exportExcel = async (req, res) => {
             user.phone || '',
             user.address || '',
         ]);
+        console.log('rows', rows)
 
         // Thêm header
         const headers = ['ID', 'Họ tên', 'Email', 'SĐT', 'Địa chỉ'];

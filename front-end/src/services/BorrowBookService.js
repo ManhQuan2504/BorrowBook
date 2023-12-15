@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const AxiosSchema = axios.create();
-export const BASE_URL = 'http://localhost:1234/api/v1/';
+export const BASE_URL = 'http://localhost/api/v1/';
 
 export const getBorrowBooks = async ({ page, perPage }) => {
   try {
