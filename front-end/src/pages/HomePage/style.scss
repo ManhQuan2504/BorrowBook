@@ -1,12 +1,11 @@
-.HomePage {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-  
-    .imgBook3 {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-  
+.CombinedChartsPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ChartContainer {
+  width: 80%;
+  margin: 20px;
+  max-height: 80vh; /* Giới hạn chiều cao tối đa của phần tử chứa biểu đồ */
+}

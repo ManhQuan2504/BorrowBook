@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ../../back-end/borrow-book-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 1234:1234

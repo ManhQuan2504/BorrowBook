@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ../../back-end/user-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 3333:3333

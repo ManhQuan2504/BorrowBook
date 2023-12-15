@@ -1,7 +1,7 @@
-FROM node:18-alpine
+FROM node:20-alpine
 #chuẩn bị môi trường node.js, version node14/alpine
 
-WORKDIR /huyyhoang/backend/book-service
+WORKDIR /manhquan/backend/book-service
 
 COPY package*.json ./
 

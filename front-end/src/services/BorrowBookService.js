@@ -26,6 +26,44 @@ export const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, pag
   }
 };
 
+export const aggregateByMonth = async ({ getBy, month, year }) => {
+  try {
+    console.log("G: ",getBy);
+    const response = await AxiosSchema.get(
+      BASE_URL + `borrowbook/aggregatebymonth?type=${getBy}&month=${month}&year=${year}`
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const aggregateByMonth1 = async ({ month, year }) => {
+  try {
+    console.log("M: ", typeof month, "---", month);
+    console.log("Y: ", typeof year, "---", year);
+    const response = await AxiosSchema.get(
+      BASE_URL + `borrowbook/aggregatebymonth1?month=${month}&year=${year}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const aggregateByMonth2 = async ({ month, year }) => {
+  try {
+    console.log("M: ", typeof month, "---", month);
+    console.log("Y: ", typeof year, "---", year);
+    const response = await AxiosSchema.get(
+      BASE_URL + `borrowbook/aggregatebymonth2?month=${month}&year=${year}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const searchBorrowBookByIdBookIdUser = async (keyWord) => {
   try {
     const response = await AxiosSchema.get(BASE_URL + `borrowbook/search-borrow-by-idBook-idUser?keyWord=${keyWord}`);

@@ -41,7 +41,7 @@ const BorrowManagement = () => {
   const [page, setPage] = useState(1);
   const [datas, setDatas] = useState([]);
   const language = useSelector((state) => state.borrowBookReducer.language);
-  const [recordsPerPage, setRecordsPerPage] = useState(5);
+  const [recordsPerPage, setRecordsPerPage] = useState(15);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState("");
 
