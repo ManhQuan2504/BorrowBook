@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ../../back-end/message-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 7778:7777
