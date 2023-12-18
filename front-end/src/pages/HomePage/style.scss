@@ -8,4 +8,17 @@
   width: 80%;
   margin: 20px;
   max-height: 80vh; /* Giới hạn chiều cao tối đa của phần tử chứa biểu đồ */
+  position: relative;
+  margin-bottom: 150px; // Đặt khoảng cách giữa hai phần biểu đồ
+}
+
+
+.ChartHeader {
+  margin-bottom: 20px;
+  margin-left: 18px;
+}
+
+.ChartTitle {
+  text-align: center;
+  margin-top: 20px;
 }

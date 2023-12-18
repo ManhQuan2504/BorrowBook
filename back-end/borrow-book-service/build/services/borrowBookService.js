@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import BorrowBookModel from "../models/borrowBookModel.js";
+import { faker } from '@faker-js/faker';
 const getBorrowBook = async ({
   perPage,
   page
@@ -131,6 +132,117 @@ const searchBorrowBookByDate = async ({
   //   throw new Error(`Error searching for borrow books: ${error.message}`);
   // }
 };
+const aggregateByMonth = async ({
+  getBy,
+  month,
+  year
+}) => {
+  try {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
+    console.log(startDate, "----", endDate);
+
+    // Parse mảng JSON từ getBy
+    const parsedGetBy = JSON.parse(getBy);
+    const data = await BorrowBookModel.aggregate([{
+      $match: {
+        createdAt: {
+          $gte: startDate,
+          $lte: endDate
+        },
+        status: {
+          $in: parsedGetBy
+        }
+      }
+    }, {
+      $group: {
+        _id: {
+          $dayOfMonth: "$createdAt"
+        },
+        soLuong: {
+          $sum: 1
+        }
+      }
+    }, {
+      $sort: {
+        _id: 1 // Sắp xếp theo ngày
+      }
+    }]);
+    return data;
+  } catch (error) {
+    throw new Error(`Error searching for borrow books: ${error.message}`);
+  }
+};
+const aggregateByMonth1 = async ({
+  month,
+  year
+}) => {
+  try {
+    const startDate = new Date(year, month - 1, 1); // month - 1 vì tháng trong JavaScript bắt đầu từ 0
+    const endDate = new Date(year, month, 0);
+    console.log(startDate, "----", endDate);
+    const data = await BorrowBookModel.aggregate([{
+      $match: {
+        createdAt: {
+          $gte: startDate,
+          $lte: endDate
+        },
+        status: 1
+      }
+    }, {
+      $group: {
+        _id: {
+          $dayOfMonth: "$createdAt"
+        },
+        soLuong: {
+          $sum: 1
+        }
+      }
+    }, {
+      $sort: {
+        _id: 1 // Sắp xếp theo ngày
+      }
+    }]);
+    return data;
+  } catch (error) {
+    throw new Error(`Error searching for borrow books: ${error.message}`);
+  }
+};
+const aggregateByMonth2 = async ({
+  month,
+  year
+}) => {
+  try {
+    const startDate = new Date(year, month - 1, 1); // month - 1 vì tháng trong JavaScript bắt đầu từ 0
+    const endDate = new Date(year, month, 0);
+    console.log(startDate, "----", endDate);
+    const data = await BorrowBookModel.aggregate([{
+      $match: {
+        createdAt: {
+          $gte: startDate,
+          $lte: endDate
+        },
+        status: 2
+      }
+    }, {
+      $group: {
+        _id: {
+          $dayOfMonth: "$createdAt"
+        },
+        soLuong: {
+          $sum: 1
+        }
+      }
+    }, {
+      $sort: {
+        _id: 1 // Sắp xếp theo ngày
+      }
+    }]);
+    return data;
+  } catch (error) {
+    throw new Error(`Error searching for borrow books: ${error.message}`);
+  }
+};
 const searchBorrowBookByIdBookIdUser = async keyWord => {
   try {
     let query;
@@ -160,21 +272,59 @@ const createBorrowBook = async ({
   idUser,
   idBook,
   borrowDate,
-  dueDate
+  dueDate,
+  returnDate
 }) => {
-  const newBorrowBook = new BorrowBookModel({
+  let borrowBookData = {
     idUser: idUser,
     idBook: idBook,
     borrowDate: borrowDate,
     dueDate: dueDate,
-    returnDate: null,
     status: 1
-  });
-  const createdBorrowBook = await newBorrowBook.save();
-  if (!createdBorrowBook) {
-    throw new Error("Lỗi khi tạo sách: ");
-  } else {
+  };
+
+  // Kiểm tra nếu returnDate không tồn tại (null hoặc undefined) thì không thêm vào đối tượng
+  if (returnDate !== null && returnDate !== undefined) {
+    borrowBookData.returnDate = returnDate;
+  }
+  const newBorrowBook = new BorrowBookModel(borrowBookData);
+  try {
+    const createdBorrowBook = await newBorrowBook.save();
     return createdBorrowBook;
+  } catch (error) {
+    throw new Error(`Lỗi khi tạo đơn mượn sách: ${error.message}`);
+  }
+};
+const createBorrowBookFaker = async ({
+  idUser,
+  idBook,
+  borrowDate,
+  dueDate,
+  returnDate,
+  status,
+  createdAt,
+  updatedAt
+}) => {
+  let borrowBookData = {
+    idUser: idUser,
+    idBook: idBook,
+    borrowDate: borrowDate,
+    dueDate: dueDate,
+    status: status,
+    createdAt: createdAt,
+    updatedAt: updatedAt
+  };
+
+  // Kiểm tra nếu returnDate không tồn tại (null hoặc undefined) thì không thêm vào đối tượng
+  if (returnDate !== null && returnDate !== undefined) {
+    borrowBookData.returnDate = returnDate;
+  }
+  const newBorrowBook = new BorrowBookModel(borrowBookData);
+  try {
+    const createdBorrowBook = await newBorrowBook.save();
+    return createdBorrowBook;
+  } catch (error) {
+    throw new Error(`Lỗi khi tạo đơn mượn sách: ${error.message}`);
   }
 };
 const updateBorrowBook = async ({
@@ -271,9 +421,13 @@ export default {
   getBorrowBook,
   searchBorrowBook,
   searchBorrowBookByDate,
+  aggregateByMonth,
+  aggregateByMonth1,
+  aggregateByMonth2,
   createBorrowBook,
   updateBorrowBook,
   deleteBorrowBook,
   exportExcel,
-  searchBorrowBookByIdBookIdUser
+  searchBorrowBookByIdBookIdUser,
+  createBorrowBookFaker
 };
