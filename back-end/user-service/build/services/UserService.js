@@ -302,24 +302,27 @@ var getAllUser = function getAllUser(limit, page) {
             return User.count();
           case 3:
             totalUser = _context6.sent;
+            console.log('totalUser', totalUser);
             allUser = [];
             if (limit) {
-              _context6.next = 11;
+              _context6.next = 13;
               break;
             }
-            _context6.next = 8;
+            _context6.next = 9;
             return User.find().select('-image -password');
-          case 8:
+          case 9:
             allUser = _context6.sent;
-            _context6.next = 15;
+            console.log('allUser no limit', allUser);
+            _context6.next = 18;
             break;
-          case 11:
+          case 13:
             skip = (page - 1) * limit;
-            _context6.next = 14;
+            _context6.next = 16;
             return User.find().limit(limit).skip(skip);
-          case 14:
+          case 16:
             allUser = _context6.sent;
-          case 15:
+            console.log('allUser', allUser);
+          case 18:
             resolve({
               code: 200,
               success: true,
@@ -329,17 +332,17 @@ var getAllUser = function getAllUser(limit, page) {
               pageCurrent: Number(page),
               totalPage: limit ? Math.ceil(totalUser / limit) : 1
             });
-            _context6.next = 21;
+            _context6.next = 24;
             break;
-          case 18:
-            _context6.prev = 18;
+          case 21:
+            _context6.prev = 21;
             _context6.t0 = _context6["catch"](0);
             reject(_context6.t0);
-          case 21:
+          case 24:
           case "end":
             return _context6.stop();
         }
-      }, _callee6, null, [[0, 18]]);
+      }, _callee6, null, [[0, 21]]);
     }));
     return function (_x10, _x11) {
       return _ref6.apply(this, arguments);
