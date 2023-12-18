@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Doughnut } from 'react-chartjs-2';
 import './style.scss';
 import * as borrowBookService from '../../services/BorrowBookService.js';
 import { Dropdown } from 'semantic-ui-react';
 
 const HomePage = () => {
   const [barData, setBarData] = useState(null);
+  const [donutData, setDonutData] = useState(null);
   const [typeVertical, setTypeVertical] = useState([1, 2]);
   const [publishMonth, setPublishMonth] = useState(11);
   const [publishYear, setPublishYear] = useState(2023);
@@ -29,6 +30,37 @@ const HomePage = () => {
     { key: 11, text: '11', value: 11 },
     { key: 12, text: '12', value: 12 },
   ];
+
+  const fetchDonutData = async () => {
+    try {
+      // TODO: Lấy dữ liệu cho biểu đồ Donut từ API hoặc service
+      // const donutResult = await borrowBookService.fetchDonutData();
+      // const donutData = // Xử lý dữ liệu nhận được
+
+      // Tạm thời sử dụng dữ liệu giả định cho mục đích minh họa
+      const donutData = {
+        labels: ['Label A', 'Label B', 'Label C'],
+        datasets: [
+          {
+            data: [50, 30, 20],
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+          },
+        ],
+      };
+
+      setDonutData(donutData);
+    } catch (error) {
+      console.error('ERR: ', error);
+      setDonutData(null); // Đặt donutData thành null nếu có lỗi
+    }
+  };
+
+  const donutOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+  };
+
 
   const fetchData = async () => {
     try {
@@ -57,6 +89,17 @@ const HomePage = () => {
           },
         ],
       });
+
+      setDonutData({
+        labels: ['Label 1', 'Label 2', 'Label 3'],
+        datasets: [
+          {
+            data: [30, 40, 30], // Giá trị của các phần tương ứng
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'], // Màu nền của các phần
+            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'], // Màu nền khi di chuột qua
+          },
+        ],
+      })
     } catch (error) {
       console.error('ERR: ', error);
       setBarData(null); // Đặt barData thành null nếu có lỗi
@@ -77,51 +120,66 @@ const HomePage = () => {
     <div className='CombinedChartsPage'>
       {/* Biểu đồ Bar */}
       <div className='ChartContainer'>
-        <select
-          style={{
+        <div className='ChartHeader'>
+          <select
+            style={{
+              fontSize: "16px",
+              padding: "8px",
+              marginRight: "10px"
+            }}
+            onChange={(e) => setTypeVertical(JSON.parse(e.target.value))}
+            value={JSON.stringify(typeVertical)}
+          >
+            <option value={JSON.stringify([1, 2])}>Tổng đơn</option>
+            <option value={JSON.stringify([1])}>Đơn mượn</option>
+            <option value={JSON.stringify([2])}>Đơn trả</option>
+          </select>
+          <label style={{
             fontSize: "16px",
             padding: "8px",
-            marginRight: "10px"
-          }}
-          onChange={(e) => setTypeVertical(JSON.parse(e.target.value))}
-          value={JSON.stringify(typeVertical)}
-        >
-          <option value={JSON.stringify([1, 2])}>Tổng đơn</option>
-          <option value={JSON.stringify([1])}>Đơn mượn</option>
-          <option value={JSON.stringify([2])}>Đơn trả</option>
-        </select>
-        <label style={{
-          fontSize: "16px",
-          padding: "8px",
-        }}>Tháng</label>
-        <Dropdown
-          placeholder="Select Month"
-          value={publishMonth}
-          selection
-          options={months}
-          onChange={(_, data) => setPublishMonth(data.value)}
-          style={{
-            marginRight: "10px"
-          }}
-        />
-
-        <label
-          style={{
-            fontSize: "16px",
-            padding: "8px",
-          }}>Năm</label>
-        <Dropdown
-          placeholder="Select Year"
-          value={publishYear}
-          selection
-          options={years}
-          onChange={(_, data) => setPublishYear(data.value)}
-        />
-
+          }}>Tháng</label>
+          <Dropdown
+            placeholder="Select Month"
+            value={publishMonth}
+            selection
+            options={months}
+            onChange={(_, data) => setPublishMonth(data.value)}
+            style={{
+              marginRight: "10px"
+            }}
+          />
+  
+          <label
+            style={{
+              fontSize: "16px",
+              padding: "8px",
+            }}>Năm</label>
+          <Dropdown
+            placeholder="Select Year"
+            value={publishYear}
+            selection
+            options={years}
+            onChange={(_, data) => setPublishYear(data.value)}
+          />
+        </div>
+  
         {barData ? <Bar data={barData} options={barOptions} /> : <div>No data available</div>}
+        
+        <div className='ChartTitle'>
+          <h3>Biểu đồ đơn mượn theo tháng</h3>
+        </div>
+      </div>
+  
+      {/* Biểu đồ Donut */}
+      <div className='ChartContainer'>
+        {donutData ? <Doughnut data={donutData} options={donutOptions} /> : <div>No data available</div>}
+        <div className='ChartTitle'>
+          <h3>Biểu đồ sách còn lại</h3>
+        </div>
       </div>
     </div>
   );
+  
 };
 
 export default HomePage;

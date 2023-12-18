@@ -3,6 +3,8 @@ import rabbitmqFunc from "../config/rabbitmq.js";
 import borrowBookService from "../services/borrowBookService.js";
 import ExcelJS from "exceljs";
 import message from "../message/index.js";
+import { faker } from "@faker-js/faker";
+import mongoose from "mongoose";
 const Schema = Joi.object({
   returnDate: Joi.date().label('returnDate'),
   borrowDate: Joi.date().label('borrowDate'),
@@ -242,14 +244,124 @@ const searchBorrowBookByDate = async (req, res) => {
     return message.MESSAGE_ERROR(res, 'ERR', error.message);
   }
 };
+const aggregateByMonth = async (req, res) => {
+  try {
+    const getBy = req.query.type;
+    const month = req.query.month;
+    const year = req.query.year;
+    console.log(getBy);
+    const response = await borrowBookService.aggregateByMonth({
+      getBy,
+      month,
+      year
+    });
+    return message.MESSAGE_SUCCESS(res, 'OK', response);
+  } catch (error) {
+    return message.MESSAGE_ERROR(res, 'ERR', error.message);
+  }
+};
+const aggregateByMonth1 = async (req, res) => {
+  try {
+    const month = req.query.month;
+    const year = req.query.year;
+    const response = await borrowBookService.aggregateByMonth1({
+      month,
+      year
+    });
+    return message.MESSAGE_SUCCESS(res, 'OK', response);
+  } catch (error) {
+    return message.MESSAGE_ERROR(res, 'ERR', error.message);
+  }
+};
+const aggregateByMonth2 = async (req, res) => {
+  try {
+    const month = req.query.month;
+    const year = req.query.year;
+    const response = await borrowBookService.aggregateByMonth2({
+      month,
+      year
+    });
+    return message.MESSAGE_SUCCESS(res, 'OK', response);
+  } catch (error) {
+    return message.MESSAGE_ERROR(res, 'ERR', error.message);
+  }
+};
+const fakeBorrow = async (req, res) => {
+  try {
+    let arrFakeBorrow = [];
+    const numberOfRecordsToAdd = 100; // Số lượng bản ghi bạn muốn thêm
+
+    const startDate = new Date('2022-01-01');
+    const endDate = new Date('2023-12-31');
+    const userIDs = ['65546ae838e2e69a9806a3e5', '6565580dbe66433658e1db50', '65655af6baa16ea91b60e85d', '65655f5fc53055338a50cbb1', '65656265fbeb7a9a3c256708', '65656281fbeb7a9a3c25670d', '656568ebfbeb7a9a3c256722', '65656afdfbeb7a9a3c256734', '65656c25775ab31d5fd1daac', '65656c40775ab31d5fd1dab1', '65656d20ca6d1a76ba808d8b', '65656dcd9ef523d9dcd72d49', '65656e06adea7bef85b7a657', '65656e3badea7bef85b7a65c', '65658beed1748212f5e8fb28', '65752f90211ce8b0c4d652ee'];
+    const bookIDs = ['E74d5ZCtW', 'f75h7rRrC', 'HZSXZu18P', 'KZ-2yV6Bv', 'mEJY1tRDI', 'Pv5_I7r7e', 'qUIT47V04', 'Sa8ObYUzZ', 'wZdxXwz0W'];
+    for (let index = 0; index < numberOfRecordsToAdd; index++) {
+      const borrowDate = faker.date.between(startDate, endDate);
+      const dueDate = faker.date.between(borrowDate, endDate);
+      const randomIndexUserID = Math.floor(Math.random() * userIDs.length);
+      const randomUserID = userIDs[randomIndexUserID];
+      const randomIndexBookId = Math.floor(Math.random() * bookIDs.length);
+      const randomBookID = bookIDs[randomIndexBookId];
+      let returnDate = ""; // Đặt giá trị mặc định là chuỗi rỗng
+      let status = 1;
+
+      // Ngẫu nhiên quyết định có set returnDate hay không
+      if (Math.random() < 0.5) {
+        returnDate = faker.date.between(startDate, endDate).toISOString(); // Chuyển ngày sang chuỗi ISO
+        status = 2;
+      }
+      const createdAt = faker.date.between(startDate, endDate);
+      const updatedAt = faker.date.between(createdAt, endDate);
+      let fakeBorrow = {
+        idUser: randomUserID,
+        idBook: randomBookID,
+        borrowDate: borrowDate,
+        dueDate: dueDate,
+        returnDate: returnDate,
+        status: status,
+        createdAt: createdAt,
+        updatedAt: updatedAt
+      };
+      arrFakeBorrow.push(fakeBorrow);
+    }
+
+    // Gọi hàm createBorrowBook từ borrowBookService cho tất cả các bản ghi
+    const promises = arrFakeBorrow.map(async fakeBorrow => {
+      return await borrowBookService.createBorrowBookFaker({
+        idUser: fakeBorrow.idUser,
+        idBook: fakeBorrow.idBook,
+        borrowDate: fakeBorrow.borrowDate,
+        dueDate: fakeBorrow.dueDate,
+        returnDate: fakeBorrow.returnDate,
+        status: fakeBorrow.status,
+        createdAt: fakeBorrow.createdAt,
+        updatedAt: fakeBorrow.updatedAt
+      });
+    });
+    await Promise.all(promises);
+    return res.status(200).json({
+      status: "ok",
+      data: arrFakeBorrow
+    });
+  } catch (error) {
+    console.error('Error creating fake borrow:', error);
+    return res.status(500).json({
+      error: 'Internal Server Error'
+    });
+  }
+};
 export default {
   getBorrowBook,
   searchBorrowBook,
   searchBorrowBookByDate,
+  aggregateByMonth,
+  aggregateByMonth1,
+  aggregateByMonth2,
   createBorrowBook,
   updateBorrowBook,
   deleteBorrowBook,
   deleteManyBorrowBook,
   exportExcel,
-  searchBorrowBookByIdBookIdUser
+  searchBorrowBookByIdBookIdUser,
+  fakeBorrow
 };
