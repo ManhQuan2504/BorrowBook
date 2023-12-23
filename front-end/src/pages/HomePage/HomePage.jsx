@@ -50,7 +50,7 @@ const HomePage = () => {
         labels: labels,
         datasets: [
           {
-            label: 'Ngày',
+            label: 'Data',
             data: dataValues,
             backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FFD700', '#00FF00'],
             hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FFD700', '#00FF00'],
@@ -77,6 +77,8 @@ const HomePage = () => {
     <div className='CombinedChartsPage'>
       {/* Biểu đồ Bar */}
       <div className='ChartContainer'>
+      <div className='wrapSelect'>
+
         <select
           style={{
             fontSize: "16px",
@@ -117,8 +119,9 @@ const HomePage = () => {
           options={years}
           onChange={(_, data) => setPublishYear(data.value)}
         />
+      </div>
 
-        {barData ? <Bar data={barData} options={barOptions} /> : <div>No data available</div>}
+        {barData ? <Bar className='bar' data={barData} options={barOptions} /> : <div>No data available</div>}
       </div>
     </div>
   );
