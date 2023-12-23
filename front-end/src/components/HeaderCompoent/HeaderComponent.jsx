@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Image } from "semantic-ui-react";
-import { Menu, Segment, Dropdown } from "semantic-ui-react";
+import { Menu, Segment, Dropdown, Icon } from "semantic-ui-react";
 import "./style.scss";
 import { useDispatch, useSelector } from 'react-redux';
 import { decodeToken } from "react-jwt";
@@ -158,7 +158,7 @@ const HeaderComponent = () => {
 
         
           <Menu.Menu className="right-menu" position="right">
-            <Menu.Item className="right-content">
+            {/* <Menu.Item className="right-content">
               <div
                 className={`language-vi ${language === LANGUAGES.VI ? 'active' : ''}`}
                 onClick={() => changeLanguage('vi')}
@@ -167,7 +167,16 @@ const HeaderComponent = () => {
                 className={`language-en ${language === LANGUAGES.EN ? 'active' : ''}`}
                 onClick={() => changeLanguage('en')}
               >EN</div>
-            </Menu.Item>
+            </Menu.Item> */}
+              <Menu.Item className="right-content">
+  <Dropdown text={language === LANGUAGES.VI ? (<><Icon className="iconLanguage" size="large" name="globe" />VI</>) : (<><Icon className="iconLanguage" size="large" name="globe" />EN</>)}>
+    <Dropdown.Menu>
+    <Dropdown.Item text='Tiếng Việt' onClick={() => changeLanguage('vi')} />
+      <Dropdown.Item text='English' onClick={() => changeLanguage('en')} />
+    </Dropdown.Menu>
+  </Dropdown>
+</Menu.Item>
+            
             <Menu.Item className="MenuItemImage">
               <Image className="imageAvatar" src={bookImage} avatar />
             </Menu.Item>
