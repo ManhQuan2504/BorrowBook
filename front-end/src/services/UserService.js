@@ -1,7 +1,9 @@
 import axios from "axios"
 
 
-export const BASE_URL = 'api/v1'
+
+export const BASE_URL = 'api/v1/' 
+
 export const apiService = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -12,7 +14,7 @@ export const apiService = axios.create({
 export const signInAccount = async (email, password) =>
   await axios
     .post(
-      BASE_URL + '/user/sign-in',
+      BASE_URL + 'user/sign-in',
       {
         email,
         password,
@@ -25,7 +27,7 @@ export const signInAccount = async (email, password) =>
 
 export const detailUserLogin = async (id, accessToken) => {
   return await apiService
-    .get(`/user/get-detail-user/${id}`, {
+    .get(`user/get-detail-user/${id}`, {
       headers: {
         token: `Bearer ${accessToken}`,
       },
@@ -38,7 +40,7 @@ export const updatePassword1 = async (access_token, newPassword, confirmNewPassw
   try {
 
     const { data } = await axios.put(
-      BASE_URL + `/user/updatePassword`,
+      BASE_URL + `user/updatePassword`,
       {
         newPassword
         , confirmNewPassword
@@ -59,7 +61,7 @@ export const updatePassword1 = async (access_token, newPassword, confirmNewPassw
 export const updatePassword = async (access_token, newPassword, confirmNewPassword, customHeaders = {}) =>
   await axios
     .put(
-      BASE_URL + '/user/updatePassword',
+      BASE_URL + 'user/updatePassword',
       {
         newPassword,
         confirmNewPassword,
@@ -78,7 +80,7 @@ export const updateUserInfo = async (access_token, id, dataEdit) => {
   try {
     console.log('dataEdit', dataEdit)
     const { data } = await axios.put(
-      BASE_URL + `/user/update-user/${id}`,
+      BASE_URL + `user/update-user/${id}`,
       {
         dataEdit
       },
@@ -99,7 +101,7 @@ export const deleteUser = async (access_token, id) => {
   try {
 
     const { data } = await axios.delete(
-      BASE_URL + `/user/delete-user/${id}`,
+      BASE_URL + `user/delete-user/${id}`,
 
       {
         headers: {
@@ -117,7 +119,7 @@ export const deleteUser = async (access_token, id) => {
 export const deleteManyUser = async (access_token, userIds) => {
   try {
     const res = await axios.delete(
-      BASE_URL + `/user/delete-many-user`,
+      BASE_URL + `user/delete-many-user`,
       {
         headers: {
           token: `Bearer ${access_token}`,
@@ -137,7 +139,7 @@ export const deleteManyUser = async (access_token, userIds) => {
 
 export const signUpAccount = async (name, email, password, phone, address, language) =>
   await axios
-    .post(BASE_URL + '/user/sign-up', {
+    .post(BASE_URL + 'user/sign-up', {
       name,
       email,
       password,
@@ -151,7 +153,7 @@ export const signUpAccount = async (name, email, password, phone, address, langu
 
 export const getAllUser = async (accessToken, limit, page) => {
   return await apiService
-    .get(`/user/get-all-user`, {
+    .get(`user/get-all-user`, {
       headers: {
         token: `Bearer ${accessToken}`,
       },
@@ -167,7 +169,7 @@ export const getAllUser = async (accessToken, limit, page) => {
 export const getDetailUser = async ({ accessToken, idUser }) => {
   console.log();
   return await apiService
-    .get(`/user/get-detail-user/${idUser}`, {
+    .get(`user/get-detail-user/${idUser}`, {
       headers: {
         token: `Bearer ${accessToken}`,
       },
@@ -179,7 +181,7 @@ export const getDetailUser = async ({ accessToken, idUser }) => {
 export const getAllUserSearch = async (accessToken, limit, page, type, key) => {
   console.log(type, key);
   return await apiService
-    .get(`/user/get-all-user-search`, {
+    .get(`user/get-all-user-search`, {
       headers: {
         token: `Bearer ${accessToken}`,
       },
@@ -196,7 +198,7 @@ export const getAllUserSearch = async (accessToken, limit, page, type, key) => {
 
 
 export const refreshToken = async (refreshToken) => {
-  const res = await axios.post(`http://localhost:3001/api/user/refresh-token`, {}, {
+  const res = await axios.post(`http://localhost:3001/apiuser/refresh-token`, {}, {
     headers: {
       token: `Bearer ${refreshToken}`,
     }
@@ -207,7 +209,7 @@ export const refreshToken = async (refreshToken) => {
 export const logoutAccount = async (accessToken) => {
   return await apiService
     .post(
-      '/user/log-out',
+      'user/log-out',
       {},
       {
         headers: {
@@ -221,7 +223,7 @@ export const logoutAccount = async (accessToken) => {
 
 export const exportExcel = async (accessToken) => {
   try {
-    const response = await apiService.get(`/user/export`, {
+    const response = await apiService.get(`user/export`, {
       headers: {
         token: `Bearer ${accessToken}`,
       },

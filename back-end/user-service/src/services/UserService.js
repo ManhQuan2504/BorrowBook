@@ -200,12 +200,14 @@ const getAllUser = (limit, page) => {
         try {
 
             const totalUser = await User.count();
-
+console.log('totalUser', totalUser)
             let allUser = [];
 
             if (!limit) {
                 allUser = await User.find()
                     .select('-image -password');
+console.log('allUser no limit', allUser)
+
 
             } else {
 
@@ -214,6 +216,9 @@ const getAllUser = (limit, page) => {
                 allUser = await User.find()
                     .limit(limit)
                     .skip(skip)
+
+console.log('allUser', allUser)
+
             }
 
             resolve({

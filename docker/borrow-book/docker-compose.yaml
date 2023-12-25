@@ -10,6 +10,7 @@ services:
       - '3308:3306'
     expose:
       - '3306'
+    
 
   backend-book-service:
     build:
@@ -43,7 +44,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - 7778:7777
+      - 7779:7777
 
   backend-user-service:
     build:
@@ -54,6 +55,9 @@ services:
       - 3333:3333
     expose:
       - 3333
+   
+    
+    
 
   nginx:
     build:
