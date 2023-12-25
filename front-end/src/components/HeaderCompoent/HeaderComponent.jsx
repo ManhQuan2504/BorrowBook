@@ -10,7 +10,7 @@ import { LANGUAGES } from "../../contants/path";
 import bookImage from "../../assets/images/ngonha.png";
 import { Link, useNavigate } from "react-router-dom";
 import * as UserService from '../../services/UserService'
-import { detailUser,setLanguage } from "../../redux/borrowBookSlice";
+import { detailUser, setLanguage } from "../../redux/borrowBookSlice";
 import { PATHS } from "../../contants/path";
 import languageDataEn from '../../translations/en.json';
 import languageDataVi from '../../translations/vi.json';
@@ -42,7 +42,7 @@ const HeaderComponent = () => {
     }
   }, []);
   useEffect(() => {
-   
+
     if (window.location.pathname === '/') {
       setActiveItem('tms');
       localStorage.setItem('activeItem', 'tms');
@@ -117,37 +117,41 @@ const HeaderComponent = () => {
       handleLogOut();
     }
   };
- 
+
 
   return (
     <div>
-      <Segment className="headerComponent_container" inverted color="blue">
-        <Menu className="Menu-border" inverted pointing secondary>
+      <Segment className="headerComponent_container" inverted>
+        <Menu className="Menu-border" inverted pointing secondary color="blue">
           <Menu.Item
+            className="menuItem tms"
             name="tms"
             active={activeItem === "tms"}
-
           >
             <Link className="LinkTMS" onClick={() => handleItemClick("tms")} to={PATHS.HOME}>TMS</Link>
           </Menu.Item>
           <Menu.Item
+
           className="menuItem"
+
             name="User Management"
             active={activeItem === "user"}
-
           >
             <Link onClick={() => handleItemClick("user")} to={PATHS.USER}>{language === LANGUAGES.VI ? languageDataVi.header.userManagement : languageDataEn.header.userManagement}</Link>
           </Menu.Item>
           <Menu.Item
+
           className="menuItem"
+
             name="Book Management"
             active={activeItem === "book"}
-
           >
             <Link onClick={() => handleItemClick("book")} to={PATHS.BOOK}>{language === LANGUAGES.VI ? languageDataVi.header.bookManagement : languageDataEn.header.bookManagement}</Link>
           </Menu.Item>
           <Menu.Item
+
           className="menuItem"
+
             name="Book Borrow Management"
             active={activeItem === "borrow"}
 
@@ -156,7 +160,9 @@ const HeaderComponent = () => {
             <Link onClick={() => handleItemClick("borrow")} to={PATHS.BORROW}>{language === LANGUAGES.VI ? languageDataVi.header.bookBorrowManagement : languageDataEn.header.bookBorrowManagement}</Link>
           </Menu.Item>
 
+
         
+
           <Menu.Menu className="right-menu" position="right">
             {/* <Menu.Item className="right-content">
               <div
@@ -167,6 +173,7 @@ const HeaderComponent = () => {
                 className={`language-en ${language === LANGUAGES.EN ? 'active' : ''}`}
                 onClick={() => changeLanguage('en')}
               >EN</div>
+
             </Menu.Item> */}
               <Menu.Item className="right-content">
   <Dropdown text={language === LANGUAGES.VI ? (<><Icon className="iconLanguage" size="large" name="globe" />VI</>) : (<><Icon className="iconLanguage" size="large" name="globe" />EN</>)}>
@@ -177,9 +184,11 @@ const HeaderComponent = () => {
   </Dropdown>
 </Menu.Item>
             
+
             <Menu.Item className="MenuItemImage">
               <Image className="imageAvatar" src={bookImage} avatar />
             </Menu.Item>
+
             <Menu.Item className="dropdown">
               <Dropdown text={currentUser?.name || 'user'}>
                 <Dropdown.Menu>
