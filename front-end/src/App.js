@@ -11,7 +11,7 @@ function App() {
           <Routes>
             {routes.map((route) => {
               const Page = route.page;
-              // const isCheckAuth =  !route.isPrivated || user.isAdmin; // Kiểm tra route có yêu cầu là admin và người dùng có quyền admin hay không
+              // const isCheckAuth =  !route.isPrivated || user.isAdmin; // Kiểm tra route có yêu cầu là admin và khách hàng có quyền admin hay không
               const Layout = route.isShowHeader ? DefaultComponent : Fragment;
               
               return (

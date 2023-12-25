@@ -1,6 +1,6 @@
 {
     "header":{
-        "userManagement":" User Management",
+        "userManagement":" Customer Management",
         "bookManagement":"Book Management",
         "bookBorrowManagement":"Book Borrow Management",
         "myProfile":"My Profile",
@@ -10,8 +10,8 @@
   ,
     "content":{
         "userManagement":{
-            "userManagementTitle":"User Management",
-            "buttonAddUser":"Add User",
+            "userManagementTitle":"Customer Management",
+            "buttonAddUser":"Add Customer",
             "search":"Search",
             "stt":"No",
             "name":"Name",
@@ -28,7 +28,7 @@
             "password":"Password",
             "save":"Save",
             "cancel":"Cancel",
-            "editUser":"Edit User",
+            "editUser":"Edit Customer",
             "confirmUserDeletion":"Confirm user deletion",
             "areYouSure":"Are you sure you want to delete this user?",
             "confirm":"Confirm"
@@ -59,7 +59,7 @@
             "status":"Status",
             "action":"Action",
             "recordPage":"record/page",
-            "searchUser":"Search User",
+            "searchUser":"Search Customer",
             "searchBook":"Search Book",
             "returnBook":"Return Book",
             "areYouSure":"Are you sure you want to return this book?",
@@ -73,7 +73,7 @@
 
         },
         "profile":{
-            "userName":"User Name",
+            "userName":"Customer Name",
             "fullName":"Full Name",
             "email":"Email",
             "phone":"Phone",

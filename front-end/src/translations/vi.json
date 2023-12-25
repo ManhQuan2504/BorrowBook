@@ -1,6 +1,6 @@
 {
     "header":{
-        "userManagement":"Quản Lý Người Dùng",
+        "userManagement":"Quản Lý Khách Hàng",
         "bookManagement":"Quản Lý Sách",
         "bookBorrowManagement":"Quản Lý Mượn Sách",
         "myProfile":"Thông tin cá nhân",
@@ -10,8 +10,8 @@
   ,
     "content":{
         "userManagement":{
-            "userManagementTitle":"Quản Lý Người Dùng",
-            "buttonAddUser":"Thêm người dùng",
+            "userManagementTitle":"Quản Lý Khách Hàng",
+            "buttonAddUser":"Thêm khách hàng",
             "search":"Tìm kiếm",
             "stt":"STT",
             "name":"Tên",
@@ -24,13 +24,13 @@
             "records":"bản ghi",
             "recordPage":"bản ghi/trang",
             "admin":"quản trị",
-            "user":"người dùng",
+            "user":"khách hàng",
             "password":"Mật khẩu",
             "save":"Lưu",
             "cancel":"Hủy",
-            "editUser":"Sửa Người Dùng",
-            "confirmUserDeletion":"Xác nhận xóa người dùng",
-            "areYouSure":"Bạn có chắc chắn muốn xóa người dùng này?",
+            "editUser":"Sửa Khách Hàng",
+            "confirmUserDeletion":"Xác nhận xóa khách hàng",
+            "areYouSure":"Bạn có chắc chắn muốn xóa khách hàng này?",
             "confirm":"Xác Nhận"
            
            
@@ -63,7 +63,7 @@
             "status":"Trạng thái",
             "action":"Hành động",
             "recordPage":"bản ghi/trang",
-            "searchUser":"Tìm kiếm người dùng",
+            "searchUser":"Tìm kiếm khách hàng",
             "searchBook":"Tìm kiếm sách",
             "returnBook":"Trả sách",
             "areYouSure":"Bạn có chắc chắn muốn trả sách này?",
@@ -75,8 +75,8 @@
             "search":"Tìm kiếm"
         },
         "profile":{
-            "userName":"Tên người dùng",
-            "fullName":"Tên người dùng",
+            "userName":"Tên khách hàng",
+            "fullName":"Tên khách hàng",
             "email":"Email",
             "phone":"Số điện thoại",
             "address":"Địa chỉ",
