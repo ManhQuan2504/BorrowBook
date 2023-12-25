@@ -1,32 +1,32 @@
 version: '3.8'
 services:
-  database-mysql:
-    image: mysql:8.0
-    restart: always
-    environment:
-      - MYSQL_DATABASE=microservices
-      - MYSQL_ROOT_PASSWORD=root
-    ports:
-      - '3308:3306'
-    expose:
-      - '3306'
+  # database-mysql:
+  #   image: mysql:8.0
+  #   restart: always
+  #   environment:
+  #     - MYSQL_DATABASE=microservices
+  #     - MYSQL_ROOT_PASSWORD=root
+  #   ports:
+  #     - '3308:3306'
+  #   expose:
+  #     - '3306'
     
 
-  backend-book-service:
-    build:
-      context: ../../back-end/book-service
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    environment:
-      - DB_PORT=3306
-      - DB_HOST=database-mysql
-      # - DB_HOST=host.docker.internal
-    ports:
-      - 5556:5555
-    expose:
-      - 5555
-    depends_on:
-      - database-mysql
+  # backend-book-service:
+  #   build:
+  #     context: ../../back-end/book-service
+  #     dockerfile: Dockerfile
+  #   restart: unless-stopped
+  #   environment:
+  #     - DB_PORT=3306
+  #     - DB_HOST=database-mysql
+  #     # - DB_HOST=host.docker.internal
+  #   ports:
+  #     - 5556:5555
+  #   expose:
+  #     - 5555
+  #   depends_on:
+  #     - database-mysql
 
   backend-borrow-service:
     build:

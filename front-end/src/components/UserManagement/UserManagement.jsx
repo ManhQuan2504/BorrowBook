@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import languageDataEn from "../../translations/en.json";
 import languageDataVi from "../../translations/vi.json";
 import { LANGUAGES } from "../../contants/path";
+import 'typeface-roboto';
 import * as BorrowBookService from '../../services/BorrowBookService';
 
 const UserManagement = () => {

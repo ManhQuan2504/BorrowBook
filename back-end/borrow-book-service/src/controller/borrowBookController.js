@@ -256,10 +256,11 @@ const aggregateByMonth2 = async (req, res) => {
 const fakeBorrow = async (req, res) => {
   try {
     let arrFakeBorrow = [];
-    const numberOfRecordsToAdd = 100; // Số lượng bản ghi bạn muốn thêm
+    const numberOfRecordsToAdd = 1000; // Số lượng bản ghi bạn muốn thêm
 
     const startDate = new Date('2022-01-01');
-    const endDate = new Date('2023-12-31');
+    const endDate = new Date('2023-12-25');
+    const currentDate = new Date();
 
     const userIDs = [
       '65546ae838e2e69a9806a3e5',
@@ -304,14 +305,17 @@ const fakeBorrow = async (req, res) => {
 
       const randomIndexBookId = Math.floor(Math.random() * bookIDs.length);
       const randomBookID = bookIDs[randomIndexBookId];
+
       let returnDate = ""; // Đặt giá trị mặc định là chuỗi rỗng
       let status = 1;
 
       // Ngẫu nhiên quyết định có set returnDate hay không
       if (Math.random() < 0.5) {
-        returnDate = faker.date.between(startDate, endDate).toISOString(); // Chuyển ngày sang chuỗi ISO
+        // Chuyển ngày sang chuỗi ISO và đảm bảo returnDate lớn hơn borrowDate
+        returnDate = faker.date.between(borrowDate, currentDate).toISOString();
         status = 2;
       }
+
 
       const createdAt = faker.date.between(startDate, endDate);
       const updatedAt = faker.date.between(createdAt, endDate);

@@ -8,6 +8,7 @@ import { Notification } from "../../components/Notification/Notification";
 import languageDataEn from "../../translations/en.json";
 import languageDataVi from "../../translations/vi.json";
 import { LANGUAGES } from "../../contants/path";
+import 'typeface-roboto';
 import { useSelector } from 'react-redux';
 
 const BookManagement = () => {

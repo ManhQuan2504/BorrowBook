@@ -27,6 +27,6 @@ router.delete('/deletemany/:id', borrowBookController.deleteManyBorrowBook);
 
 router.get('/export', borrowBookController.exportExcel);
 
-router.get('/faker', borrowBookController.fakeBorrow);
+router.get('/faker', borrowBookController.fakeBorrow); //http://localhost:1234/api/v1/borrowbook/faker
 
 export default router;

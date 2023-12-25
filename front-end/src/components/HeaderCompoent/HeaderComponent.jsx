@@ -14,6 +14,9 @@ import { detailUser,setLanguage } from "../../redux/borrowBookSlice";
 import { PATHS } from "../../contants/path";
 import languageDataEn from '../../translations/en.json';
 import languageDataVi from '../../translations/vi.json';
+// Import font Roboto
+import 'typeface-roboto';
+
 
 
 const HeaderComponent = () => {
@@ -122,7 +125,7 @@ const HeaderComponent = () => {
   return (
     <div>
       <Segment className="headerComponent_container" inverted color="blue">
-        <Menu className="Menu-border" inverted pointing secondary>
+        <Menu className="Menu-border" inverted pointing secondary >
           <Menu.Item
             name="tms"
             active={activeItem === "tms"}

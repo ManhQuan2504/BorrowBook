@@ -22,6 +22,7 @@ import languageDataEn from "../../translations/en.json";
 import languageDataVi from "../../translations/vi.json";
 import { LANGUAGES } from "../../contants/path";
 import moment from "moment";
+import 'typeface-roboto';
 import { useSelector } from "react-redux";
 
 const getStatusText = (status) => {

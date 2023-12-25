@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import './style.scss';
 import * as borrowBookService from '../../services/BorrowBookService.js';
+import 'typeface-roboto';
 import { Dropdown } from 'semantic-ui-react';
 
 const HomePage = () => {
@@ -77,53 +78,57 @@ const HomePage = () => {
     <div className='CombinedChartsPage'>
       {/* Biểu đồ Bar */}
       <div className='ChartContainer'>
-      <div className='wrapSelect'>
+        <div className='wrapSelect'>
 
-        <select
-          style={{
-            fontSize: "16px",
-            padding: "8px",
-            marginRight: "10px"
-          }}
-          onChange={(e) => setTypeVertical(JSON.parse(e.target.value))}
-          value={JSON.stringify(typeVertical)}
-        >
-          <option value={JSON.stringify([1, 2])}>Tổng đơn</option>
-          <option value={JSON.stringify([1])}>Đơn mượn</option>
-          <option value={JSON.stringify([2])}>Đơn trả</option>
-        </select>
-        <label style={{
-          fontSize: "16px",
-          padding: "8px",
-        }}>Tháng</label>
-        <Dropdown
-          placeholder="Select Month"
-          value={publishMonth}
-          selection
-          options={months}
-          onChange={(_, data) => setPublishMonth(data.value)}
-          style={{
-            marginRight: "10px"
-          }}
-        />
+          <select
+            style={{
+              fontSize: "16px",
+              padding: "8px",
+              marginRight: "10px",
+              fontFamily: 'Roboto, sans-serif !important'
+            }}
 
-        <label
-          style={{
+            onChange={(e) => setTypeVertical(JSON.parse(e.target.value))}
+            value={JSON.stringify(typeVertical)}
+          >
+            <option value={JSON.stringify([1, 2])}>Tổng đơn</option>
+            <option value={JSON.stringify([1])}>Đơn mượn</option>
+            <option value={JSON.stringify([2])}>Đơn trả</option>
+          </select>
+          <label style={{
             fontSize: "16px",
+            fontFamily: 'Roboto, sans-serif !important',
             padding: "8px",
-          }}>Năm</label>
-        <Dropdown
-          placeholder="Select Year"
-          value={publishYear}
-          selection
-          options={years}
-          onChange={(_, data) => setPublishYear(data.value)}
-        />
-      </div>
+          }}>Tháng</label>
+          <Dropdown
+            placeholder="Select Month"
+            value={publishMonth}
+            selection
+            options={months}
+            onChange={(_, data) => setPublishMonth(data.value)}
+            style={{
+              marginRight: "10px"
+            }}
+          />
+
+          <label
+            style={{
+              fontSize: "16px",
+              fontFamily: 'Roboto, sans-serif !important',
+              padding: "8px",
+            }}>Năm</label>
+          <Dropdown
+            placeholder="Select Year"
+            value={publishYear}
+            selection
+            options={years}
+            onChange={(_, data) => setPublishYear(data.value)}
+          />
+        </div>
 
         {barData ? <Bar className='bar' data={barData} options={barOptions} /> : <div>No data available</div>}
       </div>
-    </div>
+    </div >
   );
 };
 
