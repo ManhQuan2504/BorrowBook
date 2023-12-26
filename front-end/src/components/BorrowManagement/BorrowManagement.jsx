@@ -398,8 +398,6 @@ const BorrowManagement = () => {
     sheetData.getCell(`E${rowIndex}`).value = formattedDueDate? formattedDueDate : "";
     sheetData.getCell(`F${rowIndex}`).value = formattedReturnDate? formattedReturnDate : "";
     sheetData.getCell(`G${rowIndex}`).value = statusText? statusText : "";
-
-
   }
 
   const buffer = await workbook.xlsx.writeBuffer();
