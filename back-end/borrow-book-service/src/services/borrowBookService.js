@@ -130,32 +130,35 @@ const getBorrowBook = async ({ perPage, page }) => {
 };
 const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, page, perPage }) => {
 
+
+
+
       try {
     
     let matchQuery = {};
     let dataSearch = [];
     let dataSearchLength = [];
     let typeSort = {};
-    if (startDate=='' || endDate==undefined || typeDate==undefined) {
-      
+    if (!startDate || !endDate ) {
       dataSearch = await BorrowBookModel
         .find()
-        .limit(perPage)
-        .skip((page - 1) * perPage)
         .sort({ borrowDate: -1 })
+        .skip((Number(page) - 1) * Number(perPage))
+        .limit(Number(perPage))
 
       dataSearchLength = await BorrowBookModel
         .find()
     } else {
+
       matchQuery[typeDate] = {
         $gte: new Date(startDate),
         $lte: new Date(endDate),
       };
-      console.log("🚀 ~ file: borrowBookService.js:155 ~ searchBorrowBookByDate ~ matchQuery:", matchQuery)
 
       typeSort[typeDate] = -1;
 
-      if (!page || !perPage) {
+      if (page==''|| perPage=='') {
+
         dataSearch = await BorrowBookModel.aggregate([
           {
             $match: matchQuery,
@@ -173,6 +176,7 @@ const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, page, perP
           },
         ]);
       } else {
+
         dataSearch = await BorrowBookModel.aggregate([
           {
             $match: matchQuery,
@@ -181,10 +185,10 @@ const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, page, perP
             $sort: typeSort,
           },
           {
-            $skip: (page - 1) * perPage,
+            $skip: (Number(page) - 1) * Number(perPage),
           },
           {
-            $limit: perPage,
+            $limit: Number(perPage),
           },
         ]);
         dataSearchLength = await BorrowBookModel.aggregate([
@@ -201,7 +205,7 @@ const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, page, perP
 
 
     const count = dataSearchLength.length;
-    const countPage = Math.ceil(count / perPage); // Sử dụng hàm Math.ceil để làm tròn lên
+    const countPage = Math.ceil(count / Number(perPage)); // Sử dụng hàm Math.ceil để làm tròn lên
     return { count, countPage, data: dataSearch };
 
   } catch (error) {

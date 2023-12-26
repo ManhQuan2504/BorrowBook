@@ -24,7 +24,9 @@ import { LANGUAGES } from "../../contants/path";
 import moment from "moment";
 import 'typeface-roboto';
 import { useSelector } from "react-redux";
-
+import * as ExcelJS from 'exceljs';
+import FileSaver from 'file-saver';
+import { format } from 'date-fns';
 const getStatusText = (status) => {
   switch (status) {
     case 1:
@@ -71,9 +73,7 @@ const BorrowManagement = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [openModalSearch, setOpenModalSearch] = useState(false);
   const [startDate, setStartDate] = useState("");
-  console.log("🚀 ~ file: BorrowManagement.jsx:74 ~ BorrowManagement ~ startDate:", startDate)
   const [endDate, setEndDate] = useState("");
-  console.log("🚀 ~ file: BorrowManagement.jsx:76 ~ BorrowManagement ~ endDate:", endDate)
 
   const [errStartDate, setErrStartDate] = useState("");
   const [errEndDate, setErrEndDate] = useState("");
@@ -327,12 +327,89 @@ const BorrowManagement = () => {
 
   const handleExportExcel = async () => {
     try {
-      const access_token = localStorage.getItem("access_token");
-      await BorrowBook.exportExcel(access_token);
+      // const access_token = localStorage.getItem("access_token");
+      const dataBorrow = await BorrowBook.searchBorrowBookByDate({
+        page: '',
+        perPage: '',
+        typeDate,
+        startDate,
+        endDate,
+      });
+  
+      const dataList = Array.from(dataBorrow.data.data);
+  
+      // Lấy thông tin user và sách
+      const userData = {}; // Tạo một đối tượng để lưu thông tin user
+      const bookData = {}; // Tạo một đối tượng để lưu thông tin sách
+  
+      // Lấy thông tin user từ dataAllUser
+      dataAllUser.forEach(user => {
+        userData[user._id] = user.name;
+      });
+  
+      // Lấy thông tin sách từ dataAllBook
+      dataAllBook.forEach(book => {
+        bookData[book.id] = book.title;
+      });
+  
+      // Thay thế idUser và idBook trong dataList bằng tên user và tên sách
+      dataList.forEach(item => {
+        item.userName = userData[item.idUser] || 'Unknown User';
+        item.bookTitle = bookData[item.idBook] || 'Unknown Book';
+      });
+  
+      console.log('Updated dataList:', dataList);
+  
+  const resp = await fetch(new Request("/files/templatesExcelBorrow.xlsx"));
+  const buff = resp.arrayBuffer();
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(buff);
+  const sheetData = workbook.getWorksheet(1);
+
+  let rowIndex = 1;
+
+  for (const item of dataList) {
+    const {
+      userName, bookTitle,
+      borrowDate, dueDate,returnDate,status
+      
+    } = item;
+  let formattedReturnDate = '';
+    const formattedBorrowDate = moment(borrowDate).format('YYYY-MM-DD HH:mm:ss');
+    const formattedDueDate = moment(dueDate).format('YYYY-MM-DD');
+    if(returnDate == null){
+       formattedReturnDate ='----';
+    }else{
+      formattedReturnDate = moment(returnDate).format('YYYY-MM-DD HH:mm:ss');
+
+    }
+    let statusText = '';
+  if (status === 1) {
+    statusText = 'Chưa trả';
+  } else if (status === 2) {
+    statusText = 'Đã trả';
+  }
+  
+    rowIndex++;
+    sheetData.getCell(`A${rowIndex}`).value = rowIndex-1;
+    sheetData.getCell(`B${rowIndex}`).value = userName ? userName : "";
+    sheetData.getCell(`C${rowIndex}`).value = bookTitle? bookTitle : "";
+    sheetData.getCell(`D${rowIndex}`).value = formattedBorrowDate? formattedBorrowDate : "";
+    sheetData.getCell(`E${rowIndex}`).value = formattedDueDate? formattedDueDate : "";
+    sheetData.getCell(`F${rowIndex}`).value = formattedReturnDate? formattedReturnDate : "";
+    sheetData.getCell(`G${rowIndex}`).value = statusText? statusText : "";
+
+
+  }
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: "applicationi/xlsx" });
+  FileSaver.saveAs(blob, `BorrowList-${format(new Date(), "yyMMddHHmm")}.xlsx`);
+
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
   const handleRefresh = async () => {
     try {

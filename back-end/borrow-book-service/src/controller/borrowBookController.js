@@ -197,19 +197,20 @@ const exportExcel = async (req, res) => {
 
 const searchBorrowBookByDate = async (req, res) => {
   try {
-    let startDate = req.query.startdate;
-    let endDate = req.query.enddate;
-    let typeDate = req.query.typedate;
-    let perPage = parseInt(req.query.perpage) || 3;
-    // perPage = Math.max(perPage, 3);
-    let page = parseInt(req.query.page) || 1;
-    page = Math.max(page, 1);
+    // let startDate = req.query.startdate;
+    // let endDate = req.query.enddate;
+    // let typeDate = req.query.typedate;
+    // let perPage = parseInt(req.query.perpage) || 3;
+    // // perPage = Math.max(perPage, 3);
+    // let page = parseInt(req.query.page) || 1;
+    // page = Math.max(page, 1);
 
     // if (!startDate || !endDate || !typeDate) {
     //   throw new Error("Invalid date range");
     // }
+    const { startdate, enddate, typedate, page,  perpage } = req.query;
 
-    const response = await borrowBookService.searchBorrowBookByDate({ startDate, endDate, typeDate, page, perPage });
+    const response = await borrowBookService.searchBorrowBookByDate({ startDate: startdate, endDate: enddate, typeDate: typedate, page, perPage: perpage  });
     return message.MESSAGE_SUCCESS(res, 'OK', response);
   } catch (error) {
     return message.MESSAGE_ERROR(res, 'ERR', error.message)
