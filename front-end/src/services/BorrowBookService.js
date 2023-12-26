@@ -14,9 +14,7 @@ export const getBorrowBooks = async ({ page, perPage }) => {
 
 export const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, page, perPage }) => {
   try {
-    console.log("S: ", typeof startDate, "---", startDate);
-    console.log("E: ", typeof endDate, "---", endDate);
-    console.log("T: ", typeDate);
+   
     const response = await AxiosSchema.get(
       BASE_URL + `borrowbook/searchbydate?startdate=${startDate}&enddate=${endDate}&typedate=${typeDate}&page=${page}&perpage=${perPage}`
     );
@@ -28,7 +26,6 @@ export const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, pag
 
 export const aggregateByMonth = async ({ getBy, month, year }) => {
   try {
-    console.log("G: ",getBy);
     const response = await AxiosSchema.get(
       BASE_URL + `borrowbook/aggregatebymonth?type=${getBy}&month=${month}&year=${year}`
     );
@@ -40,8 +37,7 @@ export const aggregateByMonth = async ({ getBy, month, year }) => {
 
 export const aggregateByMonth1 = async ({ month, year }) => {
   try {
-    console.log("M: ", typeof month, "---", month);
-    console.log("Y: ", typeof year, "---", year);
+  
     const response = await AxiosSchema.get(
       BASE_URL + `borrowbook/aggregatebymonth1?month=${month}&year=${year}`
     );
@@ -53,8 +49,7 @@ export const aggregateByMonth1 = async ({ month, year }) => {
 
 export const aggregateByMonth2 = async ({ month, year }) => {
   try {
-    console.log("M: ", typeof month, "---", month);
-    console.log("Y: ", typeof year, "---", year);
+  
     const response = await AxiosSchema.get(
       BASE_URL + `borrowbook/aggregatebymonth2?month=${month}&year=${year}`
     );
@@ -115,7 +110,6 @@ export const exportExcel = async (accessToken) => {
       },
       responseType: 'arraybuffer', // Đặt kiểu dữ liệu trả về là arraybuffer
     });
-    // console.log(response);
     const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);

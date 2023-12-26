@@ -58,7 +58,8 @@ const BorrowManagement = () => {
   const [searchUserResults, setSearchUserResults] = useState([]);
 
   const [dataAllUser, setdataAllUser] = useState([]);
-  const currentPage = 1;
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [searchBook, setSearchBook] = useState("");
   const [searchBookResults, setSearchBookResults] = useState([]);
   const [dataAllBook, setDataAllBook] = useState([]);
@@ -70,7 +71,10 @@ const BorrowManagement = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [openModalSearch, setOpenModalSearch] = useState(false);
   const [startDate, setStartDate] = useState("");
+  console.log("🚀 ~ file: BorrowManagement.jsx:74 ~ BorrowManagement ~ startDate:", startDate)
   const [endDate, setEndDate] = useState("");
+  console.log("🚀 ~ file: BorrowManagement.jsx:76 ~ BorrowManagement ~ endDate:", endDate)
+
   const [errStartDate, setErrStartDate] = useState("");
   const [errEndDate, setErrEndDate] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
@@ -92,22 +96,25 @@ const BorrowManagement = () => {
 
   const fetchData = async () => {
     try {
-      const result = await BorrowBook.getBorrowBooks({
-        page,
+      const result = await BorrowBook.searchBorrowBookByDate({
+        page: currentPage,
         perPage: recordsPerPage,
+        typeDate,
+        startDate,
+        endDate,
       });
+     
       const access_token = localStorage.getItem("access_token");
       const dataUser = await UserService.getAllUser(
         access_token,
         1000,
-        currentPage
+        1
       );
 
       const dataBook = await BookServices.getBooks({ page: 1, perPage: 1000 });
       setDataAllBook(dataBook.data.data);
       setdataAllUser(dataUser.data);
       setDatas(result.data.data);
-      console.log("setDatas: ", result.data.data, 'setdataAllUser: ', dataUser.data, 'dataBook: ', dataBook.data.data);
       setTotalPages(result.data.countPage || 1);
       setTotalRecords(result.data.count || 0);
     } catch (error) {
@@ -120,7 +127,7 @@ const BorrowManagement = () => {
 
   useEffect(() => {
     fetchData();
-  }, [page, recordsPerPage]);
+  }, [currentPage, recordsPerPage]);
 
   // Hàm mở modal add
   const handleAddBook = async () => {
@@ -165,7 +172,6 @@ const BorrowManagement = () => {
 
   const handleUserSearchChange = async (e, { value }) => {
     setSearchUser(value);
-    console.log("dataAllUser", dataAllUser);
     const filteredResults = dataAllUser.filter((user) =>
       user.name.toLowerCase().includes(value.toLowerCase())
     );
@@ -202,11 +208,10 @@ const BorrowManagement = () => {
     // Fetch data for the selected page
     // You need to implement the logic for fetching data based on the page number
     // console.log(`Fetching data for page ${page}`);
-    setPage(page);
+    setCurrentPage(page);
   };
 
   const handleUserResultSelect = (e, { result }) => {
-    console.log("result", result);
     // Access additional properties from the selected result
     if (!result) {
       setErrUsername("Please select a username");
@@ -251,8 +256,6 @@ const BorrowManagement = () => {
 
   const handleReturnbook = (id) => {
     setSelectedUserId(id);
-    console.log(id);
-    console.log(selectedUserId);
     handleOpenModalReturnBook();
   };
 
@@ -306,7 +309,6 @@ const BorrowManagement = () => {
     const hours = String(now.getHours()).padStart(2, "0");
     const minutes = String(now.getMinutes()).padStart(2, "0");
     const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
-    console.log("ID: ", selectedUserId, "   Time: ", formattedDate);
     const result = await BorrowBook.updateBorrowBooks({
       id: selectedUserId,
       returnDate: formattedDate,
@@ -393,7 +395,6 @@ const BorrowManagement = () => {
         perPage: recordsPerPage,
       });
       setDatas(result.data.data);
-      console.log("setDatas: ", result.data.data);
       setTotalPages(result.data.countPage || 1);
       setTotalRecords(result.data.count || 0);
     } catch (error) {
@@ -403,8 +404,8 @@ const BorrowManagement = () => {
       );
     }
 
-    setStartDate("");
-    setEndDate("");
+    // setStartDate("");
+    // setEndDate("");
     setTypeDate("borrowDate");
     setErrDefault();
     setOpenModalSearch(false);
@@ -830,7 +831,7 @@ const BorrowManagement = () => {
                   <Checkbox />
                 </Table.Cell>
                 <Table.Cell style={{ textAlign: "center" }} onClick={() => handleDetailBorrow(data.idUser, data.idBook)}>
-                  {(page - 1) * recordsPerPage + index + 1}
+                  {(currentPage - 1) * recordsPerPage + index + 1}
                 </Table.Cell>
 
 
@@ -1013,8 +1014,8 @@ const BorrowManagement = () => {
                   <Menu.Item
                     as="a"
                     icon
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page === 1}
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
                     size="mini"
                   >
                     <Icon name="chevron left" />
@@ -1028,14 +1029,14 @@ const BorrowManagement = () => {
                     if (
                       pageChange === 1 ||
                       pageChange === totalPages ||
-                      (pageChange >= page - 2 && pageChange <= page + 2)
+                      (pageChange >= currentPage - 2 && pageChange <= currentPage + 2)
                     ) {
                       return (
                         <Menu.Item
                           key={pageChange}
                           as="a"
                           onClick={() => handlePageChange(pageChange)}
-                          active={page === pageChange}
+                          active={currentPage === pageChange}
                           size="mini"
                         >
                           {pageChange}
@@ -1044,7 +1045,7 @@ const BorrowManagement = () => {
                     }
 
                     // Show ellipsis for omitted pages
-                    if (pageChange === page - 3 || pageChange === page + 3) {
+                    if (pageChange === currentPage - 3 || pageChange === currentPage + 3) {
                       return (
                         <Menu.Item key={pageChange} disabled size="mini">
                           ...
@@ -1058,8 +1059,8 @@ const BorrowManagement = () => {
                   <Menu.Item
                     as="a"
                     icon
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page === totalPages}
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
                     size="mini"
                   >
                     <Icon name="chevron right" />

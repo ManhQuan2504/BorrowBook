@@ -205,9 +205,9 @@ const searchBorrowBookByDate = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     page = Math.max(page, 1);
 
-    if (!startDate || !endDate || !typeDate) {
-      throw new Error("Invalid date range");
-    }
+    // if (!startDate || !endDate || !typeDate) {
+    //   throw new Error("Invalid date range");
+    // }
 
     const response = await borrowBookService.searchBorrowBookByDate({ startDate, endDate, typeDate, page, perPage });
     return message.MESSAGE_SUCCESS(res, 'OK', response);

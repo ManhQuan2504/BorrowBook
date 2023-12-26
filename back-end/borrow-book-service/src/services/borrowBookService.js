@@ -2,6 +2,97 @@ import mongoose from "mongoose";
 import BorrowBookModel from "../models/borrowBookModel.js";
 import { faker } from '@faker-js/faker';
 
+
+
+
+
+const searchBorrowBook = async ({ perPage, status, page }) => {
+  const statusValue = parseInt(status);
+
+  if (isNaN(statusValue)) {
+    return { count: 0, data: [] };
+  }
+
+  const getKeyword = {
+    $or: [
+      { status: statusValue } // Sử dụng keyword đã được chuyển đổi thành số
+    ]
+  };
+
+
+  const count = await BorrowBookModel.countDocuments(getKeyword);
+  const data = await BorrowBookModel
+    .find(getKeyword)
+    .limit(perPage)
+    .skip((page - 1) * perPage);
+
+  if (count === 0 || data.length === 0) {
+    throw new Error("Không tìm thấy sách");
+  }
+
+  const result = { count, data };
+  return result;
+};
+
+// const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, page, perPage }) => {
+//   try {
+//     let matchQuery = {};
+//     matchQuery[typeDate] = {
+//       $gte: new Date(startDate),
+//       $lte: new Date(endDate),
+//     };
+
+//     let typeSort = {};
+//     typeSort[typeDate];
+
+//     const data = await BorrowBookModel.aggregate([
+//       {
+//         $match: matchQuery,
+//       },
+//     ])
+//       .sort({ typeSort: -1 })
+//       .skip((page - 1) * perPage)
+//       .limit(perPage);
+
+//     const count = data.length;
+
+//     if (data.length > 0) {
+//       return { count, data };
+//     } else {
+//       throw new Error("No records found");
+//     }
+//   } catch (error) {
+//     throw new Error(`Error searching for borrow books: ${error.message}`);
+//   }
+
+//   // try {
+//   //   const data = await BorrowBookModel.aggregate([
+//   //     {
+//   //       $match: {
+//   //         borrowDate: {
+//   //           $gte: new Date(startDate),
+//   //           $lte: new Date(endDate),
+//   //         },
+//   //       },
+//   //     },
+//   //   ])
+//   //     .sort({ borrowDate: -1 })
+//   //     .skip((page - 1) * perPage)
+//   //     .limit(perPage);
+
+//   //   const count = data.length;
+
+//   //   // Check if there is any data returned
+//   //   if (data.length > 0) {
+//   //     return { count, data };
+//   //   } else {
+//   //     throw new Error("No records found");
+//   //   }
+//   // } catch (error) {
+//   //   throw new Error(`Error searching for borrow books: ${error.message}`);
+//   // }
+// };
+
 const getBorrowBook = async ({ perPage, page }) => {
   try {
     const count = await BorrowBookModel.countDocuments();
@@ -37,102 +128,91 @@ const getBorrowBook = async ({ perPage, page }) => {
     throw error;
   }
 };
-
-
-
-const searchBorrowBook = async ({ perPage, status, page }) => {
-  const statusValue = parseInt(status);
-  console.log('key ', status);
-
-  if (isNaN(statusValue)) {
-    return { count: 0, data: [] };
-  }
-
-  const getKeyword = {
-    $or: [
-      { status: statusValue } // Sử dụng keyword đã được chuyển đổi thành số
-    ]
-  };
-
-
-  const count = await BorrowBookModel.countDocuments(getKeyword);
-  const data = await BorrowBookModel
-    .find(getKeyword)
-    .limit(perPage)
-    .skip((page - 1) * perPage);
-
-  if (count === 0 || data.length === 0) {
-    throw new Error("Không tìm thấy sách");
-  }
-
-  const result = { count, data };
-  return result;
-};
-
 const searchBorrowBookByDate = async ({ startDate, endDate, typeDate, page, perPage }) => {
-  try {
+
+      try {
+    
     let matchQuery = {};
-    matchQuery[typeDate] = {
-      $gte: new Date(startDate),
-      $lte: new Date(endDate),
-    };
-
+    let dataSearch = [];
+    let dataSearchLength = [];
     let typeSort = {};
-    typeSort[typeDate];
+    if (startDate=='' || endDate==undefined || typeDate==undefined) {
+      
+      dataSearch = await BorrowBookModel
+        .find()
+        .limit(perPage)
+        .skip((page - 1) * perPage)
+        .sort({ borrowDate: -1 })
 
-    const data = await BorrowBookModel.aggregate([
-      {
-        $match: matchQuery,
-      },
-    ])
-      .sort({ typeSort: -1 })
-      .skip((page - 1) * perPage)
-      .limit(perPage);
-
-    const count = data.length;
-
-    if (data.length > 0) {
-      return { count, data };
+      dataSearchLength = await BorrowBookModel
+        .find()
     } else {
-      throw new Error("No records found");
+      matchQuery[typeDate] = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
+      console.log("🚀 ~ file: borrowBookService.js:155 ~ searchBorrowBookByDate ~ matchQuery:", matchQuery)
+
+      typeSort[typeDate] = -1;
+
+      if (!page || !perPage) {
+        dataSearch = await BorrowBookModel.aggregate([
+          {
+            $match: matchQuery,
+          },
+          {
+            $sort: typeSort, // Sắp xếp theo typeSort giảm dần (-1)
+          },
+        ]);
+        dataSearchLength = await BorrowBookModel.aggregate([
+          {
+            $match: matchQuery,
+          },
+          {
+            $sort: typeSort, // Sắp xếp theo typeSort giảm dần (-1)
+          },
+        ]);
+      } else {
+        dataSearch = await BorrowBookModel.aggregate([
+          {
+            $match: matchQuery,
+          },
+          {
+            $sort: typeSort,
+          },
+          {
+            $skip: (page - 1) * perPage,
+          },
+          {
+            $limit: perPage,
+          },
+        ]);
+        dataSearchLength = await BorrowBookModel.aggregate([
+          {
+            $match: matchQuery,
+          },
+          {
+            $sort: typeSort,
+          }
+
+        ]);
+      }
     }
+
+
+    const count = dataSearchLength.length;
+    const countPage = Math.ceil(count / perPage); // Sử dụng hàm Math.ceil để làm tròn lên
+    return { count, countPage, data: dataSearch };
+
   } catch (error) {
     throw new Error(`Error searching for borrow books: ${error.message}`);
   }
-
-  // try {
-  //   const data = await BorrowBookModel.aggregate([
-  //     {
-  //       $match: {
-  //         borrowDate: {
-  //           $gte: new Date(startDate),
-  //           $lte: new Date(endDate),
-  //         },
-  //       },
-  //     },
-  //   ])
-  //     .sort({ borrowDate: -1 })
-  //     .skip((page - 1) * perPage)
-  //     .limit(perPage);
-
-  //   const count = data.length;
-
-  //   // Check if there is any data returned
-  //   if (data.length > 0) {
-  //     return { count, data };
-  //   } else {
-  //     throw new Error("No records found");
-  //   }
-  // } catch (error) {
-  //   throw new Error(`Error searching for borrow books: ${error.message}`);
-  // }
 };
 
 const aggregateByMonth = async ({ getBy, month, year }) => {
   try {
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0);
-    console.log(startDate, "----", endDate);
 
     // Parse mảng JSON từ getBy
     const parsedGetBy = JSON.parse(getBy);
@@ -174,7 +254,6 @@ const aggregateByMonth1 = async ({ month, year }) => {
   try {
     const startDate = new Date(year, month - 1, 1); // month - 1 vì tháng trong JavaScript bắt đầu từ 0
     const endDate = new Date(year, month, 0);
-    console.log(startDate, "----", endDate);
     const data = await BorrowBookModel.aggregate([
       {
         $match: {
@@ -209,7 +288,6 @@ const aggregateByMonth2 = async ({ month, year }) => {
   try {
     const startDate = new Date(year, month - 1, 1); // month - 1 vì tháng trong JavaScript bắt đầu từ 0
     const endDate = new Date(year, month, 0);
-    console.log(startDate, "----", endDate);
     const data = await BorrowBookModel.aggregate([
       {
         $match: {
