@@ -232,7 +232,7 @@ export const exportExcel = async (accessToken) => {
     const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute('download', 'UserData.xlsx'); // Bạn có thể đặt tên file tùy ý ở đây
+    link.setAttribute('download', 'BorrowList.xlsx'); // Bạn có thể đặt tên file tùy ý ở đây
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
