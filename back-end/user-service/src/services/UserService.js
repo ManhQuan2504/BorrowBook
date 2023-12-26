@@ -78,7 +78,7 @@ const loginUser = (userLogin) => {
                         message: 'Bạn không có quyền để login!'
                     })
                 }
-               
+
                 const comparePassword = bcrypt.compareSync(password, checkUser.password)
 
                 if (!comparePassword) {
@@ -200,13 +200,11 @@ const getAllUser = (limit, page) => {
         try {
 
             const totalUser = await User.count();
-console.log('totalUser', totalUser)
             let allUser = [];
 
             if (!limit) {
                 allUser = await User.find()
                     .select('-image -password');
-console.log('allUser no limit', allUser)
 
 
             } else {
@@ -217,7 +215,6 @@ console.log('allUser no limit', allUser)
                     .limit(limit)
                     .skip(skip)
 
-console.log('allUser', allUser)
 
             }
 
@@ -236,39 +233,56 @@ console.log('allUser', allUser)
         }
     });
 };
-const getAllUserSearch = (limit, page, type, key) => {
+const getAllUserSearch = ({ limit, page, type, key }) => {
+    console.log("🚀 ~ file: UserService.js:237 ~ getAllUserSearch ~ key:", key)
+    console.log("🚀 ~ file: UserService.js:237 ~ getAllUserSearch ~ type:", type)
+
     return new Promise(async (resolve, reject) => {
         try {
-
-            let query = {};
-            // Sử dụng biểu thức chính quy để tạo điều kiện tìm kiếm gần đúng
-            query[`${type}`] = { $regex: key, $options: 'i' };
-
-            console.log('query', query)
-
+          
             let allUser = [];
-
-            if (!limit) {
-
-                allUser = await User.find(query).select('-image -password');
-
-            } else {
-
+            let allUserLength = [];
+            if (!limit || !page) {
+                if (!type || !key) {
+                    allUserLength = await User.find()
+                    allUser = await User.find()
+    
+    
+                } else {
+                    let query = {};
+                    // Sử dụng biểu thức chính quy để tạo điều kiện tìm kiếm gần đúng
+                    query[`${type}`] = { $regex: key, $options: 'i' };
+                    allUser = await User.find(query).select('-_id -password -isAdmin -verified -createdAt -updatedAt');
+                    allUserLength = await User.find(query)
+                }
+            }else{
                 const skip = (page - 1) * limit;
-
-                allUser = await User.find(query).skip(skip).limit(limit);
+                if (!type || !key) {
+                    allUserLength = await User.find()
+                    allUser = await User.find().skip(skip).limit(limit);
+    
+    
+                } else {
+                    let query = {};
+                    // Sử dụng biểu thức chính quy để tạo điều kiện tìm kiếm gần đúng
+                    query[`${type}`] = { $regex: key, $options: 'i' };
+                    allUser = await User.find(query).skip(skip).limit(limit);
+                    allUserLength = await User.find(query)
+                }
             }
+           
 
+
+          
             resolve({
                 code: 200,
                 success: true,
                 message: 'Lấy danh sách User thành công!',
                 data: allUser,
-                total: allUser.length,
+                total: allUserLength.length,
                 pageCurrent: Number(page),
-                totalPage: limit ? Math.ceil(allUser.length / limit) : 1,
+                totalPage: limit ? Math.ceil(allUserLength.length / limit) : 1,
             });
-
         } catch (e) {
             reject(e);
         }
@@ -284,7 +298,7 @@ const getDetailsUser = (id) => {
             }).select('-password');
 
             if (user === null) {
-                
+
                 resolve({
                     code: 404,
                     success: false,

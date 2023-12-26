@@ -24,7 +24,9 @@ import languageDataVi from "../../translations/vi.json";
 import { LANGUAGES } from "../../contants/path";
 import 'typeface-roboto';
 import * as BorrowBookService from '../../services/BorrowBookService';
-
+import * as ExcelJS from 'exceljs';
+import FileSaver from 'file-saver';
+import { format } from 'date-fns';
 const UserManagement = () => {
   const language = useSelector((state) => state.borrowBookReducer.language);
 
@@ -39,6 +41,9 @@ const UserManagement = () => {
   const [modalOpenEdit, setModalOpenEdit] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchQueryTitle, setSearchQueryTitle] = useState("");
+  const [searchQueryType, setSearchQueryType] = useState("");
+
   // ============= Initial State Start here =============
   const [clientName, setClientName] = useState("");
   const [email, setEmail] = useState("");
@@ -160,7 +165,6 @@ const UserManagement = () => {
 
       // Add other user fields if needed
     };
-    console.log("editedUserData", editedUserData);
 
     // Add logic to send the edited user data to the API
     // For example:
@@ -207,9 +211,7 @@ const UserManagement = () => {
         address,
         language
       );
-      console.log("res", res);
       const dataSignUp = res?.response?.data;
-      console.log("dataSignUp", dataSignUp);
       if (res?.code === 200) {
         setClientName("");
         setEmail("");
@@ -234,12 +236,14 @@ const UserManagement = () => {
   const fetchData = async () => {
     const access_token = localStorage.getItem("access_token");
     // const limit = 10; // Set the limit to 1
-    const res = await UserService.getAllUser(
-      access_token,
-      recordsPerPage,
-      currentPage
-    );
-    console.log("res", res);
+    const res = await UserService.getAllUserSearch(
+      {  accessToken:access_token,
+        limit:recordsPerPage,
+        page:currentPage,
+        type:searchQueryType,
+        key:searchQueryTitle 
+      }
+      );
     setdataAllUser(res?.data);
     setTotalPages(res?.totalPage || 1);
     setTotalRecords(res?.total || 0);
@@ -252,17 +256,21 @@ const UserManagement = () => {
 
   const handleSearchResultSelect = async (e, { result }) => {
     setSearchQuery(result.value);
+    setSearchQueryTitle(result.title.split(":")[1].trim());
+    setSearchQueryType(result.description);
 
-    const searchType = result.description;
+
+    // const searchType = result.description;
 
     try {
       const access_token = localStorage.getItem("access_token");
       const res = await UserService.getAllUserSearch(
-        access_token,
-        recordsPerPage,
-        currentPage,
-        searchType,
-        result.title.split(":")[1].trim()
+      {  accessToken:access_token,
+        limit:recordsPerPage,
+        page:currentPage,
+        type:result.description,
+        key:result.title.split(":")[1].trim()
+      }
       );
       setdataAllUser(res?.data);
       setTotalPages(res?.totalPage || 1);
@@ -274,7 +282,6 @@ const UserManagement = () => {
   const handlePageChange = (page) => {
     // Fetch data for the selected page
     // You need to implement the logic for fetching data based on the page number
-    // console.log(`Fetching data for page ${page}`);
     setCurrentPage(page);
   };
   const handleAddUser = () => {
@@ -318,7 +325,40 @@ const UserManagement = () => {
   const handleExportExcel = async () => {
     try {
       const access_token = localStorage.getItem("access_token");
-      await UserService.exportExcel(access_token);
+     const dataExcelExport = await UserService.getAllUserSearch({
+        accessToken: access_token,
+        type: searchQueryType,
+        key: searchQueryTitle
+      });
+  const dataList = Array.from(dataExcelExport.data);
+  console.log("🚀 ~ file: UserManagement.jsx:334 ~ handleExportExcel ~ dataList:", dataList)
+  
+  const resp = await fetch(new Request("/files/templatesExcelUser.xlsx"));
+  const buff = resp.arrayBuffer();
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(buff);
+  const sheetData = workbook.getWorksheet(1);
+
+  let rowIndex = 1;
+
+  for (const item of dataList) {
+    const {
+      name, email,
+      phone, address
+      
+    } = item;
+    rowIndex++;
+    sheetData.getCell(`A${rowIndex}`).value = rowIndex-1;
+    sheetData.getCell(`B${rowIndex}`).value = name ? name : "";
+    sheetData.getCell(`C${rowIndex}`).value = email? email : "";
+    sheetData.getCell(`D${rowIndex}`).value = phone? phone : "";
+    sheetData.getCell(`E${rowIndex}`).value = address? address : "";
+
+  }
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: "applicationi/xlsx" });
+  FileSaver.saveAs(blob, `DataUser-${format(new Date(), "yyMMddHHmm")}.xlsx`);
 
     } catch (error) {
       console.error(error);
@@ -344,7 +384,6 @@ const UserManagement = () => {
   };
 
   const handleEditUser = (user) => {
-    console.log("user", user);
     setSelectedUser(user);
     setEditEmail(user.email);
     setEditName(user.name);

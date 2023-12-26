@@ -258,9 +258,8 @@ const getAllUser = async (req, res) => {
 }
 const getAllUserSearch = async (req, res) => {
     try {
-        const { limit, page, type, key } = req.query
 
-        const response = await UserService.getAllUserSearch(Number(limit) || null, Number(page) || 0, String(type) || '_id', String(key) || '')
+        const response = await UserService.getAllUserSearch(req.query)
 
         return res.status(response.code).json(response)
 

@@ -178,8 +178,7 @@ export const getDetailUser = async ({ accessToken, idUser }) => {
     .catch((err) => err);
 };
 
-export const getAllUserSearch = async (accessToken, limit, page, type, key) => {
-  console.log(type, key);
+export const getAllUserSearch = async ({accessToken, limit, page, type, key}) => {
   return await apiService
     .get(`user/get-all-user-search`, {
       headers: {
